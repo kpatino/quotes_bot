@@ -15,3 +15,9 @@ Create an sqlite db and create a table for each person with a a txt entry for qu
 ### Recommended db viewer
 I recommend to use sqlite viewer 
 https://sqlitebrowser.org/dl/ 
+
+### database table field
+-db example added
+-create table with any name
+-add field with name quotes
+-add quotes to field or use jamal add
