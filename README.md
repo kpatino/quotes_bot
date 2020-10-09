@@ -7,8 +7,6 @@ Custom Discord bot with the main goal to hold quotes in a database
 
 ### Follow the guide to install discordpy here 
 https://discordpy.readthedocs.io/en/latest/intro.html 
-Python has sqlite support built in I think so thats it. 
-
 
 ### Install mcstatus from Dinnerbone for 'jamal status' 
 https://github.com/Dinnerbone/mcstatus 
