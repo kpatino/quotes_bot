@@ -1,5 +1,5 @@
 # jamal_bot 
-Custom Discord bot with the main goal to hold quotes in a database 
+Custom Discord bot with the main goal to hold quotes in a database and be a companion on the discord server
 
 
 
