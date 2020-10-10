@@ -12,7 +12,7 @@ def get_prefix(client, message): # Function creates prefixes
     return commands.when_mentioned_or(*prefixes)(client, message) 
     # in summary allow users to @mention the bot and use three variations of "jamal "
 
-jamal_bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True,owner_id=199324290665938944) # requires jamal with a space in order to register
+jamal_bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True,owner_id=ADD_YOUR_DISCORD_ID_HERE) # requires jamal with a space in order to register
 jamal_bot.remove_command('help') # remove the default help command
 
 # jamal_bot commands
