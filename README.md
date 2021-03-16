@@ -1,23 +1,13 @@
 # jamal_bot 
-Custom Discord bot with the main goal to hold quotes in a database and be a companion on the discord server
-
-
-
+Jamal Bot is custom Discord bot with the main goal to hold quotes in a database and be able to access them through Discord.
 ## Quick setup 
 
 ### Follow the guide to install discordpy here 
 https://discordpy.readthedocs.io/en/latest/intro.html 
-
-### Install mcstatus from Dinnerbone for 'jamal status' 
-https://github.com/Dinnerbone/mcstatus 
-Create an sqlite db and create a table for each person with a a txt entry for quotes 
-
-### Recommended db viewer
-I recommend to use sqlite viewer 
-https://sqlitebrowser.org/dl/ 
-
-### database table field
-- db example added  
-- create table with any name  
-- add field with name quotes  
-- add quotes to field or use jamal add  
+# Notes
+## Help
+To access the bot's help message send `jamal help` in a channel the bot can read and write.
+## About the README.md
+This README will remain empty until the project gets to a more polished state that will allow me to write a better
+## About managing the database
+Currently the bot is not capable at managing the database and can only add. In the future it will be able to allow an adminstrator to remove a specific quote
