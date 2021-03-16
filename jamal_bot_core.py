@@ -5,8 +5,6 @@ import sqlite3
 import discord
 from discord.ext import commands
 
-# jamal
-
 
 def get_prefix(client, message):  # Function creates prefixes
     # sets the prefixes, future regex here?
@@ -17,7 +15,7 @@ def get_prefix(client, message):  # Function creates prefixes
 
 # requires jamal with a space in order to register
 jamal_bot = commands.Bot(command_prefix=get_prefix,
-                         case_insensitive=True, owner_id=ADD_YOUR_DISCORD_ID_HERE)
+                         case_insensitive=True, owner_id="DISCORD_ID")
 jamal_bot.remove_command('help')  # remove the default help command
 
 # jamal_bot commands
@@ -29,7 +27,7 @@ async def on_ready():
         f'\n\nLogged in as: {jamal_bot.user.name} - {jamal_bot.user.id}\nVersion: {discord.__version__}\n'))
     activity = discord.Game(name='Warframe')
     await jamal_bot.change_presence(status=discord.Status.online, activity=activity)
-    print(f'Successfully logged in and booted')
+    print(f'Done')  # Printing done let's pterodactyl know that it's ready
 
 
 @jamal_bot.event  # jamal error handling
@@ -58,15 +56,15 @@ async def access(ctx, name):
 @jamal_bot.command()  # jamal add {name} "{quote}"
 @commands.guild_only()  # ignore in DMs
 # must have these roles in order to add quotes
-@commands.has_any_role(ADD ROLE ID NUMBERS HERE IF APPLICABLE OR DELETE LINE)
+@commands.has_any_role("ROLE_ID")
 async def add(ctx, name, quote: str):
     name = name.lower()  # set name to lowercase just in case
     if check_tables(name) == False:  # check if name is in the database
         await ctx.send(f'"{name}" is not in the database')
     else:
         add_quote(name, quote)  # add_quote function
-        # mention me, the author and send quote with name, reports this section has run
-        await ctx.send(f'<@199324290665938944>, {ctx.message.author.mention} has added "{quote}" to {name}')
+        # mention the author and send quote with name, reports this section has run
+        await ctx.send(f'{ctx.message.author.mention} has added "{quote}" to {name}')
 
 
 @jamal_bot.command()  # random quote game
