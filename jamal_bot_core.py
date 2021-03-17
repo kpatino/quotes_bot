@@ -1,9 +1,22 @@
 import asyncio
+import logging
 import random
 import sqlite3
 
 import discord
 from discord.ext import commands
+
+# Recommended logging in discord.py documention
+logging.basicConfig(level=logging.INFO)
+
+# log to jamal_bot.log
+logger = logging.getLogger('discord')
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler(
+    filename='jamal_bot.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter(
+    '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
 
 def get_prefix(client, message):  # Function creates prefixes
