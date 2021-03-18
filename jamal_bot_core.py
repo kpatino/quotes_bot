@@ -6,6 +6,11 @@ import sqlite3
 import discord
 from discord.ext import commands
 
+# admin role ID must be an integer
+ADMIN_ROLE_ID = 123456
+OWNER_ID = 123456
+DISCORD_API_KEY = "Njk4NzAwNzI3ODY2MDk3NzI1.Xq7x9Q.ovV7zl7hXch5JDjT3Xx_1vFiXgA"
+
 # Recommended logging in discord.py documention
 logging.basicConfig(level=logging.INFO)
 
@@ -17,10 +22,6 @@ handler = logging.FileHandler(
 handler.setFormatter(logging.Formatter(
     '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
-
-# admin role ID must be an integer
-ADMIN_ROLE_ID = 123456
-OWNER_ID = 123456
 
 
 def get_prefix(client, message):  # Function creates prefixes
@@ -156,8 +157,7 @@ def get_names():
 
 def check_name(name):  # check if the table exists to prevent a crash
     with open_db('./jamal_bot_quotes.db') as cursor:
-        cursor.execute(
-            f"""SELECT count(name) FROM people WHERE name='{name}';""")
+        cursor.execute("SELECT count(name) FROM people WHERE name=?", (name,))
         if cursor.fetchone()[0] == 1:
             return(True)
         else:
@@ -167,14 +167,14 @@ def check_name(name):  # check if the table exists to prevent a crash
 def get_quote(name):  # get quote from database
     with open_db('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
-            f"""SELECT quote FROM quotes WHERE name= "{name}" ORDER BY RANDOM() LIMIT 1;""")
+            "SELECT quote FROM quotes WHERE name=? ORDER BY RANDOM() LIMIT 1", (name,))
         return(cursor.fetchone()[0])
 
 
 def add_quote(name, quote):  # add quote to database
     with open_db('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
-            f"""INSERT INTO "main"."quotes" ("name", "quote") VALUES ('{name}', '{quote}');""")
+            "INSERT INTO quotes ('name', 'quote') VALUES (?, ?)", (name, quote, ))
 
 
 def random_name():  # get a random table
@@ -188,5 +188,5 @@ def random_name():  # get a random table
         return(name)
 
 
-jamal_bot.run("DISCORD_API_KEY_HERE", bot=True,
+jamal_bot.run(DISCORD_API_KEY, bot=True,
               reconnect=True)  # Run jamal_bot
