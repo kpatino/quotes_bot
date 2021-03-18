@@ -25,8 +25,7 @@ OWNER_ID = 123456
 
 def get_prefix(client, message):  # Function creates prefixes
     # sets the prefixes, future regex here?
-    #prefixes = ['jamal ', 'Jamal ', 'JAMAL ']
-    prefixes = ['lamar ']
+    prefixes = ['jamal ', 'Jamal ', 'JAMAL ']
     return commands.when_mentioned_or(*prefixes)(client, message)
     # in summary allow users to @mention the bot and use three variations of "jamal "
 
