@@ -1,3 +1,11 @@
+#       __                          __       ____          __        ______
+#      / /____ _ ____ ___   ____ _ / /      / __ ) ____   / /_      / ____/____   _____ ___
+# __  / // __ `// __ `__ \ / __ `// /      / __  |/ __ \ / __/     / /    / __ \ / ___// _ \
+#/ /_/ // /_/ // / / / / // /_/ // /      / /_/ // /_/ // /_      / /___ / /_/ // /   /  __/
+#\____/ \__,_//_/ /_/ /_/ \__,_//_/______/_____/ \____/ \__/______\____/ \____//_/    \___/
+#                                 /_____/                  /_____/
+# By Kevin Patino
+
 import asyncio
 import logging
 import random
@@ -6,10 +14,10 @@ import sqlite3
 import discord
 from discord.ext import commands
 
-# admin role ID must be an integer
-ADMIN_ROLE_ID = 123456
-OWNER_ID = 123456
-DISCORD_API_KEY = ""
+# global variables that will be moved in the future
+ADMIN_ROLE_ID = 1234567890
+OWNER_ID = 1234567890
+DISCORD_API_KEY = "API_KEY_HERE"
 
 # Recommended logging in discord.py documention
 logging.basicConfig(level=logging.INFO)
@@ -37,8 +45,6 @@ jamal_bot = commands.Bot(command_prefix=get_prefix,
 jamal_bot.remove_command('help')  # remove the default help command
 
 # jamal_bot commands
-
-
 @jamal_bot.event  # jamal connection to discord api
 async def on_ready():
     print(
@@ -128,8 +134,6 @@ async def help(ctx):
 # database funtions
 # SQLITE class and funtions
 # Context manager opens and closes database, don't want to leave open connections
-
-
 class open_db(object):  # sqlite ctx manager i found on github, seems to work for now
     def __init__(self, path):
         self.path = path
@@ -147,7 +151,7 @@ class open_db(object):  # sqlite ctx manager i found on github, seems to work fo
 def get_names():
     with open_db('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
-            """SELECT name FROM people;""")
+            "SELECT name FROM people")
         names = [
             v[0] for v in cursor.fetchall()
         ]
@@ -180,13 +184,13 @@ def add_quote(name, quote):  # add quote to database
 def random_name():  # get a random table
     with open_db('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
-            """SELECT name FROM people;""")
+            "SELECT name FROM people")
         names = [
             v[0] for v in cursor.fetchall()
         ]
         name = random.choice(names)
         return(name)
 
-
+# Run jamal_bot_core
 jamal_bot.run(DISCORD_API_KEY, bot=True,
-              reconnect=True)  # Run jamal_bot
+              reconnect=True)  
