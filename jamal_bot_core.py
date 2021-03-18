@@ -78,7 +78,6 @@ async def access(ctx, name):
 @commands.has_any_role(ADMIN_ROLE_ID)
 async def add(ctx, name, quote: str):
     name = name.lower()  # set name to lowercase just in case
-    print (f"{name} and {quote}")
     if check_name(name) == False:  # check if name is in the database
         await ctx.send(f'"{name}" is not in the database')
     else:
@@ -154,6 +153,7 @@ def get_names():
         names = ', '.join(map(str, names,))
         return(names)
 
+
 def check_name(name):  # check if the table exists to prevent a crash
     with open_db('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
@@ -166,14 +166,15 @@ def check_name(name):  # check if the table exists to prevent a crash
 
 def get_quote(name):  # get quote from database
     with open_db('./jamal_bot_quotes.db') as cursor:
-        cursor.execute(f"""SELECT quote FROM quotes WHERE name= "{name}" ORDER BY RANDOM() LIMIT 1;""")
+        cursor.execute(
+            f"""SELECT quote FROM quotes WHERE name= "{name}" ORDER BY RANDOM() LIMIT 1;""")
         return(cursor.fetchone()[0])
 
 
 def add_quote(name, quote):  # add quote to database
     with open_db('./jamal_bot_quotes.db') as cursor:
-        cursor.execute(f"""INSERT INTO "main"."quotes" ("name", "quote") VALUES ('{name}', '{quote}');""")
-        print(name + quote)
+        cursor.execute(
+            f"""INSERT INTO "main"."quotes" ("name", "quote") VALUES ('{name}', '{quote}');""")
 
 
 def random_name():  # get a random table
