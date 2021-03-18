@@ -1,2 +1,3 @@
 *.log
 jamal_bot_quotes.db
+database_connection_testing.py

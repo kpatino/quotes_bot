@@ -9,7 +9,7 @@ from discord.ext import commands
 # admin role ID must be an integer
 ADMIN_ROLE_ID = 123456
 OWNER_ID = 123456
-DISCORD_API_KEY = "Njk4NzAwNzI3ODY2MDk3NzI1.Xq7x9Q.ovV7zl7hXch5JDjT3Xx_1vFiXgA"
+DISCORD_API_KEY = ""
 
 # Recommended logging in discord.py documention
 logging.basicConfig(level=logging.INFO)
