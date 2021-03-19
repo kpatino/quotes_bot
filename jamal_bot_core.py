@@ -1,8 +1,8 @@
 #       __                          __       ____          __        ______
 #      / /____ _ ____ ___   ____ _ / /      / __ ) ____   / /_      / ____/____   _____ ___
 # __  / // __ `// __ `__ \ / __ `// /      / __  |/ __ \ / __/     / /    / __ \ / ___// _ \
-#/ /_/ // /_/ // / / / / // /_/ // /      / /_/ // /_/ // /_      / /___ / /_/ // /   /  __/
-#\____/ \__,_//_/ /_/ /_/ \__,_//_/______/_____/ \____/ \__/______\____/ \____//_/    \___/
+# / /_/ // /_/ // / / / / // /_/ // /      / /_/ // /_/ // /_      / /___ / /_/ // /   /  __/
+# \____/ \__,_//_/ /_/ /_/ \__,_//_/______/_____/ \____/ \__/______\____/ \____//_/    \___/
 #                                 /_____/                  /_____/
 # By Kevin Patino
 
@@ -10,14 +10,17 @@ import asyncio
 import logging
 import random
 import sqlite3
+import yaml
 
 import discord
 from discord.ext import commands
 
-# global variables that will be moved in the future
-ADMIN_ROLE_ID = 1234567890
-OWNER_ID = 1234567890
-DISCORD_API_KEY = "API_KEY_HERE"
+config_dict = {}
+
+with open('config.yaml') as config:
+    config_dict = yaml.load(config)
+    print(config_dict)
+
 
 # Recommended logging in discord.py documention
 logging.basicConfig(level=logging.INFO)
@@ -41,10 +44,12 @@ def get_prefix(client, message):  # Function creates prefixes
 
 # requires jamal with a space in order to register
 jamal_bot = commands.Bot(command_prefix=get_prefix,
-                         case_insensitive=True, owner_id=OWNER_ID)
+                         case_insensitive=True, owner_id=config_dict['OWNER_ID'])
 jamal_bot.remove_command('help')  # remove the default help command
 
 # jamal_bot commands
+
+
 @jamal_bot.event  # jamal connection to discord api
 async def on_ready():
     print(
@@ -82,7 +87,7 @@ async def access(ctx, name):
 @jamal_bot.command()  # jamal add {name} "{quote}"
 @commands.guild_only()  # ignore in DMs
 # must have these roles in order to add quotes
-@commands.has_any_role(ADMIN_ROLE_ID)
+@commands.has_any_role(config_dict['ADMIN_ROLE_ID'])
 async def add(ctx, name, quote: str):
     name = name.lower()  # set name to lowercase just in case
     if check_name(name) == False:  # check if name is in the database
@@ -128,13 +133,14 @@ async def help(ctx):
     help_embed.add_field(name='jamal add <name> "<quote>"',
                          value='jamal will add a quote to the database, but use the double quotes when you\'re adding new ones please', inline=False)
     help_embed.set_footer(
-        text='commands are mostly case insensitive, try to always use lowercase just in case')
+        text='more info at https://github.com/kpatino/jamal_bot/wiki')
     await ctx.send(embed=help_embed)  # actually send the embed
 
 # database funtions
 # SQLITE class and funtions
-# Context manager opens and closes database, don't want to leave open connections
-class open_db(object):  # sqlite ctx manager i found on github, seems to work for now
+
+
+class open_db(object):  # sqlite ctx manager
     def __init__(self, path):
         self.path = path
 
@@ -159,7 +165,7 @@ def get_names():
         return(names)
 
 
-def check_name(name):  # check if the table exists to prevent a crash
+def check_name(name):
     with open_db('./jamal_bot_quotes.db') as cursor:
         cursor.execute("SELECT count(name) FROM people WHERE name=?", (name,))
         if cursor.fetchone()[0] == 1:
@@ -168,20 +174,20 @@ def check_name(name):  # check if the table exists to prevent a crash
             return(False)
 
 
-def get_quote(name):  # get quote from database
+def get_quote(name):
     with open_db('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
             "SELECT quote FROM quotes WHERE name=? ORDER BY RANDOM() LIMIT 1", (name,))
         return(cursor.fetchone()[0])
 
 
-def add_quote(name, quote):  # add quote to database
+def add_quote(name, quote):
     with open_db('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
             "INSERT INTO quotes ('name', 'quote') VALUES (?, ?)", (name, quote, ))
 
 
-def random_name():  # get a random table
+def random_name():
     with open_db('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
             "SELECT name FROM people")
@@ -191,6 +197,7 @@ def random_name():  # get a random table
         name = random.choice(names)
         return(name)
 
+
 # Run jamal_bot_core
-jamal_bot.run(DISCORD_API_KEY, bot=True,
-              reconnect=True)  
+jamal_bot.run(config_dict['DISCORD_API_KEY'], bot=True,
+              reconnect=True)
