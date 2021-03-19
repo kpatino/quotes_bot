@@ -1,3 +1,4 @@
+[![GitHub Super-Linter](https://github.com/kpatino/jamal_bot/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
 # jamal_bot 
 Jamal Bot is custom Discord bot with the main goal to hold quotes in a database and be able to access them through Discord.
 ## Quick setup 
