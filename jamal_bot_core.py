@@ -84,18 +84,27 @@ async def access(ctx, name):
         await ctx.send(f'"{name}" is not in the database')
 
 
-@jamal_bot.command()  # jamal add {name} "{quote}"
+@jamal_bot.command()  # jamal add name|quote {name} "{quote}"
 @commands.guild_only()  # ignore in DMs
-# must have these roles in order to add quotes
+# must have admin role in order to add quotes
 @commands.has_any_role(config_dict['ADMIN_ROLE_ID'])
-async def add(ctx, name, quote: str):
-    name = name.lower()  # set name to lowercase just in case
-    if check_name(name) == False:  # check if name is in the database
-        await ctx.send(f'"{name}" is not in the database')
-    else:
-        add_quote(name, quote)  # add_quote function
-        # mention the author and send quote with name, reports this section has run
-        await ctx.send(f'{ctx.message.author.mention} has added "{quote}" to {name}')
+async def add(ctx, var, name, quote: str = None):
+    var = var.lower()  # set var to lowercase
+
+    if var == "name":
+        if check_name(name) == True:  # check if name is in the database
+            await ctx.send(f'"{name}" is already in the database')
+        else:
+            add_name(name)
+            await ctx.send(f'{ctx.message.author.mention} has added "{name}" to the database')
+
+    elif var == "quote":
+        if check_name(name) == False:  # check if name is in the database
+            await ctx.send(f'"{name}" is not in the database')
+        else:
+            add_quote(name, quote)  # add_quote function
+            # mention the author and send quote with name, reports this section has run
+            await ctx.send(f'{ctx.message.author.mention} has added "{quote}" to {name}')
 
 
 @jamal_bot.command()  # jamal add {name} "{quote}"
