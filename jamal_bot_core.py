@@ -17,9 +17,11 @@ from discord.ext import commands
 
 config_dict = {}
 
-with open('config.yaml') as config:
-    config_dict = yaml.load(config)
-    print(config_dict)
+try:
+    with open('config.yml') as config:
+        config_dict = yaml.safe_load(config)
+except:
+    print("Config.yml does not exist!")
 
 
 # Recommended logging in discord.py documention
