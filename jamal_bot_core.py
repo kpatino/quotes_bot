@@ -98,6 +98,20 @@ async def add(ctx, name, quote: str):
         await ctx.send(f'{ctx.message.author.mention} has added "{quote}" to {name}')
 
 
+@jamal_bot.command()  # jamal add {name} "{quote}"
+@commands.guild_only()  # ignore in DMs
+# must have admin role in order to remove names
+@commands.has_any_role(config_dict['ADMIN_ROLE_ID'])
+async def remove(ctx, var, name):
+    var = var.lower()  # set var to lowercase
+    if var == "name":
+        if check_name(name) == False:  # check if name is in the database
+            await ctx.send(f'"{name}" is not in the database')
+        else:
+            remove_name(name)
+            await ctx.send(f'{ctx.message.author.mention} has removed "{name}" from the database')
+
+
 @jamal_bot.command()  # random quote game
 @commands.guild_only()  # ignore in DMs
 async def quotes(ctx, pass_context=True):
