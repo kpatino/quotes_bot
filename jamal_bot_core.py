@@ -165,6 +165,16 @@ def get_names():
         return(names)
 
 
+def add_name(name):
+    with open_db('./jamal_bot_quotes.db') as cursor:
+        cursor.execute("INSERT INTO people ('name') VALUES (?)", (name,))
+
+
+def remove_name(name):
+    with open_db('./jamal_bot_quotes.db') as cursor:
+        cursor.execute("DELETE FROM people WHERE name == (?);", (name,))
+
+
 def check_name(name):
     with open_db('./jamal_bot_quotes.db') as cursor:
         cursor.execute("SELECT count(name) FROM people WHERE name=?", (name,))
