@@ -122,18 +122,19 @@ async def quotes(ctx, pass_context=True):
 async def help(ctx):
     help_embed = discord.Embed(colour=discord.Colour.blurple())
     help_embed.set_author(name='jamal help')
-    help_embed.add_field(
-        name='jamal help', value='jamal will display the help message', inline=False)
-    help_embed.add_field(
-        name='jamal lookup', value='jamal will display all available names in the database', inline=False)
-    help_embed.add_field(
-        name='jamal quotes', value='jamal will give a random quote and you guess who said it', inline=False)
+    help_embed.add_field(name='jamal help',
+                         value='jamal will display the help message', inline=False)
+    help_embed.add_field(name='jamal lookup',
+                         value='jamal will display all available names in the database', inline=False)
+    help_embed.add_field(name='jamal quotes', 
+                         value='jamal will give a random quote and you guess who said it', inline=False)
     help_embed.add_field(name='jamal access <name>',
                          value='jamal will send a random quote from someone in the database', inline=False)
     help_embed.add_field(name='jamal add name|quote <name> "<quote>"',
-                         value='jamal will add a quote to the database, but use the double quotes when you\'re adding new ones please', inline=False)
-    help_embed.set_footer(
-        text='more info at https://github.com/kpatino/jamal_bot/wiki')
+                         value='jamal will add a name or quote to the database, use double quotes when you\'re adding quotes', inline=False)
+    help_embed.add_field(name='jamal remove name <name>',
+                         value='jamal will remove a name from the database', inline=False)
+    help_embed.set_footer(text='more info at https://github.com/kpatino/jamal_bot/wiki')
     await ctx.send(embed=help_embed)  # actually send the embed
 
 # database funtions
