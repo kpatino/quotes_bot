@@ -130,7 +130,7 @@ async def help(ctx):
         name='jamal quotes', value='jamal will give a random quote and you guess who said it', inline=False)
     help_embed.add_field(name='jamal access <name>',
                          value='jamal will send a random quote from someone in the database', inline=False)
-    help_embed.add_field(name='jamal add <name> "<quote>"',
+    help_embed.add_field(name='jamal add name|quote <name> "<quote>"',
                          value='jamal will add a quote to the database, but use the double quotes when you\'re adding new ones please', inline=False)
     help_embed.set_footer(
         text='more info at https://github.com/kpatino/jamal_bot/wiki')
