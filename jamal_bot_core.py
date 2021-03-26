@@ -23,7 +23,6 @@ try:
 except:
     print("Config.yml does not exist!")
 
-
 # Recommended logging in discord.py documention
 logging.basicConfig(level=logging.INFO)
 
@@ -79,8 +78,9 @@ async def lookup(ctx):
 @jamal_bot.command()  # jamal access {name}
 @commands.guild_only()  # ignore in DMs
 async def access(ctx, name):
-    name = name.lower()  # set name to lowercase just in case
-    if check_name(name) == True:  # check if the name is in the database
+    # set name to lowercase as that's how I like setting it up in the database
+    name = name.lower()
+    if check_name(name) == True:
         await ctx.send(f'{get_quote(name)}')
     else:
         await ctx.send(f'"{name}" is not in the database')
@@ -133,7 +133,7 @@ async def quotes(ctx, pass_context=True):
         # wait 3 seconds for a guess
         guess = await jamal_bot.wait_for('message', timeout=6.0)
     except asyncio.TimeoutError:
-        # if no guess is provided in 5 seconds stop waiting
+        # if no guess is provided in 3 seconds stop waiting
         return await ctx.channel.send(f'you\'re taking too long, it was {name}')
 
     if (str(guess.content)).lower() == name:  # if guess matches namme
@@ -162,10 +162,9 @@ async def help(ctx):
     help_embed.set_footer(text='more info at https://github.com/kpatino/jamal_bot/wiki')
     await ctx.send(embed=help_embed)  # actually send the embed
 
+
 # database funtions
 # SQLITE class and funtions
-
-
 class open_db(object):  # sqlite ctx manager
     def __init__(self, path):
         self.path = path
