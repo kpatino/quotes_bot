@@ -61,9 +61,9 @@ async def on_command_error(ctx, error):
         await ctx.send('missing required argument')
 
 
-@jamal_bot.command()  # jamal lookup
+@jamal_bot.command()  # jamal list
 @commands.guild_only()  # ignore in DMs
-async def lookup(ctx):
+async def list(ctx):
     await ctx.send(f'{jamal_bot_database.get_names()}')
 
 
