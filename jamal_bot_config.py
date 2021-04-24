@@ -2,8 +2,8 @@ import yaml
 
 default_config = {
     "ADMIN_ROLE_ID" : 19234567890,
-    "OWNER_ID" : 19234567890,
-    "DISCORD_API_KEY": "DISCORD_API_KEY_HERE"
+    "DISCORD_API_KEY": "DISCORD_API_KEY_HERE",
+    "OWNER_ID" : 19234567890
 }
 user_config = {}
 
