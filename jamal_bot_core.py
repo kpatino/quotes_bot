@@ -141,21 +141,21 @@ async def quotes(ctx, pass_context=True):
 @commands.guild_only()  # ignore in DMs
 async def help(ctx):
     help_embed = discord.Embed(colour=discord.Colour.blurple())
-    help_embed.set_author(name='jamal help')
-    help_embed.add_field(name='jamal help',
-                         value='jamal will display the help message', inline=False)
-    help_embed.add_field(name='jamal lookup',
-                         value='jamal will display all available names in the database', inline=False)
-    help_embed.add_field(name='jamal quotes',
-                         value='jamal will give a random quote and you guess who said it', inline=False)
-    help_embed.add_field(name='jamal access <name>',
-                         value='jamal will send a random quote from someone in the database', inline=False)
-    help_embed.add_field(name='jamal add name|quote <name> "<quote>"',
-                         value='jamal will add a name or quote to the database, use double quotes when you\'re adding quotes', inline=False)
-    help_embed.add_field(name='jamal remove name <name>',
-                         value='jamal will remove a name from the database', inline=False)
-    help_embed.set_footer(
-        text='more info at https://github.com/kpatino/jamal_bot/wiki')
+    help_embed.set_author(name='jamal bot help')
+    help_embed.add_field(name='Display this help message',
+                         value='Usage: `jamal help`', inline=False)
+    help_embed.add_field(name='Display all available names in the database',
+                         value='Usage: `jamal list`', inline=False)
+    help_embed.add_field(name='Send a random quote and guess who said it',
+                         value='Usage: `jamal quotes`', inline=False)
+    help_embed.add_field(name='Send a random quote from someone',
+                         value='Usage: `jamal access <name>`\nEx. `jamal access kevin`', inline=False)
+    help_embed.add_field(name='Add a name to the database',
+                         value='Usage: `jamal add name <name>`\nEx. `jamal add name kevin`', inline=False)                         
+    help_embed.add_field(name='Add a quote to the database, needs double quotes surrounding the quote',
+                         value='Usage: `jamal add quote <name> "<quote>"`\nEx. `jamal add quote kevin "she said give me armor"`', inline=False)
+    help_embed.add_field(name='Remove a name and their quotes from the database',
+                         value='Usage: `jamal remove name <name>`\nEx. `jamal remove name kevin`', inline=False)
     await ctx.send(embed=help_embed)  # actually send the embed
 
 
