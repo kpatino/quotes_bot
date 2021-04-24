@@ -34,6 +34,7 @@ def add_name(name):
 
 def remove_name(name):
     with open_db('./jamal_bot_quotes.db') as cursor:
+        cursor.execute("DELETE FROM quotes WHERE name == (?);", (name,))
         cursor.execute("DELETE FROM people WHERE name == (?);", (name,))
 
 
