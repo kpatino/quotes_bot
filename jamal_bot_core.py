@@ -20,8 +20,9 @@ config_dict = {}
 try:
     with open('config.yml') as config:
         config_dict = yaml.safe_load(config)
-except:
-    print("Config.yml does not exist!")
+except FileNotFoundError:
+    print("config.yml does not exist!")
+    exit()
 
 # Recommended logging in discord.py documention
 logging.basicConfig(level=logging.INFO)
