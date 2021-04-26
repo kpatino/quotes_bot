@@ -9,12 +9,9 @@
 import asyncio
 import discord
 import logging
-import random
-import sqlite3
-import yaml
 import jamal_bot_config
 import jamal_bot_database
-import jamal_bot_admin
+#import jamal_bot_admin
 
 from discord.ext import commands
 
