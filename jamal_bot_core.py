@@ -35,7 +35,7 @@ def get_prefix(client, message):  # Function creates prefixes
 
 # requires jamal with a space in order to register
 jamal_bot = commands.Bot(command_prefix=get_prefix,
-                         case_insensitive=True, 
+                         case_insensitive=True,
                          owner_id=jamal_bot_config.user_config['OWNER_ID'])
 jamal_bot.remove_command('help')  # remove the default help command
 
@@ -69,7 +69,7 @@ async def list(ctx):
 async def access(ctx, name):
     # set name to lowercase as that's how I like setting it up in the database
     name = name.lower()
-    if jamal_bot_database.check_name(name) == True:
+    if jamal_bot_database.check_name(name) is True:
         await ctx.send(f'{jamal_bot_database.get_quote(name)}')
     else:
         await ctx.send(f'"{name}" is not in the database')
@@ -84,7 +84,7 @@ async def add(ctx, var, name, quote: str = None):
 
     if var == "name":
         # check if name is in the database
-        if jamal_bot_database.check_name(name) == True:
+        if jamal_bot_database.check_name(name) is True:
             await ctx.send(f'"{name}" is already in the database')
         else:
             jamal_bot_database.add_name(name)
@@ -92,7 +92,7 @@ async def add(ctx, var, name, quote: str = None):
 
     elif var == "quote":
         # check if name is in the database
-        if jamal_bot_database.check_name(name) == False:
+        if jamal_bot_database.check_name(name) is False:
             await ctx.send(f'"{name}" is not in the database')
         else:
             jamal_bot_database.add_quote(name, quote)  # add_quote function
@@ -108,7 +108,7 @@ async def remove(ctx, var, name):
     var = var.lower()  # set var to lowercase
     if var == "name":
         # check if name is in the database
-        if jamal_bot_database.check_name(name) == False:
+        if jamal_bot_database.check_name(name) is False:
             await ctx.send(f'"{name}" is not in the database')
         else:
             jamal_bot_database.remove_name(name)
@@ -128,7 +128,7 @@ async def quotes(ctx, pass_context=True):
         # if no guess is provided in 3 seconds stop waiting
         return await ctx.channel.send(f'you\'re taking too long, it was {name}')
 
-    if (str(guess.content)).lower() == name:  # if guess matches namme
+    if (str(guess.content)).lower() is name:  # if guess matches namme
         await ctx.channel.send('you got em')
     else:
         await ctx.channel.send(f'WRONG! it\'s {name}')
@@ -148,9 +148,9 @@ async def help(ctx):
     help_embed.add_field(name='Send a random quote from someone',
                          value='Usage: `jamal access <name>`\nEx. `jamal access kevin`', inline=False)
     help_embed.add_field(name='Add a name to the database',
-                         value='Usage: `jamal add name <name>`\nEx. `jamal add name kevin`', inline=False)                         
+                         value='Usage: `jamal add name <name>`\nEx. `jamal add name kevin`', inline=False)
     help_embed.add_field(name='Add a quote to the database, needs double quotes surrounding the quote',
-                         value='Usage: `jamal add quote <name> "<quote>"`\nEx. `jamal add quote kevin "she said give me armor"`', inline=False)
+                         value='Usage: `jamal add quote <name> "<quote>"`\nEx. `jamal add quote kevin "no pos guao"`', inline=False)
     help_embed.add_field(name='Remove a name and their quotes from the database',
                          value='Usage: `jamal remove name <name>`\nEx. `jamal remove name kevin`', inline=False)
     await ctx.send(embed=help_embed)  # actually send the embed
