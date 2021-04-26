@@ -7,13 +7,13 @@
 #
 
 import asyncio
-import discord
 import logging
+
+import discord
+from discord.ext import commands
+
 import jamal_bot_config
 import jamal_bot_database
-#import jamal_bot_admin
-
-from discord.ext import commands
 
 # Recommended logging in discord.py documention
 logging.basicConfig(level=logging.INFO)
