@@ -7,9 +7,9 @@
 #
 
 import asyncio
-import discord
 import logging
 
+import discord
 import jamal_bot_config
 import jamal_bot_database
 
