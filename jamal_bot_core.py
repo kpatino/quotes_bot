@@ -32,6 +32,8 @@ def get_prefix(client, message):  # Function creates prefixes
     return commands.when_mentioned_or(*prefixes)(client, message)
     # in summary allow users to @mention the bot and use three variations of "jamal "
 
+# only creates the database if it doesn't exist
+jamal_bot_database.create_db('jamal_bot_quotes.db')
 
 # requires jamal with a space in order to register
 jamal_bot = commands.Bot(command_prefix=get_prefix,

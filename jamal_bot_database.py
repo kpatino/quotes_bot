@@ -16,6 +16,23 @@ class open_db(object):
         self.conn.close()
 
 
+def create_db(db_name):
+    create_people_table = """CREATE TABLE IF NOT EXISTS people(
+                                'name' TEXT NOT NULL UNIQUE
+                            );"""
+
+    create_quotes_table = """CREATE TABLE IF NOT EXISTS quotes(
+                                'id' INTEGER NOT NULL UNIQUE,
+                                'name' TEXT NOT NULL,
+                                'quote' TEXT NOT NULL,
+                                FOREIGN KEY('name') REFERENCES 'people'('name'),
+                                PRIMARY KEY('id' AUTOINCREMENT)
+                            );"""
+    with open_db(db_name) as cursor:
+        cursor.execute(create_people_table)
+        cursor.execute(create_quotes_table)
+
+
 def get_names():
     with open_db('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
