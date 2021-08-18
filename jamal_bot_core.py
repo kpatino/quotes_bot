@@ -43,10 +43,6 @@ jamal_bot = commands.Bot(command_prefix=get_prefix,
                          owner_id=jamal_bot_config.user_config['OWNER_ID'])
 jamal_bot.remove_command('help')  # remove the default help command
 
-###########################################################################
-#                           jamal_bot commands                            #
-###########################################################################
-
 
 @jamal_bot.event  # jamal connection to discord api
 async def on_ready():
