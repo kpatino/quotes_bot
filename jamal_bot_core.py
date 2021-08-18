@@ -98,7 +98,8 @@ async def add(ctx, var, name, quote: str = None):
         else:
             jamal_bot_database.add_name(name)
             await ctx.send(
-                f'{ctx.message.author.mention} has added "{name}" to the database')
+                f'{ctx.message.author.mention} has added '
+                '"{name}" to the database')
 
     elif var == "quote":
         if jamal_bot_database.check_name(name) is False:
@@ -123,7 +124,8 @@ async def remove(ctx, var, name):
         else:
             jamal_bot_database.remove_name(name)
             await ctx.send(
-                f'{ctx.message.author.mention} has removed "{name}" from the database')
+                f'{ctx.message.author.mention} has removed '
+                '"{name}" from the database')
 
 
 # jamal quotes
@@ -179,12 +181,15 @@ async def help(ctx):
         value='Usage: `jamal add name <name>`\nEx. `jamal add name kevin`',
         inline=False)
     help_embed.add_field(
-        name='Add a quote to the database, needs double quotes surrounding the quote',
-        value='Usage: `jamal add quote <name> "<quote>"`\nEx. `jamal add quote kevin "quote"`',
+        name='Add a quote to the database, '
+             'needs double quotes surrounding the quote',
+        value='Usage: `jamal add quote <name> "<quote>"`'
+              '\nEx. `jamal add quote kevin "quote"`',
         inline=False)
     help_embed.add_field(
         name='Remove a name and their quotes from the database',
-        value='Usage: `jamal remove name <name>`\nEx. `jamal remove name kevin`',
+        value='Usage: `jamal remove name <name>`'
+              '\nEx. `jamal remove name kevin`',
         inline=False)
     await ctx.send(embed=help_embed)
 
