@@ -2,7 +2,7 @@ import sqlite3
 import random
 
 
-class open_db(object):
+class OpenDatabase(object):
     def __init__(self, path):
         self.path = path
 
@@ -28,13 +28,13 @@ def create_db(db_name):
                                 FOREIGN KEY('name') REFERENCES 'people'('name'),
                                 PRIMARY KEY('id' AUTOINCREMENT)
                             );"""
-    with open_db(db_name) as cursor:
+    with OpenDatabase(db_name) as cursor:
         cursor.execute(create_people_table)
         cursor.execute(create_quotes_table)
 
 
 def get_names():
-    with open_db('./jamal_bot_quotes.db') as cursor:
+    with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
             "SELECT name FROM people")
         names = [
@@ -45,18 +45,18 @@ def get_names():
 
 
 def add_name(name):
-    with open_db('./jamal_bot_quotes.db') as cursor:
+    with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute("INSERT INTO people ('name') VALUES (?)", (name,))
 
 
 def remove_name(name):
-    with open_db('./jamal_bot_quotes.db') as cursor:
+    with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute("DELETE FROM quotes WHERE name == (?);", (name,))
         cursor.execute("DELETE FROM people WHERE name == (?);", (name,))
 
 
 def check_name(name):
-    with open_db('./jamal_bot_quotes.db') as cursor:
+    with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute("SELECT count(name) FROM people WHERE name=?", (name,))
         if cursor.fetchone()[0] == 1:
             return(True)
@@ -65,20 +65,20 @@ def check_name(name):
 
 
 def get_quote(name):
-    with open_db('./jamal_bot_quotes.db') as cursor:
+    with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
             "SELECT quote FROM quotes WHERE name=? ORDER BY RANDOM() LIMIT 1", (name,))
         return(cursor.fetchone()[0])
 
 
 def add_quote(name, quote):
-    with open_db('./jamal_bot_quotes.db') as cursor:
+    with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
-            "INSERT INTO quotes ('name', 'quote') VALUES (?, ?)", (name, quote, ))
+            "INSERT INTO quotes ('name', 'quote') VALUES (?, ?)", (name, quote,))
 
 
 def random_name():
-    with open_db('./jamal_bot_quotes.db') as cursor:
+    with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
             "SELECT name FROM people")
         names = [
@@ -89,7 +89,7 @@ def random_name():
 
 
 def list_quotes(name):
-    with open_db('./jamal_bot_quotes.db') as cursor:
+    with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute("SELECT * FROM quotes WHERE name == (?);", (name,))
         items = cursor.fetchall()
         return(items)
