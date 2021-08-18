@@ -26,11 +26,12 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 
-def get_prefix(client, message):  # Function creates prefixes
-    # sets the prefixes, future regex here?
+# in summary allow users to @mention the bot and use three different cased
+# variations of "jamal " with a space
+def get_prefix(client, message):
     prefixes = ['jamal ', 'Jamal ', 'JAMAL ']
     return commands.when_mentioned_or(*prefixes)(client, message)
-    # in summary allow users to @mention the bot and use three variations of "jamal "
+
 
 # only creates the database if it doesn't exist
 jamal_bot_database.create_db('jamal_bot_quotes.db')
@@ -41,7 +42,9 @@ jamal_bot = commands.Bot(command_prefix=get_prefix,
                          owner_id=jamal_bot_config.user_config['OWNER_ID'])
 jamal_bot.remove_command('help')  # remove the default help command
 
-# jamal_bot commands
+###########################################################################
+#                           jamal_bot commands                            #
+###########################################################################
 
 
 @jamal_bot.event  # jamal connection to discord api
@@ -60,16 +63,20 @@ async def on_command_error(ctx, error):
         await ctx.send('missing required argument')
 
 
-@jamal_bot.command()  # jamal list
-@commands.guild_only()  # ignore in DMs
+# jamal list
+# ignore in DMs
+@jamal_bot.command()
+@commands.guild_only()
 async def list(ctx):
     await ctx.send(f'{jamal_bot_database.get_names()}')
 
 
-@jamal_bot.command()  # jamal access {name}
-@commands.guild_only()  # ignore in DMs
+# jamal access {name}
+# ignore in DMs
+# set name to lowercase as that's how I like setting it up in the database
+@jamal_bot.command()
+@commands.guild_only()
 async def access(ctx, name):
-    # set name to lowercase as that's how I like setting it up in the database
     name = name.lower()
     if jamal_bot_database.check_name(name) is True:
         await ctx.send(f'{jamal_bot_database.get_quote(name)}')
@@ -77,15 +84,17 @@ async def access(ctx, name):
         await ctx.send(f'"{name}" is not in the database')
 
 
-@jamal_bot.command()  # jamal add name|quote {name} "{quote}"
-@commands.guild_only()  # ignore in DMs
+# jamal add name|quote {name} "{quote}"
+# ignore in DMs
 # must have admin role in order to add quotes
+# admin role must be defined in config.yml
+@jamal_bot.command()
+@commands.guild_only()
 @commands.has_any_role(jamal_bot_config.user_config['ADMIN_ROLE_ID'])
 async def add(ctx, var, name, quote: str = None):
-    var = var.lower()  # set var to lowercase
+    var = var.lower()
 
     if var == "name":
-        # check if name is in the database
         if jamal_bot_database.check_name(name) is True:
             await ctx.send(f'"{name}" is already in the database')
         else:
@@ -93,23 +102,22 @@ async def add(ctx, var, name, quote: str = None):
             await ctx.send(f'{ctx.message.author.mention} has added "{name}" to the database')
 
     elif var == "quote":
-        # check if name is in the database
         if jamal_bot_database.check_name(name) is False:
             await ctx.send(f'"{name}" is not in the database')
         else:
-            jamal_bot_database.add_quote(name, quote)  # add_quote function
-            # mention the author and send quote with name, reports this section has run
+            jamal_bot_database.add_quote(name, quote)
             await ctx.send(f'{ctx.message.author.mention} has added "{quote}" to {name}')
 
 
-@jamal_bot.command()  # jamal add {name} "{quote}"
-@commands.guild_only()  # ignore in DMs
+# jamal add {name} "{quote}"
+# ignore in DMs
 # must have admin role in order to remove names
+@jamal_bot.command()
+@commands.guild_only()
 @commands.has_any_role(jamal_bot_config.user_config['ADMIN_ROLE_ID'])
 async def remove(ctx, var, name):
-    var = var.lower()  # set var to lowercase
+    var = var.lower()
     if var == "name":
-        # check if name is in the database
         if jamal_bot_database.check_name(name) is False:
             await ctx.send(f'"{name}" is not in the database')
         else:
@@ -117,27 +125,34 @@ async def remove(ctx, var, name):
             await ctx.send(f'{ctx.message.author.mention} has removed "{name}" from the database')
 
 
-@jamal_bot.command()  # random quote game
-@commands.guild_only()  # ignore in DMs
+# jamal quotes
+# ignores DMs
+# random quote game command
+# bot will send a random quote and it reads the next message as the guess
+# wait 3 seconds for a guess before it timeouts
+@jamal_bot.command()
+@commands.guild_only()
 async def quotes(ctx, pass_context=True):
     name = jamal_bot_database.random_name()
     await ctx.send(f'who said "{jamal_bot_database.get_quote(name)}"')
 
     try:
-        # wait 3 seconds for a guess
+
         guess = await jamal_bot.wait_for('message', timeout=6.0)
     except asyncio.TimeoutError:
-        # if no guess is provided in 3 seconds stop waiting
         return await ctx.channel.send(f'you\'re taking too long, it was {name}')
 
-    if (str(guess.content)).lower() is name:  # if guess matches namme
+    if (str(guess.content)).lower() is name:
         await ctx.channel.send('you got em')
     else:
         await ctx.channel.send(f'WRONG! it\'s {name}')
 
 
-@jamal_bot.command()  # jamal help
-@commands.guild_only()  # ignore in DMs
+# jamal help
+# ignores DMs
+# bot returns an easy to read embed explaining how to use the commands
+@jamal_bot.command()
+@commands.guild_only()
 async def help(ctx):
     help_embed = discord.Embed(colour=discord.Colour.blurple())
     help_embed.set_author(name='jamal bot help')
@@ -162,7 +177,7 @@ async def help(ctx):
     help_embed.add_field(name='Remove a name and their quotes from the database',
                          value='Usage: `jamal remove name <name>`\nEx. `jamal remove name kevin`',
                          inline=False)
-    await ctx.send(embed=help_embed)  # actually send the embed
+    await ctx.send(embed=help_embed)
 
 
 # Run jamal_bot_core
