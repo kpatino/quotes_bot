@@ -10,6 +10,8 @@ Jamal Bot is custom Discord bot with the main goal to hold quotes in a database 
 
 <https://discordpy.readthedocs.io/en/latest/intro.html>
 
+You will also need to install PyYAML, see requirements.txt
+
 ## Help
 
 To access the bot's help message send `jamal help` in a channel the bot can read and write.
