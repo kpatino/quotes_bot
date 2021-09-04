@@ -82,14 +82,14 @@ async def access(ctx, name):
         await ctx.send(f'"{name}" is not in the database')
 
 
-# jamal add name|quote {name} "{quote}"
+# jamal add name|quote {name} {*args}
 # ignore in DMs
 # must have admin role in order to add quotes
 # admin role must be defined in config.yml
 @jamal_bot.command()
 @commands.guild_only()
 @commands.has_any_role(jamal_bot_config.user_config['ADMIN_ROLE_ID'])
-async def add(ctx, var, name, quote: str = None):
+async def add(ctx, var, name, *args):
     var = var.lower()
 
     if var == "name":
@@ -105,6 +105,10 @@ async def add(ctx, var, name, quote: str = None):
         if jamal_bot_database.check_name(name) is False:
             await ctx.send(f'"{name}" is not in the database')
         else:
+            words = []
+            for arg in args:
+                words.append(arg)
+            quote = " ".join(words)
             jamal_bot_database.add_quote(name, quote)
             await ctx.send(
                 f'{ctx.message.author.mention} has added "{quote}" to {name}')
@@ -183,7 +187,7 @@ async def help(ctx):
     help_embed.add_field(
         name='Add a quote to the database, '
              'needs double quotes surrounding the quote',
-        value='Usage: `jamal add quote <name> "<quote>"`'
+        value='Usage: `jamal add quote <name> <quote>`'
               '\nEx. `jamal add quote kevin "quote"`',
         inline=False)
     help_embed.add_field(
