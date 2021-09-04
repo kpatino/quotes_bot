@@ -109,9 +109,19 @@ async def add(ctx, var, name, *args):
             for arg in args:
                 words.append(arg)
             quote = " ".join(words)
-            jamal_bot_database.add_quote(name, quote)
-            await ctx.send(
-                f'{ctx.message.author.mention} has added "{quote}" to {name}')
+
+            if quote == "":
+                await ctx.send('Quote cannot be empty, '
+                               'try `jamal help` for help')
+            else:
+                jamal_bot_database.add_quote(name, quote)
+                await ctx.send(
+                    f'{ctx.message.author.mention} has added "{quote}" '
+                    f'to {name}')
+
+    else:
+        await ctx.send(
+                f'Unknown command {var}, try `jamal help` for help')
 
 
 # jamal add {name} "{quote}"
