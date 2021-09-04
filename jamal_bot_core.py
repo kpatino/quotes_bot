@@ -195,8 +195,7 @@ async def help(ctx):
         value='Usage: `jamal add name <name>`\nEx. `jamal add name kevin`',
         inline=False)
     help_embed.add_field(
-        name='Add a quote to the database, '
-             'needs double quotes surrounding the quote',
+        name='Add a quote to the database',
         value='Usage: `jamal add quote <name> <quote>`'
               '\nEx. `jamal add quote kevin "quote"`',
         inline=False)
