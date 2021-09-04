@@ -99,7 +99,7 @@ async def add(ctx, opt, name, *args):
             jamal_bot_database.add_name(name)
             await ctx.send(
                 f'{ctx.message.author.mention} has added '
-                '"{name}" to the database')
+                f'"{name}" to the database')
 
     elif opt == "quote":
         if jamal_bot_database.check_name(name) is False:
