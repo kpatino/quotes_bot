@@ -146,7 +146,7 @@ async def quotes(ctx, pass_context=True):
         return await ctx.channel.send(
             f'you\'re taking too long, it was {name}')
 
-    if (str(guess.content)).lower() is name:
+    if (str(guess.content)).lower() == name:
         await ctx.channel.send('you got em')
     else:
         await ctx.channel.send(f'WRONG! it\'s {name}')
