@@ -197,7 +197,7 @@ async def help(ctx):
     help_embed.add_field(
         name='Add a quote to the database',
         value='Usage: `jamal add quote <name> <quote>`'
-              '\nEx. `jamal add quote kevin "quote"`',
+              '\nEx. `jamal add quote kevin she said give me armor`',
         inline=False)
     help_embed.add_field(
         name='Remove a name and their quotes from the database',
