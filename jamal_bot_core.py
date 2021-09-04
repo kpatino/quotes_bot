@@ -89,10 +89,10 @@ async def access(ctx, name):
 @jamal_bot.command()
 @commands.guild_only()
 @commands.has_any_role(jamal_bot_config.user_config['ADMIN_ROLE_ID'])
-async def add(ctx, var, name, *args):
-    var = var.lower()
+async def add(ctx, opt, name, *args):
+    opt = opt.lower()
 
-    if var == "name":
+    if opt == "name":
         if jamal_bot_database.check_name(name) is True:
             await ctx.send(f'"{name}" is already in the database')
         else:
@@ -101,7 +101,7 @@ async def add(ctx, var, name, *args):
                 f'{ctx.message.author.mention} has added '
                 '"{name}" to the database')
 
-    elif var == "quote":
+    elif opt == "quote":
         if jamal_bot_database.check_name(name) is False:
             await ctx.send(f'"{name}" is not in the database')
         else:
@@ -121,7 +121,7 @@ async def add(ctx, var, name, *args):
 
     else:
         await ctx.send(
-                f'Unknown command {var}, try `jamal help` for help')
+                f'Unknown command {opt}, try `jamal help` for help')
 
 
 # jamal add {name} "{quote}"
@@ -130,9 +130,9 @@ async def add(ctx, var, name, *args):
 @jamal_bot.command()
 @commands.guild_only()
 @commands.has_any_role(jamal_bot_config.user_config['ADMIN_ROLE_ID'])
-async def remove(ctx, var, name):
-    var = var.lower()
-    if var == "name":
+async def remove(ctx, opt, name):
+    opt = opt.lower()
+    if opt == "name":
         if jamal_bot_database.check_name(name) is False:
             await ctx.send(f'"{name}" is not in the database')
         else:
