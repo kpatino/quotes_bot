@@ -58,7 +58,7 @@ async def on_ready():
 @commands.guild_only()  # ignore in DMs
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send('missing required argument')
+        await ctx.send('Missing required argument, try `jamal help` for help')
 
 
 # jamal list
