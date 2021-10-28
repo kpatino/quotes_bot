@@ -122,10 +122,6 @@ async def add(ctx, opt, name, *args):
                     f'{ctx.message.author.mention} has added "{quote}" '
                     f'to {name}')
 
-    else:
-        await ctx.send(
-                f'Unknown command {opt}, try `jamal help` for help')
-
 
 # jamal add {name} "{quote}"
 # ignore in DMs
@@ -157,7 +153,6 @@ async def quotes(ctx, pass_context=True):
     await ctx.send(f'who said "{jamal_bot_database.get_quote(name)}"')
 
     try:
-
         guess = await jamal_bot.wait_for('message', timeout=6.0)
     except asyncio.TimeoutError:
         return await ctx.channel.send(
