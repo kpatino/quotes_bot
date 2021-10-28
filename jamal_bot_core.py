@@ -77,6 +77,9 @@ async def list(ctx):
 async def access(ctx, name):
     name = name.lower()
     if jamal_bot_database.check_name(name) is True:
+        if type(jamal_bot_database.get_quote(name)) is bool:
+            await ctx.send(f'No quotes where found for {name}')
+        else:
         await ctx.send(f'{jamal_bot_database.get_quote(name)}')
     else:
         await ctx.send(f'"{name}" is not in the database')
