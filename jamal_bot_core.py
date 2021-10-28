@@ -80,7 +80,7 @@ async def access(ctx, name):
         if type(jamal_bot_database.get_quote(name)) is bool:
             await ctx.send(f'No quotes where found for {name}')
         else:
-        await ctx.send(f'{jamal_bot_database.get_quote(name)}')
+            await ctx.send(f'{jamal_bot_database.get_quote(name)}')
     else:
         await ctx.send(f'"{name}" is not in the database')
 
