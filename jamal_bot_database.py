@@ -37,7 +37,8 @@ def create_db(db_name):
                                 'id' INTEGER NOT NULL UNIQUE,
                                 'name' TEXT NOT NULL,
                                 'quote' TEXT NOT NULL,
-                                FOREIGN KEY('name') REFERENCES 'people'('name'),
+                                FOREIGN KEY('name')
+                                REFERENCES 'people'('name'),
                                 PRIMARY KEY('id' AUTOINCREMENT)
                             );"""
     with OpenDatabase(db_name) as cursor:
@@ -104,9 +105,14 @@ def get_quote(name):
         name (str): name used to retrieve a random quote
     """
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
-        cursor.execute(
-            "SELECT quote FROM quotes WHERE name=? ORDER BY RANDOM() LIMIT 1", (name,))
-        return(cursor.fetchone()[0])
+        try:
+            cursor.execute(
+                "SELECT quote FROM quotes "
+                "WHERE name=? ORDER BY RANDOM() LIMIT 1",
+                (name,))
+            return(cursor.fetchone()[0])
+        except TypeError:
+            return(f"{name} does not have any quotes")
 
 
 def add_quote(name, quote):
@@ -118,7 +124,8 @@ def add_quote(name, quote):
     """
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
-            "INSERT INTO quotes ('name', 'quote') VALUES (?, ?)", (name, quote,))
+            "INSERT INTO quotes ('name', 'quote') VALUES (?, ?)",
+            (name, quote,))
 
 
 def random_name():

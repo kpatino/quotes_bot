@@ -41,21 +41,26 @@ jamal_bot_database.create_db('jamal_bot_quotes.db')
 jamal_bot = commands.Bot(command_prefix=get_prefix,
                          case_insensitive=True,
                          owner_id=jamal_bot_config.user_config['OWNER_ID'])
-jamal_bot.remove_command('help')  # remove the default help command
+# remove the default help command
+jamal_bot.remove_command('help')
 
 
-@jamal_bot.event  # jamal connection to discord api
+# jamal connection to discord api
+@jamal_bot.event
 async def on_ready():
     print(f'\nLogged in as: {jamal_bot.user.name} - {jamal_bot.user.id}')
     print('Discord.py Version:', discord.__version__)
     activity = discord.Game(name='Warframe')
     await jamal_bot.change_presence(status=discord.Status.online,
                                     activity=activity)
-    print('Done')  # Printing done let's pterodactyl know that it's ready
+    # Printing done let's pterodactyl know that it's ready
+    print('Done')
 
 
-@jamal_bot.event  # jamal error handling
-@commands.guild_only()  # ignore in DMs
+# jamal error handling
+# ignore in DMs
+@jamal_bot.event
+@commands.guild_only()
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send('Missing required argument, try `jamal help` for help')
@@ -77,10 +82,7 @@ async def list(ctx):
 async def access(ctx, name):
     name = name.lower()
     if jamal_bot_database.check_name(name) is True:
-        if type(jamal_bot_database.get_quote(name)) is bool:
-            await ctx.send(f'No quotes where found for {name}')
-        else:
-            await ctx.send(f'{jamal_bot_database.get_quote(name)}')
+        await ctx.send(f'{jamal_bot_database.get_quote(name)}')
     else:
         await ctx.send(f'"{name}" is not in the database')
 
