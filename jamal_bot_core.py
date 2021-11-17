@@ -13,6 +13,7 @@ import jamal_bot_config
 import jamal_bot_database
 
 from discord.ext import commands
+from mcstatus import MinecraftServer
 
 # Recommended logging in discord.py documention
 logging.basicConfig(level=logging.INFO)
@@ -164,6 +165,52 @@ async def quotes(ctx, pass_context=True):
         await ctx.channel.send('you got em')
     else:
         await ctx.channel.send(f'WRONG! it\'s {name}')
+
+
+# jamal status {server_address}
+# ignore in DMs
+@jamal_bot.command()
+@commands.guild_only()
+async def status(ctx, server_address=jamal_bot_config.user_config[
+                                         'DEFAULT_SERVER_ADDRESS']):
+    server = MinecraftServer.lookup(server_address)
+
+    try:
+        status = server.status()
+        server_latency = round(status.latency, 2)
+        status_embed = discord.Embed(
+           title=server_address,
+           description=status.version.name,
+           colour=discord.Colour.green())
+
+        status_embed.add_field(
+            name='Description',
+            value=status.description,
+            inline=False)
+        status_embed.add_field(
+            name='Count',
+            value=f'{status.players.online}/{status.players.max}',
+            inline=True)
+        try:
+            query = server.query()
+            server_players = (", ".join(query.players.names))
+            status_embed.add_field(
+                name="Players",
+                value=f'\u200b{server_players}',
+                inline=True)
+            status_embed.set_footer(
+                text=f'Ping: {server_latency} ms')
+            await ctx.send(embed=status_embed)
+
+        except Exception:
+            status_embed.set_footer(text=f'Ping: {server_latency} ms')
+            await ctx.send(embed=status_embed)
+
+    except Exception:
+        error_embed = discord.Embed(
+           title='Could not contact server',
+           colour=discord.Colour.red())
+        await ctx.send(embed=error_embed)
 
 
 # jamal help

@@ -2,6 +2,7 @@ import yaml
 
 default_config = {
     "ADMIN_ROLE_ID": 19234567890,
+    "DEFAULT_SERVER_ADDRESS": "hypixel.net",
     "DISCORD_API_KEY": "DISCORD_API_KEY_HERE",
     "OWNER_ID": 19234567890
 }
