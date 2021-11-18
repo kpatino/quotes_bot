@@ -2,8 +2,6 @@
 
 Jamal Bot is custom Discord bot with the main goal to hold quotes in a database and be able to access them through Discord. This project's main goals was to familiarize myself with SQL commands and python scripting to build an actual working product.
 
-[![GitHub Super-Linter](https://github.com/kpatino/jamal_bot/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/kpatino/jamal_bot.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/kpatino/jamal_bot/context:python)
-
 ## Quick setup
 
 ### Follow the guide to install discordpy here
