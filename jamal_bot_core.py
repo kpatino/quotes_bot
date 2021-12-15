@@ -185,7 +185,7 @@ async def status(ctx, server_address=jamal_bot_config.user_config[
 
         status_embed.add_field(
             name='Description',
-            value=status.description,
+            value=f'```{status.description}```',
             inline=False)
         status_embed.add_field(
             name='Count',
