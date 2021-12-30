@@ -286,6 +286,11 @@ async def help(ctx):
               '\nEx. `jamal add quote kevin she said give me armor`',
         inline=False)
     help_embed.add_field(
+        name='Display the status of a minecraft server',
+        value='Usage: `jamal status [address]`'
+              '\nEx. `jamal status hypixel.net`',
+        inline=False)
+    help_embed.add_field(
         name='Display the time in different regions',
         value='Usage: `jamal time`',
         inline=False)
