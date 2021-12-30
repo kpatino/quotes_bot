@@ -7,11 +7,13 @@
 
 import asyncio
 import logging
+import pytz
 
 import discord
 import jamal_bot_config
 import jamal_bot_database
 
+from datetime import datetime
 from discord.ext import commands
 
 # Recommended logging in discord.py documention
@@ -166,6 +168,43 @@ async def quotes(ctx, pass_context=True):
         await ctx.channel.send(f'WRONG! it\'s {name}')
 
 
+# jamal time
+# ignore DMs
+# bot returns an easy to read embed displaying different timezones
+@jamal_bot.command()
+@commands.guild_only()
+async def time(ctx):
+    timezone_UTC = pytz.utc
+    timezone_EL = pytz.timezone('Europe/London')
+    timezone_ET = pytz.timezone('US/Eastern')
+    timezone_CT = pytz.timezone('US/Central')
+    datetime_UTC = datetime.now(timezone_UTC)
+    datetime_EL = datetime.now(timezone_EL)
+    datetime_ET = datetime.now(timezone_ET)
+    datetime_CT = datetime.now(timezone_CT)
+
+    time_embed = discord.Embed(colour=discord.Colour.purple())
+    time_embed.set_author(name='jamal bot time')
+    time_embed.add_field(
+        name='Universal',
+        value=datetime_UTC.strftime('%b %d %I:%M %p (%H:%M)'),
+        inline=False)
+    time_embed.add_field(
+        name='Europe/London',
+        value=datetime_EL.strftime('%b %d b%I:%M %p (%H:%M)'),
+        inline=False)
+    time_embed.add_field(
+        name='US/Eastern',
+        value=datetime_ET.strftime('%b %d %I:%M %p (%H:%M)'),
+        inline=False)
+    time_embed.add_field(
+        name='US/Central',
+        value=datetime_CT.strftime('%b %d %I:%M %p (%H:%M)'),
+        inline=False)
+
+    await ctx.send(embed=time_embed)
+
+
 # jamal help
 # ignores DMs
 # bot returns an easy to read embed explaining how to use the commands
@@ -198,6 +237,10 @@ async def help(ctx):
         name='Add a quote to the database',
         value='Usage: `jamal add quote <name> <quote>`'
               '\nEx. `jamal add quote kevin she said give me armor`',
+        inline=False)
+    help_embed.add_field(
+        name='Display the time in different regions',
+        value='Usage: `jamal time`',
         inline=False)
     help_embed.add_field(
         name='Remove a name and their quotes from the database',
