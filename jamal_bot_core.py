@@ -238,7 +238,7 @@ async def time(ctx):
         inline=False)
     time_embed.add_field(
         name='Europe/London',
-        value=datetime_EL.strftime('%b %d b%I:%M %p (%H:%M)'),
+        value=datetime_EL.strftime('%b %d %I:%M %p (%H:%M)'),
         inline=False)
     time_embed.add_field(
         name='US/Eastern',
