@@ -99,6 +99,7 @@ async def access(ctx, name):
 @commands.has_any_role(jamal_bot_config.user_config['ADMIN_ROLE_ID'])
 async def add(ctx, opt, name, *args):
     opt = opt.lower()
+    name = name.lower()
 
     if opt == "name":
         if jamal_bot_database.check_name(name) is True:
@@ -136,6 +137,8 @@ async def add(ctx, opt, name, *args):
 @commands.has_any_role(jamal_bot_config.user_config['ADMIN_ROLE_ID'])
 async def remove(ctx, opt, name):
     opt = opt.lower()
+    name = name.lower()
+    
     if opt == "name":
         if jamal_bot_database.check_name(name) is False:
             await ctx.send(f'"{name}" is not in the database')
