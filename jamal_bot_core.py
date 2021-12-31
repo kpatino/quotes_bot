@@ -228,10 +228,12 @@ async def time(ctx):
     timezone_EL = pytz.timezone('Europe/London')
     timezone_ET = pytz.timezone('US/Eastern')
     timezone_CT = pytz.timezone('US/Central')
+    timezone_PT = pytz.timezone('US/Pacific')
     datetime_UTC = datetime.now(timezone_UTC)
     datetime_EL = datetime.now(timezone_EL)
     datetime_ET = datetime.now(timezone_ET)
     datetime_CT = datetime.now(timezone_CT)
+    datetime_PT = datetime.now(timezone_PT)
 
     time_embed = discord.Embed(colour=discord.Colour.purple())
     time_embed.set_author(name='jamal bot time')
@@ -250,6 +252,10 @@ async def time(ctx):
     time_embed.add_field(
         name='US/Central',
         value=datetime_CT.strftime('%b %d %I:%M %p (%H:%M)'),
+        inline=False)
+    time_embed.add_field(
+        name='US/Pacific',
+        value=datetime_PT.strftime('%b %d %I:%M %p (%H:%M)'),
         inline=False)
 
     await ctx.send(embed=time_embed)
