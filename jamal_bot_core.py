@@ -126,6 +126,8 @@ async def add(ctx, opt, name, *args):
                 await ctx.send(
                     f'{ctx.message.author.mention} has added "{quote}" '
                     f'to {name}')
+    else:
+        raise discord.ext.commands.MissingRequiredArgument
 
 
 # jamal remove {name}
@@ -136,7 +138,7 @@ async def add(ctx, opt, name, *args):
 async def remove(ctx, opt, name):
     opt = opt.lower()
     name = name.lower()
-    
+
     if opt == "name":
         if jamal_bot_database.check_name(name) is False:
             await ctx.send(f'"{name}" is not in the database')
@@ -145,6 +147,8 @@ async def remove(ctx, opt, name):
             await ctx.send(
                 f'{ctx.message.author.mention} has removed '
                 '"{name}" from the database')
+    else:
+        raise discord.ext.commands.MissingRequiredArgument
 
 
 # jamal quotes
@@ -287,6 +291,11 @@ async def help(ctx):
               '\nEx. `jamal add quote kevin she said give me armor`',
         inline=False)
     help_embed.add_field(
+        name='Remove a name and their quotes from the database',
+        value='Usage: `jamal remove name <name>`'
+              '\nEx. `jamal remove name kevin`',
+        inline=False)
+    help_embed.add_field(
         name='Display the status of a minecraft server',
         value='Usage: `jamal status [address]`'
               '\nEx. `jamal status hypixel.net`',
@@ -294,11 +303,6 @@ async def help(ctx):
     help_embed.add_field(
         name='Display the time in different regions',
         value='Usage: `jamal time`',
-        inline=False)
-    help_embed.add_field(
-        name='Remove a name and their quotes from the database',
-        value='Usage: `jamal remove name <name>`'
-              '\nEx. `jamal remove name kevin`',
         inline=False)
     await ctx.send(embed=help_embed)
 
