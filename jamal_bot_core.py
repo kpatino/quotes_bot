@@ -60,10 +60,14 @@ async def on_ready():
     print('Done')
 
 
-# jamal error handling
 # ignore in DMs
+@jamal_bot.check
+async def globally_block_dms(ctx):
+    return ctx.guild is not None
+
+
+# jamal error handling
 @jamal_bot.event
-@commands.guild_only()
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send('Missing required argument, try `jamal help` for help')
@@ -72,16 +76,13 @@ async def on_command_error(ctx, error):
 # jamal list
 # ignore in DMs
 @jamal_bot.command()
-@commands.guild_only()
 async def list(ctx):
     await ctx.send(f'{jamal_bot_database.get_names()}')
 
 
 # jamal access {name}
-# ignore in DMs
 # set name to lowercase as that's how I like setting it up in the database
 @jamal_bot.command()
-@commands.guild_only()
 async def access(ctx, name):
     name = name.lower()
     if jamal_bot_database.check_name(name) is True:
@@ -91,11 +92,9 @@ async def access(ctx, name):
 
 
 # jamal add name|quote {name} {*args}
-# ignore in DMs
 # must have admin role in order to add quotes
 # admin role must be defined in config.yml
 @jamal_bot.command()
-@commands.guild_only()
 @commands.has_any_role(jamal_bot_config.user_config['ADMIN_ROLE_ID'])
 async def add(ctx, opt, name, *args):
     opt = opt.lower()
@@ -133,7 +132,6 @@ async def add(ctx, opt, name, *args):
 # ignore in DMs
 # must have admin role in order to remove names
 @jamal_bot.command()
-@commands.guild_only()
 @commands.has_any_role(jamal_bot_config.user_config['ADMIN_ROLE_ID'])
 async def remove(ctx, opt, name):
     opt = opt.lower()
@@ -150,12 +148,10 @@ async def remove(ctx, opt, name):
 
 
 # jamal quotes
-# ignores DMs
 # random quote game command
 # bot will send a random quote and it reads the next message as the guess
 # wait 3 seconds for a guess before it timeouts
 @jamal_bot.command()
-@commands.guild_only()
 async def quotes(ctx, pass_context=True):
     name = jamal_bot_database.random_name()
     await ctx.send(f'who said "{jamal_bot_database.get_quote(name)}"')
@@ -175,7 +171,6 @@ async def quotes(ctx, pass_context=True):
 # jamal status {server_address}
 # ignore in DMs
 @jamal_bot.command()
-@commands.guild_only()
 async def status(ctx, server_address=jamal_bot_config.user_config[
                                          'DEFAULT_SERVER_ADDRESS']):
     server = MinecraftServer.lookup(server_address)
@@ -219,10 +214,8 @@ async def status(ctx, server_address=jamal_bot_config.user_config[
 
 
 # jamal time
-# ignore DMs
 # bot returns an easy to read embed displaying different timezones
 @jamal_bot.command()
-@commands.guild_only()
 async def time(ctx):
     timezone_UTC = pytz.utc
     timezone_EL = pytz.timezone('Europe/London')
@@ -262,10 +255,8 @@ async def time(ctx):
 
 
 # jamal help
-# ignores DMs
 # bot returns an easy to read embed explaining how to use the commands
 @jamal_bot.command()
-@commands.guild_only()
 async def help(ctx):
     help_embed = discord.Embed(colour=discord.Colour.blurple())
     help_embed.set_author(name='jamal bot help')
