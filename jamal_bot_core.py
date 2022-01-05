@@ -128,7 +128,7 @@ async def add(ctx, opt, name, *args):
                     f'to {name}')
 
 
-# jamal add {name} "{quote}"
+# jamal remove {name}
 # ignore in DMs
 # must have admin role in order to remove names
 @jamal_bot.command()
@@ -169,6 +169,7 @@ async def quotes(ctx, pass_context=True):
 
 
 # jamal status {server_address}
+# {server_address} is optional
 # ignore in DMs
 @jamal_bot.command()
 async def status(ctx, server_address=jamal_bot_config.user_config[
