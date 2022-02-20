@@ -23,10 +23,8 @@ logging.basicConfig(level=logging.INFO)
 # log to jamal_bot.log
 logger = logging.getLogger('discord')
 logger.setLevel(logging.INFO)
-handler = logging.FileHandler(
-    filename='jamal_bot.log', encoding='utf-8', mode='w')
-handler.setFormatter(
-    logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+handler = logging.FileHandler(filename='jamal_bot.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
 
@@ -106,8 +104,7 @@ async def add(ctx, opt, name, *args):
         else:
             jamal_bot_database.add_name(name)
             await ctx.send(
-                f'{ctx.message.author.mention} has added '
-                f'"{name}" to the database')
+                f'{ctx.message.author.mention} has added "{name}" to the database')
 
     elif opt == "quote":
         if jamal_bot_database.check_name(name) is False:
@@ -119,13 +116,11 @@ async def add(ctx, opt, name, *args):
             quote = " ".join(words)
 
             if quote == "":
-                await ctx.send('Quote cannot be empty, '
-                               'try `jamal help` for help')
+                await ctx.send('Quote cannot be empty, try `jamal help` for help')
             else:
                 jamal_bot_database.add_quote(name, quote)
                 await ctx.send(
-                    f'{ctx.message.author.mention} has added "{quote}" '
-                    f'to {name}')
+                    f'{ctx.message.author.mention} has added "{quote}" to {name}')
     else:
         raise discord.ext.commands.MissingRequiredArgument
 
@@ -201,6 +196,7 @@ async def status(ctx, server_address=jamal_bot_config.user_config[
             server_players = (", ".join(query.players.names))
             status_embed.add_field(
                 name="Players",
+                # Unicode blank prevents an empty "value"
                 value=f'\u200b{server_players}',
                 inline=True)
             status_embed.set_footer(
@@ -308,5 +304,6 @@ async def help(ctx):
 
 
 # Run jamal_bot_core
-jamal_bot.run(jamal_bot_config.user_config['DISCORD_API_KEY'], bot=True,
+jamal_bot.run(jamal_bot_config.user_config['DISCORD_API_KEY'],
+              bot=True,
               reconnect=True)
