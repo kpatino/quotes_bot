@@ -18,7 +18,7 @@ from discord.ext import commands
 from mcstatus import MinecraftServer
 
 # Recommended logging in discord.py documention
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(name)s: %(message)s')
 
 # log to jamal_bot.log
 logger = logging.getLogger('discord')
