@@ -84,12 +84,11 @@ async def list(ctx):
 
 
 @jamal_bot.command()
-async def access(ctx, name):
-    name = name.lower()
-    if jamal_bot_database.check_name(name) is True:
-        await ctx.send(f'{jamal_bot_database.get_quote(name)}')
+async def access(ctx, input_name: str):
+    if jamal_bot_database.check_name(input_name.lower()) is True:
+        await ctx.send(f'{jamal_bot_database.get_quote(input_name.lower())}')
     else:
-        await ctx.send(f'"{name}" is not in the database')
+        await ctx.send(f'"{input_name.lower()}" is not in the database')
 
 
 # must have admin role in order to add quotes
