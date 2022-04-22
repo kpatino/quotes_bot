@@ -139,7 +139,4 @@ cython_debug/
 
 # Jamal specific files
 *.log
-config.yaml
-config.yml
 jamal_bot_quotes.db
-database_connection_testing.py

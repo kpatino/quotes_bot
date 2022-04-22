@@ -1,4 +1,4 @@
 discord.py
-pytz
-PyYAML
 mcstatus
+python-dotenv
+pytz

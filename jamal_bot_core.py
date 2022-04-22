@@ -7,15 +7,19 @@
 
 import asyncio
 import logging
-import pytz
+import os
+from datetime import datetime
 
 import discord
-import jamal_bot_config
+import pytz
+from discord.ext import commands
+from dotenv import load_dotenv
+from mcstatus import MinecraftServer
+
 import jamal_bot_database
 
-from datetime import datetime
-from discord.ext import commands
-from mcstatus import MinecraftServer
+# load environment variables from .env
+load_dotenv()
 
 # Recommended logging in discord.py documention
 logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(name)s: %(message)s')
@@ -41,7 +45,7 @@ jamal_bot_database.create_db('jamal_bot_quotes.db')
 # requires jamal with a space in order to register
 jamal_bot = commands.Bot(command_prefix=get_prefix,
                          case_insensitive=True,
-                         owner_id=jamal_bot_config.user_config['OWNER_ID'])
+                         )
 # remove the default help command
 jamal_bot.remove_command('help')
 
@@ -93,7 +97,7 @@ async def access(ctx, name):
 # must have admin role in order to add quotes
 # admin role must be defined in config.yml
 @jamal_bot.command()
-@commands.has_any_role(jamal_bot_config.user_config['ADMIN_ROLE_ID'])
+@commands.has_any_role(os.getenv('ADMIN_ROLE_ID'))
 async def add(ctx, opt, name, *args):
     opt = opt.lower()
     name = name.lower()
@@ -129,7 +133,7 @@ async def add(ctx, opt, name, *args):
 # ignore in DMs
 # must have admin role in order to remove names
 @jamal_bot.command()
-@commands.has_any_role(jamal_bot_config.user_config['ADMIN_ROLE_ID'])
+@commands.has_any_role(os.getenv('ADMIN_ROLE_ID'))
 async def remove(ctx, opt, name):
     opt = opt.lower()
     name = name.lower()
@@ -171,8 +175,10 @@ async def quotes(ctx, pass_context=True):
 # {server_address} is optional
 # ignore in DMs
 @jamal_bot.command()
-async def status(ctx, server_address=jamal_bot_config.user_config[
-                                         'DEFAULT_SERVER_ADDRESS']):
+async def status(
+    ctx,
+    server_address=os.getenv('DEFAULT_SERVER_ADDRESS')
+):
     server = MinecraftServer.lookup(server_address)
 
     try:
@@ -304,6 +310,6 @@ async def help(ctx):
 
 
 # Run jamal_bot_core
-jamal_bot.run(jamal_bot_config.user_config['DISCORD_API_KEY'],
+jamal_bot.run(os.getenv('DISCORD_API_KEY'),
               bot=True,
               reconnect=True)
