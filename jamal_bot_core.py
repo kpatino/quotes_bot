@@ -78,14 +78,11 @@ async def on_command_error(ctx, error):
         await ctx.send('Missing required argument, try `jamal help` for help')
 
 
-# jamal list
 @jamal_bot.command()
 async def list(ctx):
     await ctx.send(f'{jamal_bot_database.get_names()}')
 
 
-# jamal access {name}
-# set name to lowercase as that's how I like setting it up in the database
 @jamal_bot.command()
 async def access(ctx, name):
     name = name.lower()
@@ -95,9 +92,8 @@ async def access(ctx, name):
         await ctx.send(f'"{name}" is not in the database')
 
 
-# jamal add name|quote {name} {*args}
 # must have admin role in order to add quotes
-# admin role must be defined in config.yml
+# admin role must be defined in .env
 @jamal_bot.command()
 @commands.has_any_role(os.getenv('ADMIN_ROLE_ID'))
 async def add(ctx, opt, name, *args):
@@ -131,8 +127,6 @@ async def add(ctx, opt, name, *args):
         raise discord.ext.commands.MissingRequiredArgument
 
 
-# jamal remove {name}
-# ignore in DMs
 # must have admin role in order to remove names
 @jamal_bot.command()
 @commands.has_any_role(os.getenv('ADMIN_ROLE_ID'))
@@ -152,7 +146,6 @@ async def remove(ctx, opt, name):
         raise discord.ext.commands.MissingRequiredArgument
 
 
-# jamal quotes
 # random quote game command
 # bot will send a random quote and it reads the next message as the guess
 # wait 3 seconds for a guess before it timeouts
@@ -173,7 +166,6 @@ async def quotes(ctx, pass_context=True):
         await ctx.channel.send(f'WRONG! it\'s {name}')
 
 
-# jamal status {server_address}
 # {server_address} is optional
 @jamal_bot.command()
 async def status(
@@ -221,8 +213,6 @@ async def status(
         await ctx.send(embed=error_embed)
 
 
-# jamal time
-# bot returns an easy to read embed displaying different timezones
 @jamal_bot.command()
 async def time(ctx):
     timezone_UTC = pytz.utc
@@ -262,8 +252,6 @@ async def time(ctx):
     await ctx.send(embed=time_embed)
 
 
-# jamal help
-# bot returns an easy to read embed explaining how to use the commands
 @jamal_bot.command()
 async def help(ctx):
     help_embed = discord.Embed(colour=discord.Colour.blurple())
