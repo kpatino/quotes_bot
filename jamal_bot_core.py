@@ -21,16 +21,17 @@ import jamal_bot_database
 # load environment variables from .env
 load_dotenv()
 
-# Recommended logging in discord.py documention
+# logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(name)s: %(message)s')
-
-# log to jamal_bot.log
 logfilename = 'jamal_bot_' + str(datetime.now().strftime('%Y_%m_%d_%H_%M_%S')) + '.log'
 logger = logging.getLogger('discord')
 logger.setLevel(logging.INFO)
 handler = logging.FileHandler(filename=logfilename, encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
+
+# only creates the database if it doesn't exist
+jamal_bot_database.create_db('jamal_bot_quotes.db')
 
 
 # in summary allow users to @mention the bot and use three different cased
@@ -77,7 +78,6 @@ async def on_command_error(ctx, error):
 
 
 # jamal list
-# ignore in DMs
 @jamal_bot.command()
 async def list(ctx):
     await ctx.send(f'{jamal_bot_database.get_names()}')
@@ -174,7 +174,6 @@ async def quotes(ctx, pass_context=True):
 
 # jamal status {server_address}
 # {server_address} is optional
-# ignore in DMs
 @jamal_bot.command()
 async def status(
     ctx,
