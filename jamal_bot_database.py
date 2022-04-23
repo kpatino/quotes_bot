@@ -103,6 +103,7 @@ def get_quote(name):
     Retrieves random quote from the database by name in the table quotes.
     If no quotes are are found return a message informing there are no
     quotes under the name.
+
     Args:
         name (str): name used to retrieve a random quote
     """
@@ -120,6 +121,7 @@ def get_quote(name):
 def add_quote(name, quote):
     """
     Add quote to the bot's database using string variables name and quote
+
     Args:
         name (str): name used for database entry
         quote (str): quote used for database entry
