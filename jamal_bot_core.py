@@ -18,25 +18,30 @@ from mcstatus import JavaServer
 
 import jamal_bot_database
 
-# load environment variables from .env
+# Load environment variables from .env
 load_dotenv()
 
-# logging configuration
-logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(name)s: %(message)s')
-logfilename = 'jamal_bot_' + str(datetime.now().strftime('%Y_%m_%d_%H_%M_%S')) + '.log'
+# Logging configuration
+logfilename = (
+    'jamal_bot_' + str(datetime.now().strftime('%Y_%m_%d_%H_%M_%S')) + '.log')
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s:%(levelname)s:%(name)s: %(message)s')
 logger = logging.getLogger('disnake')
 logger.setLevel(logging.INFO)
-handler = logging.FileHandler(filename=logfilename, encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+handler = logging.FileHandler(
+    filename=logfilename, encoding='utf-8', mode='w')
+handler.setFormatter(
+    logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-# only creates the database if it doesn't exist
+# Only creates the database if it doesn't exist
 jamal_bot_database.create_db('jamal_bot_quotes.db')
 
 
-# in summary allow users to @mention the bot and use three different cased
+# Allow users to @mention the bot and use three different cased
 # variations of "jamal " with a space
-# will no longer be needed after switching to slash commands
+# Will no longer be needed after switching to slash commands
 def get_prefix(client, message):
     prefixes = ['jamal ', 'Jamal ', 'JAMAL ']
     return commands.when_mentioned_or(*prefixes)(client, message)
@@ -45,7 +50,7 @@ def get_prefix(client, message):
 intents = disnake.Intents.default()
 intents.guild_messages = True
 
-# requires jamal with a space in order to register
+# Requires jamal with a space in order to register
 jamal_bot = commands.Bot(
     command_prefix=get_prefix,
     intents=intents,
@@ -60,18 +65,18 @@ async def on_ready():
     await jamal_bot.change_presence(
         status=disnake.Status.online,
         activity=activity)
-    # Printing done let's pterodactyl know that it's ready
+    # Printing done let's Pterodactyl know that it's ready
     print('Done')
 
 
-# ignore in DMs
+# Ignore in DMs
 @jamal_bot.check
 async def globally_block_dms(ctx):
     return ctx.guild is not None
 
 
-# jamal error handling
-# does not work for subcommands
+# Error handling
+# Does not work for subcommands
 @jamal_bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
@@ -158,8 +163,7 @@ async def quotes(ctx):
     try:
         guess = await jamal_bot.wait_for('message', timeout=6.0)
     except asyncio.TimeoutError:
-        return await ctx.channel.send(
-            f'TOOK TO LONG it was {name}')
+        return await ctx.channel.send(f'TOOK TO LONG it was {name}')
 
     if (str(guess.content)).lower() == name:
         await ctx.channel.send(f'You got em <@{guess.author.id}>')
@@ -188,6 +192,7 @@ async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
             name='Count',
             value=f'{status.players.online}/{status.players.max}',
             inline=True)
+
         try:
             query = await server.async_query()
             server_players = (", ".join(query.players.names))
