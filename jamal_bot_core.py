@@ -169,10 +169,7 @@ async def quotes(ctx, pass_context=True):
 
 # {server_address} is optional
 @jamal_bot.command()
-async def status(
-    ctx,
-    server_address=os.getenv('DEFAULT_SERVER_ADDRESS')
-):
+async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
     server = MinecraftServer.lookup(server_address)
 
     try:
