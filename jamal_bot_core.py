@@ -173,7 +173,7 @@ async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
     server = JavaServer.lookup(server_address)
 
     try:
-        status = server.status()
+        status = await server.async_status()
         server_latency = round(status.latency, 2)
         status_embed = disnake.Embed(
            title=server_address,
@@ -189,7 +189,7 @@ async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
             value=f'{status.players.online}/{status.players.max}',
             inline=True)
         try:
-            query = server.query()
+            query = await server.async_query()
             server_players = (", ".join(query.players.names))
             status_embed.add_field(
                 name="Players",
