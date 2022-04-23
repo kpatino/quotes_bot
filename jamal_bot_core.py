@@ -102,7 +102,9 @@ async def add(ctx):
 @add.command(
     name='name',
     description='Add a "name" to the database')
-@commands.has_any_role(int(os.getenv('ADMIN_ROLE_ID')), int(os.getenv('MOD_ROLE_ID')))
+@commands.has_any_role(
+    int(os.getenv('ADMIN_ROLE_ID')),
+    int(os.getenv('MOD_ROLE_ID')))
 async def add_name(ctx, input_name: str):
     if jamal_bot_database.check_name(input_name) is True:
         await ctx.send(f'"{input_name.lower()}" is already in the database')
@@ -114,7 +116,9 @@ async def add_name(ctx, input_name: str):
 @add.command(
     name='quote',
     description='Add a quote to the database.')
-@commands.has_any_role(int(os.getenv('ADMIN_ROLE_ID')), int(os.getenv('MOD_ROLE_ID')))
+@commands.has_any_role(
+    int(os.getenv('ADMIN_ROLE_ID')),
+    int(os.getenv('MOD_ROLE_ID')))
 async def add_quote(ctx, input_name: str, *, arg):
     if jamal_bot_database.check_name(input_name.lower()) is False:
         await ctx.send(f'"{input_name.lower()}" is not in the database')
