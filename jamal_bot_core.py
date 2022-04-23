@@ -95,37 +95,33 @@ async def access(ctx, input_name: str):
 
 # must have admin role in order to add quotes
 # admin role must be defined in .env
-@jamal_bot.command()
-@commands.has_any_role(os.getenv('ADMIN_ROLE_ID'))
-async def add(ctx, opt, name, *args):
-    opt = opt.lower()
-    name = name.lower()
-
-    if opt == "name":
-        if jamal_bot_database.check_name(name) is True:
-            await ctx.send(f'"{name}" is already in the database')
-        else:
-            jamal_bot_database.add_name(name)
-            await ctx.send(
-                f'{ctx.message.author.mention} has added "{name}" to the database')
-
-    elif opt == "quote":
-        if jamal_bot_database.check_name(name) is False:
-            await ctx.send(f'"{name}" is not in the database')
-        else:
-            words = []
-            for arg in args:
-                words.append(arg)
-            quote = " ".join(words)
-
-            if quote == "":
-                await ctx.send('Quote cannot be empty, try `jamal help` for help')
-            else:
-                jamal_bot_database.add_quote(name, quote)
-                await ctx.send(
-                    f'{ctx.message.author.mention} has added "{quote}" to {name}')
-    else:
+@jamal_bot.group()
+async def add(ctx):
+    if ctx.invoked_subcommand is None:
         raise discord.ext.commands.MissingRequiredArgument
+
+
+@add.command()
+@commands.has_any_role(int(os.getenv('ADMIN_ROLE_ID')), int(os.getenv('MOD_ROLE_ID')))
+async def name(ctx, input_name: str):
+    if jamal_bot_database.check_name(input_name) is True:
+        await ctx.send(f'"{input_name.lower()}" is already in the database')
+    else:
+        jamal_bot_database.add_name(input_name.lower())
+        await ctx.send(f'{ctx.message.author.mention} has added "{input_name.lower()}" to the database')
+
+
+@add.command()
+@commands.has_any_role(int(os.getenv('ADMIN_ROLE_ID')), int(os.getenv('MOD_ROLE_ID')))
+async def quote(ctx, input_name: str, *, arg):
+    if jamal_bot_database.check_name(input_name.lower()) is False:
+        await ctx.send(f'"{input_name.lower()}" is not in the database')
+    else:
+        if arg == "":
+            await ctx.send('Quote cannot be empty, try `jamal help` for help')
+        else:
+            jamal_bot_database.add_quote(input_name.lower(), arg)
+            await ctx.send(f'{ctx.message.author.mention} has added "{arg}" to {input_name.lower()}')
 
 
 # must have admin role in order to remove names
