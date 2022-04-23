@@ -79,12 +79,12 @@ async def on_command_error(ctx, error):
         await ctx.send('Missing required role')
 
 
-@jamal_bot.command()
+@jamal_bot.command(description='List names available from the database')
 async def list(ctx):
     await ctx.send(jamal_bot_database.get_names())
 
 
-@jamal_bot.command()
+@jamal_bot.command(description='Access a random quote from somebody')
 async def access(ctx, input_name: str):
     if jamal_bot_database.check_name(input_name.lower()) is True:
         await ctx.send(f'{jamal_bot_database.get_quote(input_name.lower())}')
@@ -92,17 +92,17 @@ async def access(ctx, input_name: str):
         await ctx.send(f'"{input_name.lower()}" is not in the database')
 
 
-# must have admin role in order to add quotes
-# admin role must be defined in .env
-@jamal_bot.group()
+@jamal_bot.group(name='add', description='Add a name or quote to the database')
 async def add(ctx):
     if ctx.invoked_subcommand is None:
         raise discord.ext.commands.MissingRequiredArgument
 
 
-@add.command()
+@add.command(
+    name='name',
+    description='Add a "name" to the database')
 @commands.has_any_role(int(os.getenv('ADMIN_ROLE_ID')), int(os.getenv('MOD_ROLE_ID')))
-async def name(ctx, input_name: str):
+async def add_name(ctx, input_name: str):
     if jamal_bot_database.check_name(input_name) is True:
         await ctx.send(f'"{input_name.lower()}" is already in the database')
     else:
@@ -110,9 +110,11 @@ async def name(ctx, input_name: str):
         await ctx.send(f'{ctx.message.author.mention} has added "{input_name.lower()}" to the database')
 
 
-@add.command()
+@add.command(
+    name='quote',
+    description='Add a quote to the database.')
 @commands.has_any_role(int(os.getenv('ADMIN_ROLE_ID')), int(os.getenv('MOD_ROLE_ID')))
-async def quote(ctx, input_name: str, *, arg):
+async def add_quote(ctx, input_name: str, *, arg):
     if jamal_bot_database.check_name(input_name.lower()) is False:
         await ctx.send(f'"{input_name.lower()}" is not in the database')
     else:
@@ -123,15 +125,19 @@ async def quote(ctx, input_name: str, *, arg):
             await ctx.send(f'{ctx.message.author.mention} has added "{arg}" to {input_name.lower()}')
 
 
-@jamal_bot.group()
+@jamal_bot.group(description='Remove a name and their quotes from the database')
 async def remove(ctx):
     if ctx.invoked_subcommand is None:
         raise discord.ext.commands.MissingRequiredArgument
 
 
-@remove.command()
-@commands.has_any_role(int(os.getenv('ADMIN_ROLE_ID')), int(os.getenv('MOD_ROLE_ID')))
-async def name(ctx, input_name: str):
+@remove.command(
+    name='name',
+    description='Remove a name and their quotes from the database')
+@commands.has_any_role(
+    int(os.getenv('ADMIN_ROLE_ID')),
+    int(os.getenv('MOD_ROLE_ID')))
+async def rm_name(ctx, input_name: str):
     if jamal_bot_database.check_name(input_name.lower()) is False:
         await ctx.send(f'"{input_name.lower()}" is not in the database')
     else:
@@ -139,11 +145,8 @@ async def name(ctx, input_name: str):
         await ctx.send(f'{ctx.message.author.mention} has removed "{input_name.lower()}" from the database')
 
 
-# random quote game command
-# bot will send a random quote and it reads the next message as the guess
-# wait 3 seconds for a guess before it timeouts
-@jamal_bot.command()
-async def quotes(ctx, pass_context=True):
+@jamal_bot.command(description='Get a random quote and guess who said it')
+async def quotes(ctx):
     name = jamal_bot_database.random_name()
     await ctx.send(f'who said "{jamal_bot_database.get_quote(name)}"')
 
@@ -160,7 +163,7 @@ async def quotes(ctx, pass_context=True):
 
 
 # {server_address} is optional
-@jamal_bot.command()
+@jamal_bot.command(description='Get the status of a Minecraft server.')
 async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
     server = MinecraftServer.lookup(server_address)
 
@@ -203,7 +206,7 @@ async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
         await ctx.send(embed=error_embed)
 
 
-@jamal_bot.command()
+@jamal_bot.command(description='Get the current time in different timezones')
 async def time(ctx):
     timezone_UTC = pytz.utc
     timezone_EL = pytz.timezone('Europe/London')
@@ -242,51 +245,4 @@ async def time(ctx):
     await ctx.send(embed=time_embed)
 
 
-@jamal_bot.command()
-async def help(ctx):
-    help_embed = discord.Embed(colour=discord.Colour.blurple())
-    help_embed.set_author(name='jamal bot help')
-    help_embed.add_field(
-        name='Display this help message',
-        value='Usage: `jamal help`',
-        inline=False)
-    help_embed.add_field(
-        name='Display all available names in the database',
-        value='Usage: `jamal list`',
-        inline=False)
-    help_embed.add_field(
-        name='Send a random quote and guess who said it',
-        value='Usage: `jamal quotes`',
-        inline=False)
-    help_embed.add_field(
-        name='Send a random quote from someone',
-        value='Usage: `jamal access <name>`\nEx. `jamal access kevin`',
-        inline=False)
-    help_embed.add_field(
-        name='Add a name to the database',
-        value='Usage: `jamal add name <name>`\nEx. `jamal add name kevin`',
-        inline=False)
-    help_embed.add_field(
-        name='Add a quote to the database',
-        value='Usage: `jamal add quote <name> <quote>`'
-              '\nEx. `jamal add quote kevin she said give me armor`',
-        inline=False)
-    help_embed.add_field(
-        name='Remove a name and their quotes from the database',
-        value='Usage: `jamal remove name <name>`'
-              '\nEx. `jamal remove name kevin`',
-        inline=False)
-    help_embed.add_field(
-        name='Display the status of a minecraft server',
-        value='Usage: `jamal status [address]`'
-              '\nEx. `jamal status hypixel.net`',
-        inline=False)
-    help_embed.add_field(
-        name='Display the time in different regions',
-        value='Usage: `jamal time`',
-        inline=False)
-    await ctx.send(embed=help_embed)
-
-
-# Run jamal_bot_core
 jamal_bot.run(os.getenv('DISCORD_API_KEY'), bot=True, reconnect=True)
