@@ -16,7 +16,7 @@ source .venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
 
-### Configuation
+### Configuration
 
 ```sh
 # copy over default .env and configure
