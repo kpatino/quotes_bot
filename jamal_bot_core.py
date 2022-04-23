@@ -124,23 +124,20 @@ async def quote(ctx, input_name: str, *, arg):
             await ctx.send(f'{ctx.message.author.mention} has added "{arg}" to {input_name.lower()}')
 
 
-# must have admin role in order to remove names
-@jamal_bot.command()
-@commands.has_any_role(os.getenv('ADMIN_ROLE_ID'))
-async def remove(ctx, opt, name):
-    opt = opt.lower()
-    name = name.lower()
-
-    if opt == "name":
-        if jamal_bot_database.check_name(name) is False:
-            await ctx.send(f'"{name}" is not in the database')
-        else:
-            jamal_bot_database.remove_name(name)
-            await ctx.send(
-                f'{ctx.message.author.mention} has removed '
-                '"{name}" from the database')
-    else:
+@jamal_bot.group()
+async def remove(ctx):
+    if ctx.invoked_subcommand is None:
         raise discord.ext.commands.MissingRequiredArgument
+
+
+@remove.command()
+@commands.has_any_role(int(os.getenv('ADMIN_ROLE_ID')), int(os.getenv('MOD_ROLE_ID')))
+async def name(ctx, input_name: str):
+    if jamal_bot_database.check_name(input_name.lower()) is False:
+        await ctx.send(f'"{input_name.lower()}" is not in the database')
+    else:
+        jamal_bot_database.remove_name(input_name.lower())
+        await ctx.send(f'{ctx.message.author.mention} has removed "{input_name.lower()}" from the database')
 
 
 # random quote game command
