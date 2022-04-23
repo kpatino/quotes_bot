@@ -127,7 +127,7 @@ async def add_quote(ctx, input_name: str, *, arg):
             await ctx.send('Quote cannot be empty, try `jamal help` for help')
         else:
             jamal_bot_database.add_quote(input_name.lower(), arg)
-            await ctx.send(f'{ctx.message.author.mention} has added "{arg}" to {input_name.lower()}')
+            await ctx.send(f'Added “{arg}” to {input_name.lower()}')
 
 
 @jamal_bot.group(description='Remove a name and their quotes from the database')
@@ -147,24 +147,24 @@ async def rm_name(ctx, input_name: str):
         await ctx.send(f'"{input_name.lower()}" is not in the database')
     else:
         jamal_bot_database.remove_name(input_name.lower())
-        await ctx.send(f'{ctx.message.author.mention} has removed "{input_name.lower()}" from the database')
+        await ctx.send(f'Removed "{input_name.lower()}" from the database')
 
 
 @jamal_bot.command(description='Get a random quote and guess who said it')
 async def quotes(ctx):
     name = jamal_bot_database.random_name()
-    await ctx.send(f'who said "{jamal_bot_database.get_quote(name)}"')
+    await ctx.send(f'Who said “{jamal_bot_database.get_quote(name)}”')
 
     try:
         guess = await jamal_bot.wait_for('message', timeout=6.0)
     except asyncio.TimeoutError:
         return await ctx.channel.send(
-            f'you\'re taking too long, it was {name}')
+            f'TOOK TO LONG it was {name}')
 
     if (str(guess.content)).lower() == name:
-        await ctx.channel.send('you got em')
+        await ctx.channel.send(f'You got em <@{guess.author.id}>')
     else:
-        await ctx.channel.send(f'WRONG! it\'s {name}')
+        await ctx.channel.send(f'<@{guess.author.id}> YOU\'RE WRONG‼ IT WAS {name.upper()}‼')
 
 
 # {server_address} is optional
