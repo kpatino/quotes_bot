@@ -1,4 +1,4 @@
-discord.py
+disnake
 mcstatus
 python-dotenv
 pytz

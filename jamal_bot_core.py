@@ -10,9 +10,9 @@ import logging
 import os
 from datetime import datetime
 
-import discord
+import disnake
 import pytz
-from discord.ext import commands
+from disnake.ext import commands
 from dotenv import load_dotenv
 from mcstatus import MinecraftServer
 
@@ -24,7 +24,7 @@ load_dotenv()
 # logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(name)s: %(message)s')
 logfilename = 'jamal_bot_' + str(datetime.now().strftime('%Y_%m_%d_%H_%M_%S')) + '.log'
-logger = logging.getLogger('discord')
+logger = logging.getLogger('disnake')
 logger.setLevel(logging.INFO)
 handler = logging.FileHandler(filename=logfilename, encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
@@ -42,7 +42,7 @@ def get_prefix(client, message):
     return commands.when_mentioned_or(*prefixes)(client, message)
 
 
-intents = discord.Intents.default()
+intents = disnake.Intents.default()
 intents.guild_messages = True
 
 # requires jamal with a space in order to register
@@ -55,10 +55,10 @@ jamal_bot = commands.Bot(
 @jamal_bot.event
 async def on_ready():
     print(f'\nLogged in as: {jamal_bot.user.name} - {jamal_bot.user.id}')
-    print('Discord.py Version:', discord.__version__)
-    activity = discord.Game(name='Warframe')
+    print('disnake Version:', disnake.__version__)
+    activity = disnake.Game(name='Warframe')
     await jamal_bot.change_presence(
-        status=discord.Status.online,
+        status=disnake.Status.online,
         activity=activity)
     # Printing done let's pterodactyl know that it's ready
     print('Done')
@@ -175,10 +175,10 @@ async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
     try:
         status = server.status()
         server_latency = round(status.latency, 2)
-        status_embed = discord.Embed(
+        status_embed = disnake.Embed(
            title=server_address,
            description=status.version.name,
-           colour=discord.Colour.green())
+           colour=disnake.Colour.green())
 
         status_embed.add_field(
             name='Description',
@@ -205,9 +205,9 @@ async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
             await ctx.send(embed=status_embed)
 
     except Exception:
-        error_embed = discord.Embed(
+        error_embed = disnake.Embed(
            title='Could not contact server',
-           colour=discord.Colour.red())
+           colour=disnake.Colour.red())
         await ctx.send(embed=error_embed)
 
 
@@ -224,7 +224,7 @@ async def time(ctx):
     datetime_CT = datetime.now(timezone_CT)
     datetime_PT = datetime.now(timezone_PT)
 
-    time_embed = discord.Embed(colour=discord.Colour.purple())
+    time_embed = disnake.Embed(colour=disnake.Colour.purple())
     time_embed.set_author(name='jamal bot time')
     time_embed.add_field(
         name='Universal',
@@ -250,4 +250,4 @@ async def time(ctx):
     await ctx.send(embed=time_embed)
 
 
-jamal_bot.run(os.getenv('DISCORD_API_KEY'), bot=True, reconnect=True)
+jamal_bot.run(os.getenv('DISCORD_API_KEY'))
