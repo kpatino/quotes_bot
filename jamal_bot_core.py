@@ -76,6 +76,8 @@ async def globally_block_dms(ctx):
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send('Missing required argument, try `jamal help` for help')
+    if isinstance(error, commands.MissingAnyRole):
+        await ctx.send('Missing required role')
 
 
 @jamal_bot.command()
