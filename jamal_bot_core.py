@@ -14,7 +14,7 @@ import disnake
 import pytz
 from disnake.ext import commands
 from dotenv import load_dotenv
-from mcstatus import MinecraftServer
+from mcstatus import JavaServer
 
 import jamal_bot_database
 
@@ -170,7 +170,7 @@ async def quotes(ctx):
 # {server_address} is optional
 @jamal_bot.command(description='Get the status of a Minecraft server.')
 async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
-    server = MinecraftServer.lookup(server_address)
+    server = JavaServer.lookup(server_address)
 
     try:
         status = server.status()
