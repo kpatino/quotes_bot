@@ -71,6 +71,7 @@ async def globally_block_dms(ctx):
 
 
 # jamal error handling
+# does not work for subcommands
 @jamal_bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
@@ -95,7 +96,7 @@ async def access(ctx, input_name: str):
 @jamal_bot.group(name='add', description='Add a name or quote to the database')
 async def add(ctx):
     if ctx.invoked_subcommand is None:
-        raise discord.ext.commands.MissingRequiredArgument
+        await ctx.send('Missing required argument, try `jamal help add` for help')
 
 
 @add.command(
@@ -128,7 +129,7 @@ async def add_quote(ctx, input_name: str, *, arg):
 @jamal_bot.group(description='Remove a name and their quotes from the database')
 async def remove(ctx):
     if ctx.invoked_subcommand is None:
-        raise discord.ext.commands.MissingRequiredArgument
+        await ctx.send('Missing required argument, try `jamal help remove` for help')
 
 
 @remove.command(
