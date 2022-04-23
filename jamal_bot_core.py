@@ -82,7 +82,7 @@ async def on_command_error(ctx, error):
 
 @jamal_bot.command()
 async def list(ctx):
-    await ctx.send(f'{jamal_bot_database.get_names()}')
+    await ctx.send(jamal_bot_database.get_names())
 
 
 @jamal_bot.command()
