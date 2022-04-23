@@ -88,7 +88,7 @@ async def list(ctx):
 @jamal_bot.command(description='Access a random quote from somebody')
 async def access(ctx, input_name: str):
     if jamal_bot_database.check_name(input_name.lower()) is True:
-        await ctx.send(f'{jamal_bot_database.get_quote(input_name.lower())}')
+        await ctx.send(jamal_bot_database.get_quote(input_name.lower()))
     else:
         await ctx.send(f'"{input_name.lower()}" is not in the database')
 
