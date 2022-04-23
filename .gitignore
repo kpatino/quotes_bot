@@ -140,3 +140,7 @@ cython_debug/
 # Jamal specific files
 *.log
 jamal_bot_quotes.db
+
+# Pterodactyl Docker container folders
+.cache/
+.local/
