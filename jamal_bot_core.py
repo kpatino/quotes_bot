@@ -36,6 +36,7 @@ jamal_bot_database.create_db('jamal_bot_quotes.db')
 
 # in summary allow users to @mention the bot and use three different cased
 # variations of "jamal " with a space
+# will no longer be needed after switching to slash commands
 def get_prefix(client, message):
     prefixes = ['jamal ', 'Jamal ', 'JAMAL ']
     return commands.when_mentioned_or(*prefixes)(client, message)
