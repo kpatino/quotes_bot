@@ -124,7 +124,7 @@ async def add_quote(ctx, input_name: str, *, arg):
         await ctx.send(f'"{input_name.lower()}" is not in the database')
     else:
         if arg == "":
-            await ctx.send('Quote cannot be empty, try `jamal help` for help')
+            await ctx.send('A quote was not provided, try `jamal help` for help')
         else:
             jamal_bot_database.add_quote(input_name.lower(), arg)
             await ctx.send(f'Added “{arg}” to {input_name.lower()}')
