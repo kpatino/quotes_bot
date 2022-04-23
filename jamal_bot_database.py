@@ -24,7 +24,8 @@ class OpenDatabase(object):
 
 def create_db(db_name):
     """
-    Creates a database with tables that the bot can use
+    Creates a database with people and quotes tables that the is designed to
+    store quotes in.
 
     Args:
         db_name (str): name of the database file
@@ -47,7 +48,7 @@ def create_db(db_name):
 
 
 def get_names():
-    """Retrive all names in "people" database."""
+    """Retrive all names in people table."""
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
             "SELECT name FROM people")
@@ -60,7 +61,7 @@ def get_names():
 
 def add_name(name):
     """
-    Adds a name to the bot's database specifically the "people" table.
+    Adds a name to the to the people table.
 
     Args:
         name (str): name that should added into the bot's database.
@@ -84,7 +85,7 @@ def remove_name(name):
 
 def check_name(name):
     """
-    Checks to see if the name exists in the database table "people".
+    Checks if the name exists in the people table.
 
     Args:
         name (str): name that should be checked if it exists
@@ -99,8 +100,9 @@ def check_name(name):
 
 def get_quote(name):
     """
-    Retrieves random quote from the database by name in the table "quotes"
-
+    Retrieves random quote from the database by name in the table quotes.
+    If no quotes are are found return a message informing there are no
+    quotes under the name.
     Args:
         name (str): name used to retrieve a random quote
     """
@@ -120,7 +122,7 @@ def add_quote(name, quote):
     Add quote to the bot's database using string variables name and quote
     Args:
         name (str): name used for database entry
-        quote (str): quot used for database entry
+        quote (str): quote used for database entry
     """
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
@@ -129,7 +131,7 @@ def add_quote(name, quote):
 
 
 def random_name():
-    """Retrieve random name from "people" table"""
+    """Retrieve a random name from "people" table"""
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
             "SELECT name FROM people")
@@ -142,7 +144,7 @@ def random_name():
 
 def list_quotes(name):
     """
-    Retrieve all quotes from "quotes" table by name
+    Retrieve all quotes from the quotes table by name
 
     Args:
         name (str): name used to retrieve all quotes
