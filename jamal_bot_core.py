@@ -290,6 +290,4 @@ async def help(ctx):
 
 
 # Run jamal_bot_core
-jamal_bot.run(os.getenv('DISCORD_API_KEY'),
-              bot=True,
-              reconnect=True)
+jamal_bot.run(os.getenv('DISCORD_API_KEY'), bot=True, reconnect=True)
