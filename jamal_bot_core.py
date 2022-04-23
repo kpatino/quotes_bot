@@ -46,22 +46,20 @@ intents = discord.Intents.default()
 intents.guild_messages = True
 
 # requires jamal with a space in order to register
-jamal_bot = commands.Bot(command_prefix=get_prefix,
-                         intents=intents,
-                         case_insensitive=True,
-                         )
-# remove the default help command
-jamal_bot.remove_command('help')
+jamal_bot = commands.Bot(
+    command_prefix=get_prefix,
+    intents=intents,
+    case_insensitive=True)
 
 
-# jamal connection to discord api
 @jamal_bot.event
 async def on_ready():
     print(f'\nLogged in as: {jamal_bot.user.name} - {jamal_bot.user.id}')
     print('Discord.py Version:', discord.__version__)
     activity = discord.Game(name='Warframe')
-    await jamal_bot.change_presence(status=discord.Status.online,
-                                    activity=activity)
+    await jamal_bot.change_presence(
+        status=discord.Status.online,
+        activity=activity)
     # Printing done let's pterodactyl know that it's ready
     print('Done')
 
