@@ -103,7 +103,7 @@ async def access(ctx, input_name: str):
     if jamal_bot_database.check_name(input_name) is True:
         await ctx.send(jamal_bot_database.get_quote(input_name))
     else:
-        await ctx.send(f'"{input_name}" is not in the database')
+        await ctx.send(f'The name "{input_name}" is not in the database')
 
 
 @jamal_bot.slash_command(
@@ -114,7 +114,8 @@ async def slash_access(inter: disnake.CommandInteraction, name: str):
     if jamal_bot_database.check_name(name) is True:
         await inter.response.send_message(jamal_bot_database.get_quote(name))
     else:
-        await inter.response.send_message(f'"{name}" is not in the database')
+        await inter.response.send_message(f'The name "{name}" is not in the '
+                                          'database')
 
 
 @slash_access.autocomplete('name')
@@ -141,7 +142,7 @@ async def add(ctx):
 async def add_name(ctx, input_name: str):
     input_name = input_name.lower()
     if jamal_bot_database.check_name(input_name) is True:
-        await ctx.send(f'"{input_name}" is already in the database')
+        await ctx.send(f'The name "{input_name}" is already in the database')
     else:
         jamal_bot_database.add_name(input_name)
         await ctx.send(f'{ctx.message.author.mention} has added '
@@ -157,7 +158,7 @@ async def add_name(ctx, input_name: str):
 async def add_quote(ctx, input_name: str, *, arg):
     input_name = input_name.lower()
     if jamal_bot_database.check_name(input_name) is False:
-        await ctx.send(f'"{input_name}" is not in the database')
+        await ctx.send(f'The name "{input_name}" is not in the database')
     else:
         if arg == "":
             await ctx.send('A quote was not provided, '
