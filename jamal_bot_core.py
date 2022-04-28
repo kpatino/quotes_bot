@@ -97,12 +97,32 @@ async def slash_list(inter):
     await inter.response.send_message(jamal_bot_database.get_names())
 
 
-@jamal_bot.command(description='Access a random quote from somebody')
+@jamal_bot.command(description='Access a random quote by name')
 async def access(ctx, input_name: str):
-    if jamal_bot_database.check_name(input_name.lower()) is True:
-        await ctx.send(jamal_bot_database.get_quote(input_name.lower()))
+    input_name = input_name.lower()
+    if jamal_bot_database.check_name(input_name) is True:
+        await ctx.send(jamal_bot_database.get_quote(input_name))
     else:
-        await ctx.send(f'"{input_name.lower()}" is not in the database')
+        await ctx.send(f'"{input_name}" is not in the database')
+
+
+@jamal_bot.slash_command(
+    name='access',
+    description='Access a random quote by name')
+async def slash_access(inter: disnake.CommandInteraction, name: str):
+    name = name.lower()
+    if jamal_bot_database.check_name(name) is True:
+        await inter.response.send_message(jamal_bot_database.get_quote(name))
+    else:
+        await inter.response.send_message(f'"{name}" is not in the database')
+
+
+@slash_access.autocomplete("name")
+async def slash_access_autocomp(
+        inter: disnake.CommandInteraction, string: str):
+    string = string.lower()
+    return [name for name in jamal_bot_database.get_names_list()
+            if string in name.lower()]
 
 
 @jamal_bot.group(name='add', description='Add a name or quote to the database')
