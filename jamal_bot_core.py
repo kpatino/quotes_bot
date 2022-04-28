@@ -239,6 +239,26 @@ async def slash_add_quote_autocomp(
             if string in name.lower()]
 
 
+def remove_name_command(name: str):
+    """
+    Removes name and the associated quotes from the database. Cannot be undone.
+
+    Args:
+        name (str): name to remove from the database
+    Returns:
+        str: Message with status
+    """
+    name = name.lower()
+    try:
+        if jamal_bot_database.check_name(name) is False:
+            return(f'"{name}" is not in the database')
+        else:
+            jamal_bot_database.remove_name(name)
+            return(f'Removed "{name}" from the database')
+    except Exception:
+        return('Could not remove name from the database')
+
+
 @jamal_bot.group(
     description='Remove a name and their quotes from the database')
 async def remove(ctx):
@@ -254,12 +274,29 @@ async def remove(ctx):
     int(os.getenv('ADMIN_ROLE_ID')),
     int(os.getenv('MOD_ROLE_ID')))
 async def rm_name(ctx, input_name: str):
-    input_name = input_name.lower()
-    if jamal_bot_database.check_name(input_name) is False:
-        await ctx.send(f'"{input_name}" is not in the database')
-    else:
-        jamal_bot_database.remove_name(input_name)
-        await ctx.send(f'Removed "{input_name}" from the database')
+    ctx.send(remove_name_command(input_name))
+
+
+@jamal_bot.slash_command(
+    name='remove',
+    description='Add a name or quote to the database')
+async def slash_remove(inter):
+    pass
+
+
+@slash_remove.sub_command(
+    name='name',
+    description='Add a "name" to the database')
+async def slash_remove_name(inter, name: str):
+    await inter.response.send_message(remove_name_command(name))
+
+
+@slash_remove_name.autocomplete('name')
+async def slash_remove_name_autocomp(
+        inter: disnake.CommandInteraction, string: str):
+    string = string.lower()
+    return [name for name in jamal_bot_database.get_names_list()
+            if string in name.lower()]
 
 
 @jamal_bot.command(description='Get a random quote and guess who said it')
