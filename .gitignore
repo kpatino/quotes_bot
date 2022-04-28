@@ -137,6 +137,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# vscode specific files
+.vscode/
+
 # Jamal specific files
 *.log
 jamal_bot_quotes.db
