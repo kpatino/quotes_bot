@@ -168,6 +168,60 @@ async def add_quote(ctx, input_name: str, *, arg):
             await ctx.send(f'Added “{arg}” to {input_name}')
 
 
+@jamal_bot.slash_command(
+    name='add',
+    description='Add a name or quote to the database')
+async def slash_add(inter):
+    pass
+
+
+@slash_add.sub_command(
+    name='name',
+    description='Add a "name" to the database')
+@commands.has_any_role(
+    int(os.getenv('ADMIN_ROLE_ID')),
+    int(os.getenv('MOD_ROLE_ID')))
+async def slash_add_name(inter, name: str):
+    name = name.lower()
+    if jamal_bot_database.check_name(name) is True:
+        await inter.response.send_message(f'The name "{name}" is already in '
+                                          'the database')
+    else:
+        jamal_bot_database.add_name(name)
+        await inter.response.send_message(f'{inter.author.mention} has '
+                                          f'added "{name}" to the database')
+
+
+@slash_add.sub_command(
+    name='quote',
+    description='Add a quote to the database.')
+@commands.has_any_role(
+    int(os.getenv('ADMIN_ROLE_ID')),
+    int(os.getenv('MOD_ROLE_ID')))
+async def slash_add_quote(
+    inter: disnake.CommandInteraction,
+        name: str, *, arg):
+    name = name.lower()
+    if jamal_bot_database.check_name(name) is False:
+        await inter.response.send_message(f'The name "{name}" is already in '
+                                          'the database')
+    else:
+        if arg == "":
+            await inter.response.send_message('A quote was not provided, '
+                                              'try `jamal help` for help')
+        else:
+            jamal_bot_database.add_quote(name, arg)
+            await inter.response.send_message(f'Added “{arg}” to {name}')
+
+
+@slash_add_quote.autocomplete('name')
+async def slash_add_quote_autocomp(
+        inter: disnake.CommandInteraction, string: str):
+    string = string.lower()
+    return [name for name in jamal_bot_database.get_names_list()
+            if string in name.lower()]
+
+
 @jamal_bot.group(
     description='Remove a name and their quotes from the database')
 async def remove(ctx):
