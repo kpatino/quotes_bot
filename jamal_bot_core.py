@@ -307,8 +307,7 @@ async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
         await ctx.send(embed=error_embed)
 
 
-@jamal_bot.command(description='Get the current time in different timezones')
-async def time(ctx):
+def timezone_embed():
     timezone_UTC = pytz.utc
     timezone_EL = pytz.timezone('Europe/London')
     timezone_ET = pytz.timezone('US/Eastern')
@@ -320,30 +319,42 @@ async def time(ctx):
     datetime_CT = datetime.now(timezone_CT)
     datetime_PT = datetime.now(timezone_PT)
 
-    time_embed = disnake.Embed(colour=disnake.Colour.purple())
-    time_embed.set_author(name='jamal bot time')
-    time_embed.add_field(
+    embed = disnake.Embed(colour=disnake.Colour.purple())
+    embed.set_author(name='jamal bot time')
+    embed.add_field(
         name='Universal',
         value=datetime_UTC.strftime('%b %d %I:%M %p (%H:%M)'),
         inline=False)
-    time_embed.add_field(
+    embed.add_field(
         name='Europe/London',
         value=datetime_EL.strftime('%b %d %I:%M %p (%H:%M)'),
         inline=False)
-    time_embed.add_field(
+    embed.add_field(
         name='US/Eastern',
         value=datetime_ET.strftime('%b %d %I:%M %p (%H:%M)'),
         inline=False)
-    time_embed.add_field(
+    embed.add_field(
         name='US/Central',
         value=datetime_CT.strftime('%b %d %I:%M %p (%H:%M)'),
         inline=False)
-    time_embed.add_field(
+    embed.add_field(
         name='US/Pacific',
         value=datetime_PT.strftime('%b %d %I:%M %p (%H:%M)'),
         inline=False)
 
-    await ctx.send(embed=time_embed)
+    return(embed)
+
+
+@jamal_bot.command(description='Get the current time in different timezones')
+async def time(ctx):
+    await ctx.send(embed=timezone_embed())
+
+
+@jamal_bot.slash_command(
+    name='time',
+    description='Get the current time in different timezones')
+async def slash_time(inter):
+    await inter.response.send_message(embed=timezone_embed())
 
 
 jamal_bot.run(os.getenv('DISCORD_API_KEY'))
