@@ -4,7 +4,14 @@ Jamal Bot is custom Discord bot with the main goal to hold quotes in a database 
 
 ## Instructions
 
+### Requirements
+
+- Python 3.10 (Tested only on 3.10)
+- Latest jamal_bot release
+
 ### Setup
+
+Inside of the unpacked jamal_bot directory
 
 ```sh
 # create virtual env
@@ -23,12 +30,12 @@ python3 -m pip install -r requirements.txt
 cp .env.example .env
 ```
 
-### Starting
-
-Start the bot
+### Starting the bot
 
 ```sh
+# Activate virtual environment if not already activated
 source .venv/bin/activate
+# Run the bot
 python3 jamal_bot_core.py
 ```
 
