@@ -117,7 +117,7 @@ async def slash_access(inter: disnake.CommandInteraction, name: str):
         await inter.response.send_message(f'"{name}" is not in the database')
 
 
-@slash_access.autocomplete("name")
+@slash_access.autocomplete('name')
 async def slash_access_autocomp(
         inter: disnake.CommandInteraction, string: str):
     string = string.lower()
