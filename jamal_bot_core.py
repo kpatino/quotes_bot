@@ -135,6 +135,54 @@ async def slash_access_autocomp(
             if string in name.lower()]
 
 
+def add_name_command(author, name: str):
+    """
+    Name to add to the database.
+
+    Args:
+        author : either ctx.message.author.mention or inter.author.mention
+        name (str): user provided name to add to the database
+
+    Returns:
+        str: Message with status information
+    """
+    name = name.lower()
+    if jamal_bot_database.check_name(name) is True:
+        return (f'The name "{name}" is already in the database')
+    else:
+        try:
+            jamal_bot_database.add_name(name)
+            return(f'{author} has added "{name}" to the database')
+        except Exception:
+            return('Could not add the name to the database')
+
+
+def add_quote_command(name: str, quote: str):
+    """
+    Add a quote to the database attributed to a name
+    Return message with information on whether or not it was succesful.
+
+    Args:
+        name (str): Name to attribute the quote
+        quote (str): The quote itself
+
+    Returns:
+        str: Message with status information
+    """
+    name = name.lower()
+    try:
+        if jamal_bot_database.check_name(name) is False:
+            return(f'The name "{name}" is not in the database')
+        else:
+            if quote == "":
+                return ('A quote was not provided, try `jamal help` for help')
+            else:
+                jamal_bot_database.add_quote(name, quote)
+                return(f'Added “{quote}” to {name}')
+    except Exception:
+        return('Could not add the quote to the database')
+
+
 @jamal_bot.group(name='add', description='Add a name or quote to the database')
 async def add(ctx):
     if ctx.invoked_subcommand is None:
@@ -149,32 +197,14 @@ async def add(ctx):
     int(os.getenv('ADMIN_ROLE_ID')),
     int(os.getenv('MOD_ROLE_ID')))
 async def add_name(ctx, input_name: str):
-    input_name = input_name.lower()
-    if jamal_bot_database.check_name(input_name) is True:
-        await ctx.send(f'The name "{input_name}" is already in the database')
-    else:
-        jamal_bot_database.add_name(input_name)
-        await ctx.send(f'{ctx.message.author.mention} has added '
-                       f'"{input_name}" to the database')
+    await ctx.send(add_name_command(ctx.message.author.mention, input_name))
 
 
 @add.command(
     name='quote',
     description='Add a quote to the database.')
-@commands.has_any_role(
-    int(os.getenv('ADMIN_ROLE_ID')),
-    int(os.getenv('MOD_ROLE_ID')))
 async def add_quote(ctx, input_name: str, *, arg):
-    input_name = input_name.lower()
-    if jamal_bot_database.check_name(input_name) is False:
-        await ctx.send(f'The name "{input_name}" is not in the database')
-    else:
-        if arg == "":
-            await ctx.send('A quote was not provided, '
-                           'try `jamal help` for help')
-        else:
-            jamal_bot_database.add_quote(input_name, arg)
-            await ctx.send(f'Added “{arg}” to {input_name}')
+    ctx.send(add_quote_command(input_name, arg))
 
 
 @jamal_bot.slash_command(
@@ -187,40 +217,18 @@ async def slash_add(inter):
 @slash_add.sub_command(
     name='name',
     description='Add a "name" to the database')
-@commands.has_any_role(
-    int(os.getenv('ADMIN_ROLE_ID')),
-    int(os.getenv('MOD_ROLE_ID')))
 async def slash_add_name(inter, name: str):
-    name = name.lower()
-    if jamal_bot_database.check_name(name) is True:
-        await inter.response.send_message(f'The name "{name}" is already in '
-                                          'the database')
-    else:
-        jamal_bot_database.add_name(name)
-        await inter.response.send_message(f'{inter.author.mention} has '
-                                          f'added "{name}" to the database')
+    await inter.response.send_message(
+        add_name_command(inter.author.mention, name))
 
 
 @slash_add.sub_command(
     name='quote',
     description='Add a quote to the database.')
-@commands.has_any_role(
-    int(os.getenv('ADMIN_ROLE_ID')),
-    int(os.getenv('MOD_ROLE_ID')))
 async def slash_add_quote(
     inter: disnake.CommandInteraction,
         name: str, *, arg):
-    name = name.lower()
-    if jamal_bot_database.check_name(name) is False:
-        await inter.response.send_message(f'The name "{name}" is already in '
-                                          'the database')
-    else:
-        if arg == "":
-            await inter.response.send_message('A quote was not provided, '
-                                              'try `jamal help` for help')
-        else:
-            jamal_bot_database.add_quote(name, arg)
-            await inter.response.send_message(f'Added “{arg}” to {name}')
+    await inter.response.send_message(add_quote_command(name, arg))
 
 
 @slash_add_quote.autocomplete('name')
