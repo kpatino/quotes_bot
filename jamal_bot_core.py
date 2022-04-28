@@ -101,7 +101,8 @@ async def access(ctx, input_name: str):
 @jamal_bot.group(name='add', description='Add a name or quote to the database')
 async def add(ctx):
     if ctx.invoked_subcommand is None:
-        await ctx.send('Missing required argument, try `jamal help add` for help')
+        await ctx.send('Missing required argument, '
+                       'try `jamal help add` for help')
 
 
 @add.command(
@@ -116,8 +117,8 @@ async def add_name(ctx, input_name: str):
         await ctx.send(f'"{input_name}" is already in the database')
     else:
         jamal_bot_database.add_name(input_name)
-        await ctx.send(
-            f'{ctx.message.author.mention} has added "{input_name}" to the database')
+        await ctx.send(f'{ctx.message.author.mention} has added '
+                       f'"{input_name}" to the database')
 
 
 @add.command(
@@ -132,17 +133,19 @@ async def add_quote(ctx, input_name: str, *, arg):
         await ctx.send(f'"{input_name}" is not in the database')
     else:
         if arg == "":
-            await ctx.send(
-                'A quote was not provided, try `jamal help` for help')
+            await ctx.send('A quote was not provided, '
+                           'try `jamal help` for help')
         else:
             jamal_bot_database.add_quote(input_name, arg)
             await ctx.send(f'Added “{arg}” to {input_name}')
 
 
-@jamal_bot.group(description='Remove a name and their quotes from the database')
+@jamal_bot.group(
+    description='Remove a name and their quotes from the database')
 async def remove(ctx):
     if ctx.invoked_subcommand is None:
-        await ctx.send('Missing required argument, try `jamal help remove` for help')
+        await ctx.send('Missing required argument, '
+                       'try `jamal help remove` for help')
 
 
 @remove.command(
@@ -173,7 +176,8 @@ async def quotes(ctx):
     if (str(guess.content)).lower() == name:
         await ctx.channel.send(f'You got em <@{guess.author.id}>')
     else:
-        await ctx.channel.send(f'<@{guess.author.id}> YOU\'RE WRONG‼ IT WAS {name.upper()}‼')
+        await ctx.channel.send(f'<@{guess.author.id}> YOU\'RE WRONG‼'
+                               f'IT WAS {name.upper()}‼')
 
 
 # {server_address} is optional
