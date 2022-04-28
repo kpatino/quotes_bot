@@ -48,15 +48,28 @@ def create_db(db_name):
 
 
 def get_names():
-    """Retrive all names in people table."""
+    """Return a string with all names in the people table."""
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
             "SELECT name FROM people")
         names = [
             v[0] for v in cursor.fetchall()
         ]
+        names.sort()
         names = ', '.join(map(str, names,))
         return(names)
+
+
+def get_names_list():
+    """Return a list of names in the people table"""
+    with OpenDatabase('./jamal_bot_quotes.db') as cursor:
+        cursor.execute(
+            "SELECT name FROM people")
+        names_list = [
+            v[0] for v in cursor.fetchall()
+        ]
+        names_list.sort()
+        return(names_list[:20])
 
 
 def add_name(name):
@@ -137,10 +150,10 @@ def random_name():
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
             "SELECT name FROM people")
-        names = [
+        names_list = [
             v[0] for v in cursor.fetchall()
         ]
-        name = random.choice(names)
+        name = random.choice(names_list)
         return(name)
 
 
