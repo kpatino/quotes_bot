@@ -98,6 +98,16 @@ async def slash_list(inter):
 
 
 def access_command(name: str):
+    """
+    Returns a random quote from the database by name.
+    If there are no quotes return a string saying so.
+
+    Args:
+        name (str): name in the database with quotes
+
+    Returns:
+        str: Message with status information
+    """
     name = name.lower()
     if jamal_bot_database.check_name(name) is True:
         return(jamal_bot_database.get_quote(name))
