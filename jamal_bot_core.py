@@ -90,6 +90,13 @@ async def list(ctx):
     await ctx.send(jamal_bot_database.get_names())
 
 
+@jamal_bot.slash_command(
+    name='list',
+    description='List names available from the database')
+async def slash_list(inter):
+    await inter.response.send_message(jamal_bot_database.get_names())
+
+
 @jamal_bot.command(description='Access a random quote from somebody')
 async def access(ctx, input_name: str):
     if jamal_bot_database.check_name(input_name.lower()) is True:
