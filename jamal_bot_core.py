@@ -122,7 +122,13 @@ async def access(ctx, input_name: str):
 
 @jamal_bot.slash_command(
     name='access',
-    description='Access a random quote by name')
+    description='Access a random quote by name',
+    options=[
+        disnake.Option(
+            "name",
+            description="Get a random quote attributed to this name",
+            required=True)]
+    )
 async def slash_access(inter: disnake.CommandInteraction, name: str):
     await inter.response.send_message(access_command(name))
 
@@ -216,7 +222,13 @@ async def slash_add(inter):
 
 @slash_add.sub_command(
     name='name',
-    description='Add a "name" to the database')
+    description='Add a "name" to the database',
+    options=[
+        disnake.Option(
+            "name",
+            description="Name to add to the database",
+            required=True)]
+    )
 async def slash_add_name(inter, name: str):
     await inter.response.send_message(
         add_name_command(inter.author.mention, name))
@@ -224,7 +236,18 @@ async def slash_add_name(inter, name: str):
 
 @slash_add.sub_command(
     name='quote',
-    description='Add a quote to the database.')
+    description='Add a quote to the database.',
+    options=[
+        disnake.Option(
+            "name",
+            description="Name to attribute the quote",
+            required=True),
+        disnake.Option(
+            "quote",
+            description="The quote to record to the database",
+            required=True
+        )]
+    )
 async def slash_add_quote(
     inter: disnake.CommandInteraction,
         name: str, *, arg):
