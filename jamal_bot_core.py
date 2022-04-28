@@ -111,11 +111,13 @@ async def add(ctx):
     int(os.getenv('ADMIN_ROLE_ID')),
     int(os.getenv('MOD_ROLE_ID')))
 async def add_name(ctx, input_name: str):
+    input_name = input_name.lower()
     if jamal_bot_database.check_name(input_name) is True:
-        await ctx.send(f'"{input_name.lower()}" is already in the database')
+        await ctx.send(f'"{input_name}" is already in the database')
     else:
-        jamal_bot_database.add_name(input_name.lower())
-        await ctx.send(f'{ctx.message.author.mention} has added "{input_name.lower()}" to the database')
+        jamal_bot_database.add_name(input_name)
+        await ctx.send(
+            f'{ctx.message.author.mention} has added "{input_name}" to the database')
 
 
 @add.command(
@@ -125,14 +127,16 @@ async def add_name(ctx, input_name: str):
     int(os.getenv('ADMIN_ROLE_ID')),
     int(os.getenv('MOD_ROLE_ID')))
 async def add_quote(ctx, input_name: str, *, arg):
-    if jamal_bot_database.check_name(input_name.lower()) is False:
-        await ctx.send(f'"{input_name.lower()}" is not in the database')
+    input_name = input_name.lower()
+    if jamal_bot_database.check_name(input_name) is False:
+        await ctx.send(f'"{input_name}" is not in the database')
     else:
         if arg == "":
-            await ctx.send('A quote was not provided, try `jamal help` for help')
+            await ctx.send(
+                'A quote was not provided, try `jamal help` for help')
         else:
-            jamal_bot_database.add_quote(input_name.lower(), arg)
-            await ctx.send(f'Added “{arg}” to {input_name.lower()}')
+            jamal_bot_database.add_quote(input_name, arg)
+            await ctx.send(f'Added “{arg}” to {input_name}')
 
 
 @jamal_bot.group(description='Remove a name and their quotes from the database')
@@ -148,11 +152,12 @@ async def remove(ctx):
     int(os.getenv('ADMIN_ROLE_ID')),
     int(os.getenv('MOD_ROLE_ID')))
 async def rm_name(ctx, input_name: str):
-    if jamal_bot_database.check_name(input_name.lower()) is False:
-        await ctx.send(f'"{input_name.lower()}" is not in the database')
+    input_name = input_name.lower()
+    if jamal_bot_database.check_name(input_name) is False:
+        await ctx.send(f'"{input_name}" is not in the database')
     else:
-        jamal_bot_database.remove_name(input_name.lower())
-        await ctx.send(f'Removed "{input_name.lower()}" from the database')
+        jamal_bot_database.remove_name(input_name)
+        await ctx.send(f'Removed "{input_name}" from the database')
 
 
 @jamal_bot.command(description='Get a random quote and guess who said it')
