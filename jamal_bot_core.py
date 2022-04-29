@@ -158,7 +158,7 @@ def add_name_command(author, name: str):
     else:
         try:
             jamal_bot_database.add_name(name)
-            return(f'{author} has added "{name}" to the database')
+            return(f'{author} added "{name}" to the database')
         except Exception:
             return('Could not add the name to the database')
 
@@ -262,11 +262,12 @@ async def slash_add_quote_autocomp(
             if string in name.lower()]
 
 
-def remove_name_command(name: str):
+def remove_name_command(author, name: str):
     """
     Removes name and the associated quotes from the database. Cannot be undone.
 
     Args:
+        author : either ctx.message.author.mention or inter.author.mention
         name (str): name to remove from the database
     Returns:
         str: Message with status
@@ -277,7 +278,7 @@ def remove_name_command(name: str):
             return(f'"{name}" is not in the database')
         else:
             jamal_bot_database.remove_name(name)
-            return(f'Removed "{name}" from the database')
+            return(f'{author} removed "{name}" from the database')
     except Exception:
         return('Could not remove name from the database')
 
@@ -297,7 +298,7 @@ async def remove(ctx):
     int(os.getenv('ADMIN_ROLE_ID')),
     int(os.getenv('MOD_ROLE_ID')))
 async def rm_name(ctx, input_name: str):
-    ctx.send(remove_name_command(input_name))
+    ctx.send(remove_name_command(ctx.message.author.mention, input_name))
 
 
 @jamal_bot.slash_command(
@@ -311,7 +312,8 @@ async def slash_remove(inter):
     name='name',
     description='Add a "name" to the database')
 async def slash_remove_name(inter, name: str):
-    await inter.response.send_message(remove_name_command(name))
+    await inter.response.send_message(
+        remove_name_command(inter.author.mention, name))
 
 
 @slash_remove_name.autocomplete('name')
