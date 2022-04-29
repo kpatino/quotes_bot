@@ -103,7 +103,7 @@ def access_command(name: str):
     If there are no quotes return a string saying so.
 
     Args:
-        name (str): name in the database with quotes
+        name (str): Name in the database with quotes
 
     Returns:
         str: Message with status information
@@ -146,8 +146,8 @@ def add_name_command(author, name: str):
     Name to add to the database.
 
     Args:
-        author : either ctx.message.author.mention or inter.author.mention
-        name (str): user provided name to add to the database
+        author : Pass either ctx.message.author.mention or inter.author.mention
+        name (str): User provided name to add to the database
 
     Returns:
         str: Message with status information
@@ -170,7 +170,7 @@ def add_quote_command(name: str, quote: str):
 
     Args:
         name (str): Name to attribute the quote
-        quote (str): The quote itself
+        quote (str): The quote in a string value
 
     Returns:
         str: Message with status information
@@ -267,8 +267,8 @@ def remove_name_command(author, name: str):
     Removes name and the associated quotes from the database. Cannot be undone.
 
     Args:
-        author : either ctx.message.author.mention or inter.author.mention
-        name (str): name to remove from the database
+        author : Pass either ctx.message.author.mention or inter.author.mention
+        name (str): Name to remove from the database
     Returns:
         str: Message with status
     """
@@ -365,8 +365,11 @@ async def status_embed(server_address: str):
     """
     Returns a disnake embed containing the status of a Minecraft server at the
     provided address
+
     Args:
         server_address (str): Server address or IP
+    Returns:
+        embed: Server status information
     """
     server = JavaServer.lookup(server_address)
 
@@ -431,6 +434,12 @@ async def slash_status(inter, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')
 
 
 def timezone_embed():
+    """
+    Create an embed with the current time in different timezones and return it.
+
+    Returns
+        embed: Time in different timezones
+    """
     timezone_UTC = pytz.utc
     timezone_EL = pytz.timezone('Europe/London')
     timezone_ET = pytz.timezone('US/Eastern')
