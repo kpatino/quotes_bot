@@ -303,7 +303,7 @@ async def rm_name(ctx, input_name: str):
 
 @jamal_bot.slash_command(
     name='remove',
-    description='Add a name or quote to the database')
+    description='Remove a name or quote to the database')
 async def slash_remove(inter):
     pass
 
