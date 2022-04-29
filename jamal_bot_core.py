@@ -250,8 +250,8 @@ async def slash_add_name(inter, name: str):
     )
 async def slash_add_quote(
     inter: disnake.CommandInteraction,
-        name: str, *, arg):
-    await inter.response.send_message(add_quote_command(name, arg))
+        name: str, quote: str):
+    await inter.response.send_message(add_quote_command(name, quote))
 
 
 @slash_add_quote.autocomplete('name')
