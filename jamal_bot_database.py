@@ -4,10 +4,11 @@ import random
 
 class OpenDatabase(object):
     """
-    File context manager used for opening and closing database connections
+    SQLite3 context manager used for automatically opening and closing
+    connections.
 
     Args:
-        object (str): filepath of the database file
+        object (str): SQLite database filepath
     """
     def __init__(self, path):
         self.path = path
@@ -24,11 +25,14 @@ class OpenDatabase(object):
 
 def create_db(db_name: str):
     """
-    Creates a database with people and quotes tables that the is designed to
-    store quotes in.
+    Create a database with people and quotes tables. The people table contains
+    one column "name". Each record under "name" must be unique. The quotes
+    table contains the columns id, name, and quote. The ID column must be
+    unique. The name column is a foreign key to the name column in the people
+    table.
 
     Args:
-        db_name (str): name of the database file
+        db_name (str): name of the database file to create
     """
     create_people_table = """CREATE TABLE IF NOT EXISTS people(
                                 'name' TEXT NOT NULL UNIQUE
@@ -49,10 +53,10 @@ def create_db(db_name: str):
 
 def get_names():
     """
-    Return a string with all names in the people table.
+    Return a string with all the names recorded in the people table.
 
     Returns:
-        str: String containing the names separated by commas
+        str: String value containing the names separated by commas
     """
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
@@ -88,7 +92,7 @@ def add_name(name: str):
     Adds a name to the to the people table.
 
     Args:
-        name (str): Name that should added into the bot's database.
+        name (str): String to add to the people table
     """
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute("INSERT INTO people ('name') VALUES (?)", (name,))
@@ -96,11 +100,11 @@ def add_name(name: str):
 
 def remove_name(name: str):
     """
-    Remove a name and all their quotes from the bot's database.
-    This action is not reversible.
+    Remove a associated quotes first then remove the name entry from the
+    people table. This action is not reversible.
 
     Args:
-        name (str): Name that should be removed from the database if it exists.
+        name (str): Name entry to remove from the database if it exists
     """
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute("DELETE FROM quotes WHERE name == (?);", (name,))
@@ -109,12 +113,13 @@ def remove_name(name: str):
 
 def check_name(name: str):
     """
-    Checks if the name exists in the people table.
+    Checks if the name provided has an entry in the people table and returns a
+    boolean.
 
     Args:
-        name (str): Name that should be checked if it exists
+        name (str): Value to check
     Returns:
-        bool: Return whether or not the name exists in the database
+        bool: True or false the name provided exists
     """
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute("SELECT count(name) FROM people WHERE name=?", (name,))
@@ -126,14 +131,14 @@ def check_name(name: str):
 
 def get_quote(name: str):
     """
-    Retrieves a random quote from the database by name in the table quotes.
-    If no quotes are are found return a message informing there are no
-    quotes under the given name.
+    Retrieves a random quote from the database by name in the quotes table.
+    If no quotes are are found return a message letting the user know there
+    are no quotes attributed to the provided name.
 
     Args:
-        name (str): Name used to retrieve a random quote
+        name (str): Retrieve a random quote attributed to this name
     Returns:
-        str: String containing the random quote or error message
+        str: String containing a random quote or an error message
     """
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         try:
@@ -162,10 +167,10 @@ def add_quote(name: str, quote: str):
 
 def random_name():
     """
-    Retrieve a random name from the "people" table
+    Retrieve a random name from the people table.
 
     Returns:
-        str: String value containing a name
+        str: Value containing a random name entry
     """
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute(
