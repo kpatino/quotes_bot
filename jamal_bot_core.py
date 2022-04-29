@@ -341,6 +341,26 @@ async def quotes(ctx):
                                f'IT WAS {name.upper()}‼')
 
 
+@jamal_bot.slash_command(
+    name='quotes',
+    description='Get a random quote and guess who said it')
+async def slash_quotes(inter):
+    name = jamal_bot_database.random_name()
+    await inter.response.send_message(
+        f'Who said “{jamal_bot_database.get_quote(name)}”')
+
+    try:
+        guess = await jamal_bot.wait_for('message', timeout=6.0)
+    except asyncio.TimeoutError:
+        await inter.channel.send(f'TOOK TO LONG it was {name}')
+
+    if (str(guess.content)).lower() == name:
+        await inter.channel.send(f'You got em <@{guess.author.id}>')
+    else:
+        await inter.channel.send(f'<@{guess.author.id}> YOU\'RE WRONG‼ '
+                                 f'IT WAS {name.upper()}‼')
+
+
 async def status_embed(server_address: str):
     """
     Returns a disnake embed containing the status of a Minecraft server at the
