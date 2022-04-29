@@ -210,7 +210,7 @@ async def add_name(ctx, input_name: str):
     name='quote',
     description='Add a quote to the database.')
 async def add_quote(ctx, input_name: str, *, arg):
-    ctx.send(add_quote_command(input_name, arg))
+    await ctx.send(add_quote_command(input_name, arg))
 
 
 @jamal_bot.slash_command(
