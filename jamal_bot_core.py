@@ -341,9 +341,13 @@ async def quotes(ctx):
                                f'IT WAS {name.upper()}‼')
 
 
-# {server_address} is optional
-@jamal_bot.command(description='Get the status of a Minecraft server.')
-async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
+async def status_embed(server_address: str):
+    """
+    Returns a disnake embed containing the status of a Minecraft server at the
+    provided address
+    Args:
+        server_address (str): Server address or IP
+    """
     server = JavaServer.lookup(server_address)
 
     try:
@@ -373,17 +377,37 @@ async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
                 inline=True)
             status_embed.set_footer(
                 text=f'Ping: {server_latency} ms')
-            await ctx.send(embed=status_embed)
+            return(status_embed)
 
         except Exception:
             status_embed.set_footer(text=f'Ping: {server_latency} ms')
-            await ctx.send(embed=status_embed)
+            return(status_embed)
 
     except Exception:
         error_embed = disnake.Embed(
            title='Could not contact server',
            colour=disnake.Colour.red())
-        await ctx.send(embed=error_embed)
+        return(error_embed)
+
+
+# {server_address} is optional
+@jamal_bot.command(description='Get the status of a Minecraft server.')
+async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
+    await ctx.send(embed=await status_embed(server_address))
+
+
+@jamal_bot.slash_command(
+    name='status',
+    description='Get the status of a Minecraft server. '
+                f'By default query {os.getenv("DEFAULT_SERVER_ADDRESS")}',
+    options=[
+        disnake.Option(
+            "server_address",
+            description='Server address or IP to query')]
+    )
+async def slash_status(inter, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
+    await inter.response.defer(with_message=True)
+    await inter.followup.send(embed=await status_embed(server_address))
 
 
 def timezone_embed():
