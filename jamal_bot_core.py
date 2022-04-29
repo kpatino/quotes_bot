@@ -429,7 +429,9 @@ async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
             "server_address",
             description='Server address or IP to query')]
     )
-async def slash_status(inter, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
+async def slash_status(
+    inter: disnake.ApplicationCommandInteraction,
+        server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
     await inter.response.defer(with_message=True)
     await inter.followup.send(embed=await status_embed(server_address))
 
