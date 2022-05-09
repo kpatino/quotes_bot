@@ -147,3 +147,4 @@ jamal_bot_quotes.db
 # Pterodactyl Docker container folders
 .cache/
 .local/
+.pteroignore
