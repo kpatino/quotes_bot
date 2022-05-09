@@ -216,7 +216,9 @@ async def add_quote(ctx, input_name: str, *, arg):
 
 @jamal_bot.slash_command(
     name='add',
-    description='Add a name or quote to the database')
+    description='Add a name or quote to the database',
+    dm_permission=False
+    )
 async def slash_add(inter):
     pass
 
@@ -304,7 +306,9 @@ async def rm_name(ctx, input_name: str):
 
 @jamal_bot.slash_command(
     name='remove',
-    description='Remove a name or quote to the database')
+    description='Remove a name or quote to the database',
+    dm_permission=False
+    )
 async def slash_remove(inter):
     pass
 
