@@ -315,7 +315,7 @@ async def slash_remove(inter):
 
 @slash_remove.sub_command(
     name='name',
-    description='Add a "name" to the database')
+    description='Remove a name and their quotes from the database')
 async def slash_remove_name(inter, name: str):
     await inter.response.send_message(
         remove_name_command(inter.author.mention, name))
