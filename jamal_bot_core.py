@@ -91,14 +91,14 @@ async def on_command_error(ctx, error):
         await ctx.send('Missing required role')
 
 
-@jamal_bot.command(description='List names available from the database')
+@jamal_bot.command(description='List available names from the database')
 async def list(ctx):
     await ctx.send(jamal_bot_database.get_names())
 
 
 @jamal_bot.slash_command(
     name='list',
-    description='List names available from the database')
+    description='List available names from the database')
 async def slash_list(inter):
     await inter.response.send_message(jamal_bot_database.get_names())
 
