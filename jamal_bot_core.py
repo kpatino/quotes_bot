@@ -385,10 +385,10 @@ async def status_embed(server_address: str):
            title=server_address,
            description=status.version.name,
            colour=disnake.Colour.green())
-
         status_embed.add_field(
             name='Description',
-            value=f'```{status.description}```',
+            # Unicode blank prevents an empty "value"
+            value=f'```\u200b{status.description}```',
             inline=False)
         status_embed.add_field(
             name='Count',
