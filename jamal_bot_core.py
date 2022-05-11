@@ -222,8 +222,7 @@ async def add_quote(ctx, input_name: str, *, arg):
 @jamal_bot.slash_command(
     name='add',
     description='Add a name or quote to the database',
-    dm_permission=False
-    )
+    dm_permission=False)
 async def slash_add(inter):
     pass
 
@@ -235,8 +234,7 @@ async def slash_add(inter):
         disnake.Option(
             "name",
             description="Name to add to the database",
-            required=True)]
-    )
+            required=True)])
 async def slash_add_name(inter, name: str):
     await inter.response.send_message(
         add_name_command(inter.author.mention, name))
@@ -253,9 +251,7 @@ async def slash_add_name(inter, name: str):
         disnake.Option(
             "quote",
             description="The quote to record to the database",
-            required=True
-        )]
-    )
+            required=True)])
 async def slash_add_quote(
     inter: disnake.CommandInteraction,
         name: str, quote: str):
@@ -312,8 +308,7 @@ async def rm_name(ctx, input_name: str):
 @jamal_bot.slash_command(
     name='remove',
     description='Remove a name or quote to the database',
-    dm_permission=False
-    )
+    dm_permission=False)
 async def slash_remove(inter):
     pass
 
@@ -436,8 +431,7 @@ async def status(ctx, server_address=default_server_address):
     options=[
         disnake.Option(
             "server_address",
-            description='Server address or IP to query')]
-    )
+            description='Server address or IP to query')])
 async def slash_status(
     inter: disnake.ApplicationCommandInteraction,
         server_address=default_server_address):
