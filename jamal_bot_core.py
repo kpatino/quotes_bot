@@ -389,7 +389,7 @@ async def status_embed(server_address: str):
         status_embed.add_field(
             name='Description',
             # Unicode blank prevents an empty "value"
-            value=f'```\u200b{status.description}```',
+            value=f'\u200b```{status.description}```',
             inline=False)
         status_embed.add_field(
             name='Count',
