@@ -21,12 +21,14 @@ import jamal_bot_database
 env = Env()
 env.read_env()
 
-admin_role_id = env.int("ADMIN_ROLE_ID")
-default_server_address = env("DEFAULT_SERVER_ADDRESS")
+discord_admin_role_id = env.int("DISCORD_ADMIN_ROLE_ID")
 discord_api_key = env("DISCORD_API_KEY")
-log_level = env.log_level("LOG_LEVEL")
-mod_role_id = env.int("MOD_ROLE_ID")
-timezone_list = env.list("TIMEZONE_LIST")
+discord_mod_role_id = env.int("DISCORD_MOD_ROLE_ID")
+discord_bot_activity = env.str("DISCORD_BOT_ACTIVITY", "Warframe")
+discord_bot_prefixes = env.list("DISCORD_BOT_PREFIXES", 'jamal ,Jamal ,JAMAL ')
+default_server_address = env("DEFAULT_SERVER_ADDRESS")
+log_level = env.log_level("LOG_LEVEL", 'INFO')
+timezone_list = env.list("TIMEZONE_LIST", 'Europe/London,US/Pacific')
 
 # Logging configuration
 log_format = '[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
@@ -44,12 +46,10 @@ logger.addHandler(handler)
 jamal_bot_database.create_db('jamal_bot_quotes.db')
 
 
-# Allow users to @mention the bot and use three different cased
-# variations of "jamal " with a space
+# Use prefixes from environment variable or use fallback
 # Will no longer be needed after switching to slash commands
 def get_prefix(client, message):
-    prefixes = ['jamal ', 'Jamal ', 'JAMAL ']
-    return commands.when_mentioned_or(*prefixes)(client, message)
+    return commands.when_mentioned_or(*discord_bot_prefixes)(client, message)
 
 
 intents = disnake.Intents.default()
@@ -67,7 +67,7 @@ jamal_bot = commands.Bot(
 async def on_ready():
     logging.info(f'Logged in as: {jamal_bot.user.name} - {jamal_bot.user.id}')
     logging.info(f'disnake version: {disnake.__version__}')
-    activity = disnake.Game(name='Warframe')
+    activity = disnake.Game(name=discord_bot_activity)
     await jamal_bot.change_presence(
         status=disnake.Status.online,
         activity=activity)
@@ -91,14 +91,14 @@ async def on_command_error(ctx, error):
         await ctx.send('Missing required role')
 
 
-@jamal_bot.command(description='List names available from the database')
+@jamal_bot.command(description='List available names from the database')
 async def list(ctx):
     await ctx.send(jamal_bot_database.get_names())
 
 
 @jamal_bot.slash_command(
     name='list',
-    description='List names available from the database')
+    description='List available names from the database')
 async def slash_list(inter):
     await inter.response.send_message(jamal_bot_database.get_names())
 
@@ -206,8 +206,8 @@ async def add(ctx):
     name='name',
     description='Add a "name" to the database')
 @commands.has_any_role(
-    admin_role_id,
-    mod_role_id)
+    discord_admin_role_id,
+    discord_mod_role_id)
 async def add_name(ctx, input_name: str):
     await ctx.send(add_name_command(ctx.message.author.mention, input_name))
 
@@ -222,8 +222,7 @@ async def add_quote(ctx, input_name: str, *, arg):
 @jamal_bot.slash_command(
     name='add',
     description='Add a name or quote to the database',
-    dm_permission=False
-    )
+    dm_permission=False)
 async def slash_add(inter):
     pass
 
@@ -235,8 +234,7 @@ async def slash_add(inter):
         disnake.Option(
             "name",
             description="Name to add to the database",
-            required=True)]
-    )
+            required=True)])
 async def slash_add_name(inter, name: str):
     await inter.response.send_message(
         add_name_command(inter.author.mention, name))
@@ -253,9 +251,7 @@ async def slash_add_name(inter, name: str):
         disnake.Option(
             "quote",
             description="The quote to record to the database",
-            required=True
-        )]
-    )
+            required=True)])
 async def slash_add_quote(
     inter: disnake.CommandInteraction,
         name: str, quote: str):
@@ -303,8 +299,8 @@ async def remove(ctx):
     name='name',
     description='Remove a name and their quotes from the database')
 @commands.has_any_role(
-    admin_role_id,
-    mod_role_id)
+    discord_admin_role_id,
+    discord_mod_role_id)
 async def rm_name(ctx, input_name: str):
     ctx.send(remove_name_command(ctx.message.author.mention, input_name))
 
@@ -312,8 +308,7 @@ async def rm_name(ctx, input_name: str):
 @jamal_bot.slash_command(
     name='remove',
     description='Remove a name or quote to the database',
-    dm_permission=False
-    )
+    dm_permission=False)
 async def slash_remove(inter):
     pass
 
@@ -381,9 +376,9 @@ async def status_embed(server_address: str):
     Returns:
         embed: Server status information
     """
-    server = JavaServer.lookup(server_address)
 
     try:
+        server = JavaServer.lookup(server_address)
         status = await server.async_status()
         server_latency = round(status.latency, 2)
         status_embed = disnake.Embed(
@@ -393,7 +388,7 @@ async def status_embed(server_address: str):
         status_embed.add_field(
             name='Description',
             # Unicode blank prevents an empty "value"
-            value=f'```\u200b{status.description}```',
+            value=f'\u200b```{status.description}```',
             inline=False)
         status_embed.add_field(
             name='Count',
@@ -436,8 +431,7 @@ async def status(ctx, server_address=default_server_address):
     options=[
         disnake.Option(
             "server_address",
-            description='Server address or IP to query')]
-    )
+            description='Server address or IP to query')])
 async def slash_status(
     inter: disnake.ApplicationCommandInteraction,
         server_address=default_server_address):
