@@ -65,14 +65,14 @@ jamal_bot = commands.Bot(
 
 @jamal_bot.event
 async def on_ready():
-    print(f'\nLogged in as: {jamal_bot.user.name} - {jamal_bot.user.id}')
-    print('disnake Version:', disnake.__version__)
+    logging.info(f'Logged in as: {jamal_bot.user.name} - {jamal_bot.user.id}')
+    logging.info(f'disnake version: {disnake.__version__}')
     activity = disnake.Game(name='Warframe')
     await jamal_bot.change_presence(
         status=disnake.Status.online,
         activity=activity)
-    # Printing done let's Pterodactyl know that it's ready
-    print('Done')
+    # Logging done let's Pterodactyl know that it's ready
+    logging.info('Done')
 
 
 # Ignore in DMs
