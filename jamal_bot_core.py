@@ -377,9 +377,9 @@ async def status_embed(server_address: str):
     Returns:
         embed: Server status information
     """
-    server = JavaServer.lookup(server_address)
 
     try:
+        server = JavaServer.lookup(server_address)
         status = await server.async_status()
         server_latency = round(status.latency, 2)
         status_embed = disnake.Embed(
