@@ -25,6 +25,7 @@ discord_admin_role_id = env.int("DISCORD_ADMIN_ROLE_ID")
 discord_api_key = env("DISCORD_API_KEY")
 discord_mod_role_id = env.int("DISCORD_MOD_ROLE_ID")
 discord_bot_activity = env.str("DISCORD_BOT_ACTIVITY", "Warframe")
+discord_bot_prefixes = env.list("DISCORD_BOT_PREFIXES", 'jamal ,Jamal ,JAMAL ')
 default_server_address = env("DEFAULT_SERVER_ADDRESS")
 log_level = env.log_level("LOG_LEVEL", 'INFO')
 timezone_list = env.list("TIMEZONE_LIST", 'Europe/London,US/Pacific')
@@ -45,12 +46,10 @@ logger.addHandler(handler)
 jamal_bot_database.create_db('jamal_bot_quotes.db')
 
 
-# Allow users to @mention the bot and use three different cased
-# variations of "jamal " with a space
+# Use prefixes from environment variable or use fallback
 # Will no longer be needed after switching to slash commands
 def get_prefix(client, message):
-    prefixes = ['jamal ', 'Jamal ', 'JAMAL ']
-    return commands.when_mentioned_or(*prefixes)(client, message)
+    return commands.when_mentioned_or(*discord_bot_prefixes)(client, message)
 
 
 intents = disnake.Intents.default()
