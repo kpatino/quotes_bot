@@ -68,7 +68,7 @@ jamal_bot = commands.Bot(
 async def on_ready():
     logging.info(f'Logged in as: {jamal_bot.user.name} - {jamal_bot.user.id}')
     logging.info(f'disnake version: {disnake.__version__}')
-    activity = disnake.Game(name='Warframe')
+    activity = disnake.Game(name=discord_bot_activity)
     await jamal_bot.change_presence(
         status=disnake.Status.online,
         activity=activity)
