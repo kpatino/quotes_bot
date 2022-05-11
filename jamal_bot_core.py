@@ -440,6 +440,19 @@ async def slash_status(
     await inter.followup.send(embed=await status_embed(server_address))
 
 
+def current_time(zone: str):
+    """
+    Return the current time at the provided zone
+
+    Args:
+        zone (str): Timezone
+    Returns
+        str: Current formatted time in a string
+    """
+    return(
+        datetime.now(pytz.timezone(zone)).strftime('%b %d %I:%M %p (%H:%M)'))
+
+
 def timezone_embed():
     """
     Create an embed with the current time in different timezones and return it.
@@ -447,38 +460,28 @@ def timezone_embed():
     Returns
         embed: Time in different timezones
     """
-    timezone_UTC = pytz.utc
-    timezone_EL = pytz.timezone('Europe/London')
-    timezone_ET = pytz.timezone('US/Eastern')
-    timezone_CT = pytz.timezone('US/Central')
-    timezone_PT = pytz.timezone('US/Pacific')
-    datetime_UTC = datetime.now(timezone_UTC)
-    datetime_EL = datetime.now(timezone_EL)
-    datetime_ET = datetime.now(timezone_ET)
-    datetime_CT = datetime.now(timezone_CT)
-    datetime_PT = datetime.now(timezone_PT)
 
     embed = disnake.Embed(colour=disnake.Colour.purple())
     embed.set_author(name='jamal bot time')
     embed.add_field(
         name='Universal',
-        value=datetime_UTC.strftime('%b %d %I:%M %p (%H:%M)'),
+        value=current_time('Universal'),
         inline=False)
     embed.add_field(
         name='Europe/London',
-        value=datetime_EL.strftime('%b %d %I:%M %p (%H:%M)'),
+        value=current_time('Europe/London'),
         inline=False)
     embed.add_field(
         name='US/Eastern',
-        value=datetime_ET.strftime('%b %d %I:%M %p (%H:%M)'),
+        value=current_time('US/Eastern'),
         inline=False)
     embed.add_field(
         name='US/Central',
-        value=datetime_CT.strftime('%b %d %I:%M %p (%H:%M)'),
+        value=current_time('US/Central'),
         inline=False)
     embed.add_field(
         name='US/Pacific',
-        value=datetime_PT.strftime('%b %d %I:%M %p (%H:%M)'),
+        value=current_time('US/Pacific'),
         inline=False)
 
     return(embed)
