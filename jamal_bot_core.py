@@ -21,12 +21,13 @@ import jamal_bot_database
 env = Env()
 env.read_env()
 
-admin_role_id = env.int("ADMIN_ROLE_ID")
-default_server_address = env("DEFAULT_SERVER_ADDRESS")
+discord_admin_role_id = env.int("DISCORD_ADMIN_ROLE_ID")
 discord_api_key = env("DISCORD_API_KEY")
-log_level = env.log_level("LOG_LEVEL")
-mod_role_id = env.int("MOD_ROLE_ID")
-timezone_list = env.list("TIMEZONE_LIST")
+discord_mod_role_id = env.int("DISCORD_MOD_ROLE_ID")
+discord_bot_activity = env.str("DISCORD_BOT_ACTIVITY", "Warframe")
+default_server_address = env("DEFAULT_SERVER_ADDRESS")
+log_level = env.log_level("LOG_LEVEL", 'INFO')
+timezone_list = env.list("TIMEZONE_LIST", 'Europe/London,US/Pacific')
 
 # Logging configuration
 log_format = '[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
@@ -206,8 +207,8 @@ async def add(ctx):
     name='name',
     description='Add a "name" to the database')
 @commands.has_any_role(
-    admin_role_id,
-    mod_role_id)
+    discord_admin_role_id,
+    discord_mod_role_id)
 async def add_name(ctx, input_name: str):
     await ctx.send(add_name_command(ctx.message.author.mention, input_name))
 
@@ -299,8 +300,8 @@ async def remove(ctx):
     name='name',
     description='Remove a name and their quotes from the database')
 @commands.has_any_role(
-    admin_role_id,
-    mod_role_id)
+    discord_admin_role_id,
+    discord_mod_role_id)
 async def rm_name(ctx, input_name: str):
     ctx.send(remove_name_command(ctx.message.author.mention, input_name))
 
