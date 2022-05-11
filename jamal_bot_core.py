@@ -463,26 +463,13 @@ def timezone_embed():
 
     embed = disnake.Embed(colour=disnake.Colour.purple())
     embed.set_author(name='jamal bot time')
-    embed.add_field(
-        name='Universal',
-        value=current_time('Universal'),
-        inline=False)
-    embed.add_field(
-        name='Europe/London',
-        value=current_time('Europe/London'),
-        inline=False)
-    embed.add_field(
-        name='US/Eastern',
-        value=current_time('US/Eastern'),
-        inline=False)
-    embed.add_field(
-        name='US/Central',
-        value=current_time('US/Central'),
-        inline=False)
-    embed.add_field(
-        name='US/Pacific',
-        value=current_time('US/Pacific'),
-        inline=False)
+
+    user_timezones = os.environ.get('TIMEZONES').split(",")
+    for tz in user_timezones:
+        embed.add_field(
+            name=tz,
+            value=current_time(tz),
+            inline=False)
 
     return(embed)
 
