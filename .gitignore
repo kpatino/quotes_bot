@@ -141,10 +141,9 @@ cython_debug/
 .vscode/
 
 # Jamal specific files
-*.log
 jamal_bot_quotes.db
 
-# Pterodactyl Docker container folders
+# Pterodactyl Docker container folders and files
 .cache/
 .local/
 .pteroignore
