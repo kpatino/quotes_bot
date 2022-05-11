@@ -1,4 +1,4 @@
 disnake
+environs
 mcstatus
-python-dotenv
 pytz

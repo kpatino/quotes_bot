@@ -7,19 +7,26 @@
 
 import asyncio
 import logging
-import os
 from datetime import datetime
 
 import disnake
 import pytz
 from disnake.ext import commands
-from dotenv import load_dotenv
+from environs import Env
 from mcstatus import JavaServer
 
 import jamal_bot_database
 
-# Load environment variables from .env
-load_dotenv()
+# Load environment variables
+env = Env()
+env.read_env()
+
+admin_role_id = env.int("ADMIN_ROLE_ID")
+default_server_address = env("DEFAULT_SERVER_ADDRESS")
+discord_api_key = env("DISCORD_API_KEY")
+log_level = env.log_level("LOG_LEVEL")
+mod_role_id = env.int("MOD_ROLE_ID")
+timezone_list = env.list("TIMEZONE_LIST")
 
 # Logging configuration
 logfilename = (
@@ -201,8 +208,8 @@ async def add(ctx):
     name='name',
     description='Add a "name" to the database')
 @commands.has_any_role(
-    int(os.getenv('ADMIN_ROLE_ID')),
-    int(os.getenv('MOD_ROLE_ID')))
+    admin_role_id,
+    mod_role_id)
 async def add_name(ctx, input_name: str):
     await ctx.send(add_name_command(ctx.message.author.mention, input_name))
 
@@ -298,8 +305,8 @@ async def remove(ctx):
     name='name',
     description='Remove a name and their quotes from the database')
 @commands.has_any_role(
-    int(os.getenv('ADMIN_ROLE_ID')),
-    int(os.getenv('MOD_ROLE_ID')))
+    admin_role_id,
+    mod_role_id)
 async def rm_name(ctx, input_name: str):
     ctx.send(remove_name_command(ctx.message.author.mention, input_name))
 
@@ -420,14 +427,14 @@ async def status_embed(server_address: str):
 
 # {server_address} is optional
 @jamal_bot.command(description='Get the status of a Minecraft server.')
-async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
+async def status(ctx, server_address=default_server_address):
     await ctx.send(embed=await status_embed(server_address))
 
 
 @jamal_bot.slash_command(
     name='status',
     description='Get the status of a Minecraft server. '
-                f'By default query {os.getenv("DEFAULT_SERVER_ADDRESS")}',
+                f'By default query {default_server_address}',
     options=[
         disnake.Option(
             "server_address",
@@ -435,7 +442,7 @@ async def status(ctx, server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
     )
 async def slash_status(
     inter: disnake.ApplicationCommandInteraction,
-        server_address=os.getenv('DEFAULT_SERVER_ADDRESS')):
+        server_address=default_server_address):
     await inter.response.defer(with_message=True)
     await inter.followup.send(embed=await status_embed(server_address))
 
@@ -464,8 +471,7 @@ def timezone_embed():
     embed = disnake.Embed(colour=disnake.Colour.purple())
     embed.set_author(name='jamal bot time')
 
-    user_timezones = os.environ.get('TIMEZONES').split(",")
-    for tz in user_timezones:
+    for tz in timezone_list:
         embed.add_field(
             name=tz,
             value=current_time(tz),
@@ -486,4 +492,4 @@ async def slash_time(inter):
     await inter.response.send_message(embed=timezone_embed())
 
 
-jamal_bot.run(os.getenv('DISCORD_API_KEY'))
+jamal_bot.run(discord_api_key)
