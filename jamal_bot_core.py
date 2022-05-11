@@ -29,17 +29,15 @@ mod_role_id = env.int("MOD_ROLE_ID")
 timezone_list = env.list("TIMEZONE_LIST")
 
 # Logging configuration
+log_format = '[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
+date_format = '%Y-%m-%d %H:%M:%S'
 logfilename = (
     'jamal_bot_' + str(datetime.now().strftime('%Y_%m_%d_%H_%M_%S')) + '.log')
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s:%(levelname)s:%(name)s: %(message)s')
+logging.basicConfig(level=log_level, format=log_format, datefmt=date_format)
 logger = logging.getLogger('disnake')
-logger.setLevel(logging.INFO)
-handler = logging.FileHandler(
-    filename=logfilename, encoding='utf-8', mode='w')
-handler.setFormatter(
-    logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.setLevel(log_level)
+handler = logging.FileHandler(filename=logfilename, encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter(log_format, datefmt=date_format))
 logger.addHandler(handler)
 
 # Only creates the database if it doesn't exist
