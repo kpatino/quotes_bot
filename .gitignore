@@ -140,6 +140,9 @@ cython_debug/
 # vscode specific files
 .vscode/
 
+# pycharm
+.idea/
+
 # Jamal specific files
 *.log
 jamal_bot_quotes.db
