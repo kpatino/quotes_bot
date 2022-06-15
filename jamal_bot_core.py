@@ -407,11 +407,14 @@ async def status_embed(server_address: str):
                 text=f'Ping: {server_latency} ms')
             return status_embed
 
-        except Exception:
+        except asyncio.exceptions.TimeoutError:
+            logging.info(f"Failed to query server at {server_address}")
+            logging.info(f"Using lookup instead for {server_address}")
             status_embed.set_footer(text=f'Ping: {server_latency} ms')
             return status_embed
 
-    except Exception:
+    except asyncio.exceptions.TimeoutError:
+        logging.info(f"Could not lookup server at {server_address}")
         error_embed = disnake.Embed(
            title='Could not contact server',
            colour=disnake.Colour.red())
