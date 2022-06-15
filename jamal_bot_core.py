@@ -116,9 +116,9 @@ def access_command(name: str):
     """
     name = name.lower()
     if jamal_bot_database.check_name(name) is True:
-        return(jamal_bot_database.get_quote(name))
+        return jamal_bot_database.get_quote(name)
     else:
-        return(f'The name "{name}" is not in the database')
+        return f'The name "{name}" is not in the database'
 
 
 @jamal_bot.command(description='Access a random quote by name')
@@ -160,13 +160,13 @@ def add_name_command(author, name: str):
     """
     name = name.lower()
     if jamal_bot_database.check_name(name) is True:
-        return (f'The name "{name}" is already in the database')
+        return f'The name "{name}" is already in the database'
     else:
         try:
             jamal_bot_database.add_name(name)
-            return(f'{author} added "{name}" to the database')
+            return f'{author} added "{name}" to the database'
         except Exception:
-            return('Could not add the name to the database')
+            return 'Could not add the name to the database'
 
 
 def add_quote_command(name: str, quote: str):
@@ -184,15 +184,15 @@ def add_quote_command(name: str, quote: str):
     name = name.lower()
     try:
         if jamal_bot_database.check_name(name) is False:
-            return(f'The name "{name}" is not in the database')
+            return f'The name "{name}" is not in the database'
         else:
             if quote == "":
-                return ('A quote was not provided, try `jamal help` for help')
+                return 'A quote was not provided, try `jamal help` for help'
             else:
                 jamal_bot_database.add_quote(name, quote)
-                return(f'Added “{quote}” to {name}')
+                return f'Added “{quote}” to {name}'
     except Exception:
-        return('Could not add the quote to the database')
+        return 'Could not add the quote to the database'
 
 
 @jamal_bot.group(name='add', description='Add a name or quote to the database')
@@ -279,12 +279,12 @@ def remove_name_command(author, name: str):
     name = name.lower()
     try:
         if jamal_bot_database.check_name(name) is False:
-            return(f'"{name}" is not in the database')
+            return f'"{name}" is not in the database'
         else:
             jamal_bot_database.remove_name(name)
-            return(f'{author} removed "{name}" from the database')
+            return f'{author} removed "{name}" from the database'
     except Exception:
-        return('Could not remove name from the database')
+        return 'Could not remove name from the database'
 
 
 @jamal_bot.group(
@@ -405,17 +405,17 @@ async def status_embed(server_address: str):
                 inline=True)
             status_embed.set_footer(
                 text=f'Ping: {server_latency} ms')
-            return(status_embed)
+            return status_embed
 
         except Exception:
             status_embed.set_footer(text=f'Ping: {server_latency} ms')
-            return(status_embed)
+            return status_embed
 
     except Exception:
         error_embed = disnake.Embed(
            title='Could not contact server',
            colour=disnake.Colour.red())
-        return(error_embed)
+        return error_embed
 
 
 # {server_address} is optional
@@ -448,8 +448,7 @@ def current_time(zone: str):
     Returns
         str: Current formatted time in a string
     """
-    return(
-        datetime.now(pytz.timezone(zone)).strftime('%b %d %I:%M %p (%H:%M)'))
+    return datetime.now(pytz.timezone(zone)).strftime('%b %d %I:%M %p (%H:%M)')
 
 
 def timezone_embed():
@@ -469,7 +468,7 @@ def timezone_embed():
             value=current_time(tz),
             inline=False)
 
-    return(embed)
+    return embed
 
 
 @jamal_bot.command(description='Get the current time in different timezones')
