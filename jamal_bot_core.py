@@ -172,10 +172,10 @@ def add_name_command(author, name: str):
 def add_quote_command(name: str, quote: str):
     """
     Add a quote to the database attributed to a name
-    Return message with information on whether or not it was succesful.
+    Return message with information on whether it was successful.
 
     Args:
-        name (str): Name to attribute the quote
+        name (str): Name for quote attribution
         quote (str): The quote in a string value
 
     Returns:
