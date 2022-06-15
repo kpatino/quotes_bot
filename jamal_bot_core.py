@@ -71,7 +71,7 @@ async def on_ready():
     await jamal_bot.change_presence(
         status=disnake.Status.online,
         activity=activity)
-    # Logging done let's Pterodactyl know that it's ready
+    # Logging done lets Pterodactyl know that it's ready
     logging.info('Done')
 
 
