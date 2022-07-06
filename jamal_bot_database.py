@@ -27,7 +27,7 @@ def create_db(db_name: str) -> None:
     """
     Create a database with people and quotes tables. The people table contains
     one column "name". Each record under "name" must be unique. The quotes
-    table contains the columns id, name, and quote. The ID column must be
+    table contains the columns' id, name, and quote. The ID column must be
     unique. The name column is a foreign key to the name column in the people
     table.
 
@@ -89,7 +89,7 @@ def get_names_list() -> list:
 
 def add_name(name: str) -> None:
     """
-    Adds a name to the to the people table.
+    Adds a name to the people table.
 
     Args:
         name (str): String to add to the people table
@@ -100,7 +100,7 @@ def add_name(name: str) -> None:
 
 def remove_name(name: str) -> None:
     """
-    Remove a associated quotes first then remove the name entry from the
+    Remove associated quotes first then remove the name entry from the
     people table. This action is not reversible.
 
     Args:
@@ -132,7 +132,7 @@ def check_name(name: str) -> bool:
 def get_quote(name: str) -> str:
     """
     Retrieves a random quote from the database by name in the quotes table.
-    If no quotes are are found return a message letting the user know there
+    If no quotes are found return a message letting the user know there
     are no quotes attributed to the provided name.
 
     Args:
