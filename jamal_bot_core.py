@@ -42,9 +42,6 @@ handler = logging.FileHandler(filename=logfilename, encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter(log_format, datefmt=date_format))
 logger.addHandler(handler)
 
-# Only creates the database if it doesn't exist
-jamal_bot_database.create_db('jamal_bot_quotes.db')
-
 
 # Use prefixes from environment variable or use fallback
 # Will no longer be needed after switching to slash commands
