@@ -381,40 +381,43 @@ async def status_embed(server_address: str):
     """
 
     try:
+        logging.info(f"Looking up {server_address}")
         server = JavaServer.lookup(server_address)
-        status = await server.async_status()
-        server_latency = round(status.latency, 2)
-        status_embed = disnake.Embed(
+        server_status = await server.async_status()
+        server_latency = round(server_status.latency, 2)
+        server_status_embed = disnake.Embed(
            title=server_address,
-           description=status.version.name,
+           description=server_status.version.name,
            colour=disnake.Colour.green())
-        status_embed.add_field(
+        server_status_embed.add_field(
             name='Description',
             # Unicode blank prevents an empty "value"
-            value=f'\u200b```{status.description}```',
+            value=f'```\u200b{server_status.description}```',
             inline=False)
-        status_embed.add_field(
+        server_status_embed.add_field(
             name='Count',
-            value=f'{status.players.online}/{status.players.max}',
+            value=f'{server_status.players.online}/{server_status.players.max}',
             inline=True)
 
         try:
+            logging.info(f"Querying server at {server_address}")
             query = await server.async_query()
+            logging.info(f"Successfully queried server at {server_address}")
             server_players = (", ".join(query.players.names))
-            status_embed.add_field(
+            server_status_embed.add_field(
                 name="Players",
                 # Unicode blank prevents an empty "value"
                 value=f'\u200b{server_players}',
                 inline=True)
-            status_embed.set_footer(
+            server_status_embed.set_footer(
                 text=f'Ping: {server_latency} ms')
-            return status_embed
+            return server_status_embed
 
         except asyncio.exceptions.TimeoutError:
             logging.info(f"Failed to query server at {server_address}")
             logging.info(f"Using lookup instead for {server_address}")
-            status_embed.set_footer(text=f'Ping: {server_latency} ms')
-            return status_embed
+            server_status_embed.set_footer(text=f'Ping: {server_latency} ms')
+            return server_status_embed
 
     except asyncio.exceptions.TimeoutError:
         logging.info(f"Could not lookup server at {server_address}")
