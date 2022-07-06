@@ -1,4 +1,4 @@
-disnake
-environs
-mcstatus
-pytz
+disnake==2.5.1
+environs==9.5.0
+mcstatus==9.2.0
+pytz==2022.1

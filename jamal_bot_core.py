@@ -42,9 +42,6 @@ handler = logging.FileHandler(filename=logfilename, encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter(log_format, datefmt=date_format))
 logger.addHandler(handler)
 
-# Only creates the database if it doesn't exist
-jamal_bot_database.create_db('jamal_bot_quotes.db')
-
 
 # Use prefixes from environment variable or use fallback
 # Will no longer be needed after switching to slash commands
@@ -71,7 +68,7 @@ async def on_ready():
     await jamal_bot.change_presence(
         status=disnake.Status.online,
         activity=activity)
-    # Logging done let's Pterodactyl know that it's ready
+    # Logging done lets Pterodactyl know that it's ready
     logging.info('Done')
 
 
@@ -91,15 +88,17 @@ async def on_command_error(ctx, error):
         await ctx.send('Missing required role')
 
 
-@jamal_bot.command(description='List available names from the database')
-async def list(ctx):
+@jamal_bot.command(
+    name='list',
+    description='List available names from the database')
+async def list_names(ctx):
     await ctx.send(jamal_bot_database.get_names())
 
 
 @jamal_bot.slash_command(
     name='list',
     description='List available names from the database')
-async def slash_list(inter):
+async def slash_list_names(inter):
     await inter.response.send_message(jamal_bot_database.get_names())
 
 
@@ -116,9 +115,9 @@ def access_command(name: str):
     """
     name = name.lower()
     if jamal_bot_database.check_name(name) is True:
-        return(jamal_bot_database.get_quote(name))
+        return jamal_bot_database.get_quote(name)
     else:
-        return(f'The name "{name}" is not in the database')
+        return f'The name "{name}" is not in the database'
 
 
 @jamal_bot.command(description='Access a random quote by name')
@@ -160,22 +159,22 @@ def add_name_command(author, name: str):
     """
     name = name.lower()
     if jamal_bot_database.check_name(name) is True:
-        return (f'The name "{name}" is already in the database')
+        return f'The name "{name}" is already in the database'
     else:
         try:
             jamal_bot_database.add_name(name)
-            return(f'{author} added "{name}" to the database')
+            return f'{author} added "{name}" to the database'
         except Exception:
-            return('Could not add the name to the database')
+            return 'Could not add the name to the database'
 
 
 def add_quote_command(name: str, quote: str):
     """
     Add a quote to the database attributed to a name
-    Return message with information on whether or not it was succesful.
+    Return message with information on whether it was successful.
 
     Args:
-        name (str): Name to attribute the quote
+        name (str): Name for quote attribution
         quote (str): The quote in a string value
 
     Returns:
@@ -184,15 +183,15 @@ def add_quote_command(name: str, quote: str):
     name = name.lower()
     try:
         if jamal_bot_database.check_name(name) is False:
-            return(f'The name "{name}" is not in the database')
+            return f'The name "{name}" is not in the database'
         else:
             if quote == "":
-                return ('A quote was not provided, try `jamal help` for help')
+                return 'A quote was not provided, try `jamal help` for help'
             else:
                 jamal_bot_database.add_quote(name, quote)
-                return(f'Added “{quote}” to {name}')
+                return f'Added “{quote}” to {name}'
     except Exception:
-        return('Could not add the quote to the database')
+        return 'Could not add the quote to the database'
 
 
 @jamal_bot.group(name='add', description='Add a name or quote to the database')
@@ -279,12 +278,12 @@ def remove_name_command(author, name: str):
     name = name.lower()
     try:
         if jamal_bot_database.check_name(name) is False:
-            return(f'"{name}" is not in the database')
+            return f'"{name}" is not in the database'
         else:
             jamal_bot_database.remove_name(name)
-            return(f'{author} removed "{name}" from the database')
+            return f'{author} removed "{name}" from the database'
     except Exception:
-        return('Could not remove name from the database')
+        return 'Could not remove name from the database'
 
 
 @jamal_bot.group(
@@ -351,6 +350,7 @@ async def quotes(ctx):
     description='Get a random quote and guess who said it')
 async def slash_quotes(inter):
     name = jamal_bot_database.random_name()
+    guess = ''
     await inter.response.send_message(
         f'Who said “{jamal_bot_database.get_quote(name)}”')
 
@@ -378,49 +378,56 @@ async def status_embed(server_address: str):
     """
 
     try:
+        logging.info(f"Looking up {server_address}")
         server = JavaServer.lookup(server_address)
-        status = await server.async_status()
-        server_latency = round(status.latency, 2)
-        status_embed = disnake.Embed(
+        server_status = await server.async_status()
+        server_latency = round(server_status.latency, 2)
+        server_status_embed = disnake.Embed(
            title=server_address,
-           description=status.version.name,
+           description=server_status.version.name,
            colour=disnake.Colour.green())
-        status_embed.add_field(
+        server_status_embed.add_field(
             name='Description',
             # Unicode blank prevents an empty "value"
-            value=f'\u200b```{status.description}```',
+            value=f'```\u200b{server_status.description}```',
             inline=False)
-        status_embed.add_field(
+        server_status_embed.add_field(
             name='Count',
-            value=f'{status.players.online}/{status.players.max}',
+            value=f'{server_status.players.online}/{server_status.players.max}',
             inline=True)
 
         try:
+            logging.info(f"Querying server at {server_address}")
             query = await server.async_query()
+            logging.info(f"Successfully queried server at {server_address}")
             server_players = (", ".join(query.players.names))
-            status_embed.add_field(
+            server_status_embed.add_field(
                 name="Players",
                 # Unicode blank prevents an empty "value"
                 value=f'\u200b{server_players}',
                 inline=True)
-            status_embed.set_footer(
+            server_status_embed.set_footer(
                 text=f'Ping: {server_latency} ms')
-            return(status_embed)
+            return server_status_embed
 
-        except Exception:
-            status_embed.set_footer(text=f'Ping: {server_latency} ms')
-            return(status_embed)
+        except asyncio.exceptions.TimeoutError:
+            logging.info(f"Failed to query server at {server_address}")
+            logging.info(f"Using lookup instead for {server_address}")
+            server_status_embed.set_footer(text=f'Ping: {server_latency} ms')
+            return server_status_embed
 
-    except Exception:
+    except asyncio.exceptions.TimeoutError:
+        logging.info(f"Could not lookup server at {server_address}")
         error_embed = disnake.Embed(
            title='Could not contact server',
            colour=disnake.Colour.red())
-        return(error_embed)
+        return error_embed
 
 
 # {server_address} is optional
 @jamal_bot.command(description='Get the status of a Minecraft server.')
 async def status(ctx, server_address=default_server_address):
+    logging.info(f"{ctx.message.author} used status command")
     await ctx.send(embed=await status_embed(server_address))
 
 
@@ -435,6 +442,7 @@ async def status(ctx, server_address=default_server_address):
 async def slash_status(
     inter: disnake.ApplicationCommandInteraction,
         server_address=default_server_address):
+    logging.info(f"{inter.user} used status slash command")
     await inter.response.defer(with_message=True)
     await inter.followup.send(embed=await status_embed(server_address))
 
@@ -448,8 +456,7 @@ def current_time(zone: str):
     Returns
         str: Current formatted time in a string
     """
-    return(
-        datetime.now(pytz.timezone(zone)).strftime('%b %d %I:%M %p (%H:%M)'))
+    return datetime.now(pytz.timezone(zone)).strftime('%b %d %I:%M %p (%H:%M)')
 
 
 def timezone_embed():
@@ -469,7 +476,7 @@ def timezone_embed():
             value=current_time(tz),
             inline=False)
 
-    return(embed)
+    return embed
 
 
 @jamal_bot.command(description='Get the current time in different timezones')
@@ -483,5 +490,8 @@ async def time(ctx):
 async def slash_time(inter):
     await inter.response.send_message(embed=timezone_embed())
 
+if __name__ == '__main__':
+    # Only creates the database if it doesn't exist
+    jamal_bot_database.create_db('jamal_bot_quotes.db')
 
-jamal_bot.run(discord_api_key)
+    jamal_bot.run(discord_api_key)

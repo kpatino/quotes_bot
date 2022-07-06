@@ -23,11 +23,11 @@ class OpenDatabase(object):
         self.conn.close()
 
 
-def create_db(db_name: str):
+def create_db(db_name: str) -> None:
     """
     Create a database with people and quotes tables. The people table contains
     one column "name". Each record under "name" must be unique. The quotes
-    table contains the columns id, name, and quote. The ID column must be
+    table contains the columns' id, name, and quote. The ID column must be
     unique. The name column is a foreign key to the name column in the people
     table.
 
@@ -51,7 +51,7 @@ def create_db(db_name: str):
         cursor.execute(create_quotes_table)
 
 
-def get_names():
+def get_names() -> str:
     """
     Return a string with all the names recorded in the people table.
 
@@ -66,10 +66,10 @@ def get_names():
         ]
         names.sort()
         names = ', '.join(map(str, names,))
-        return(names)
+        return names
 
 
-def get_names_list():
+def get_names_list() -> list:
     """
     Return a list of the first 20 names in the people table in alphabetical
     order.
@@ -84,12 +84,12 @@ def get_names_list():
             v[0] for v in cursor.fetchall()
         ]
         names_list.sort()
-        return(names_list[:20])
+        return names_list[:20]
 
 
-def add_name(name: str):
+def add_name(name: str) -> None:
     """
-    Adds a name to the to the people table.
+    Adds a name to the people table.
 
     Args:
         name (str): String to add to the people table
@@ -98,9 +98,9 @@ def add_name(name: str):
         cursor.execute("INSERT INTO people ('name') VALUES (?)", (name,))
 
 
-def remove_name(name: str):
+def remove_name(name: str) -> None:
     """
-    Remove a associated quotes first then remove the name entry from the
+    Remove associated quotes first then remove the name entry from the
     people table. This action is not reversible.
 
     Args:
@@ -111,7 +111,7 @@ def remove_name(name: str):
         cursor.execute("DELETE FROM people WHERE name == (?);", (name,))
 
 
-def check_name(name: str):
+def check_name(name: str) -> bool:
     """
     Checks if the name provided has an entry in the people table and returns a
     boolean.
@@ -124,15 +124,15 @@ def check_name(name: str):
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute("SELECT count(name) FROM people WHERE name=?", (name,))
         if cursor.fetchone()[0] == 1:
-            return(True)
+            return True
         else:
-            return(False)
+            return False
 
 
-def get_quote(name: str):
+def get_quote(name: str) -> str:
     """
     Retrieves a random quote from the database by name in the quotes table.
-    If no quotes are are found return a message letting the user know there
+    If no quotes are found return a message letting the user know there
     are no quotes attributed to the provided name.
 
     Args:
@@ -146,12 +146,12 @@ def get_quote(name: str):
                 "SELECT quote FROM quotes "
                 "WHERE name=? ORDER BY RANDOM() LIMIT 1",
                 (name,))
-            return(str(cursor.fetchone()[0]))
+            return str(cursor.fetchone()[0])
         except TypeError:
-            return(f"{name} does not have any quotes")
+            return f"{name} does not have any quotes"
 
 
-def add_quote(name: str, quote: str):
+def add_quote(name: str, quote: str) -> None:
     """
     Add an attributed quote to the database.
 
@@ -165,7 +165,7 @@ def add_quote(name: str, quote: str):
             (name, quote,))
 
 
-def random_name():
+def random_name() -> str:
     """
     Retrieve a random name from the people table.
 
@@ -178,11 +178,10 @@ def random_name():
         names_list = [
             v[0] for v in cursor.fetchall()
         ]
-        name = random.choice(names_list)
-        return(str(name))
+        return str(random.choice(names_list))
 
 
-def list_quotes(name: str):
+def list_quotes(name: str) -> list:
     """
     Unused function to retrieve a list of all the quotes attributed to the
     given name.
@@ -194,5 +193,4 @@ def list_quotes(name: str):
     """
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute("SELECT * FROM quotes WHERE name == (?);", (name,))
-        items = cursor.fetchall()
-        return(items)
+        return cursor.fetchall()
