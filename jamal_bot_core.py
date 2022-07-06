@@ -353,6 +353,7 @@ async def quotes(ctx):
     description='Get a random quote and guess who said it')
 async def slash_quotes(inter):
     name = jamal_bot_database.random_name()
+    guess = ''
     await inter.response.send_message(
         f'Who said “{jamal_bot_database.get_quote(name)}”')
 
