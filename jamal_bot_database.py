@@ -23,7 +23,7 @@ class OpenDatabase(object):
         self.conn.close()
 
 
-def create_db(db_name: str):
+def create_db(db_name: str) -> None:
     """
     Create a database with people and quotes tables. The people table contains
     one column "name". Each record under "name" must be unique. The quotes
@@ -51,7 +51,7 @@ def create_db(db_name: str):
         cursor.execute(create_quotes_table)
 
 
-def get_names():
+def get_names() -> str:
     """
     Return a string with all the names recorded in the people table.
 
@@ -69,7 +69,7 @@ def get_names():
         return(names)
 
 
-def get_names_list():
+def get_names_list() -> list:
     """
     Return a list of the first 20 names in the people table in alphabetical
     order.
@@ -87,7 +87,7 @@ def get_names_list():
         return(names_list[:20])
 
 
-def add_name(name: str):
+def add_name(name: str) -> None:
     """
     Adds a name to the to the people table.
 
@@ -98,7 +98,7 @@ def add_name(name: str):
         cursor.execute("INSERT INTO people ('name') VALUES (?)", (name,))
 
 
-def remove_name(name: str):
+def remove_name(name: str) -> None:
     """
     Remove a associated quotes first then remove the name entry from the
     people table. This action is not reversible.
@@ -111,7 +111,7 @@ def remove_name(name: str):
         cursor.execute("DELETE FROM people WHERE name == (?);", (name,))
 
 
-def check_name(name: str):
+def check_name(name: str) -> bool:
     """
     Checks if the name provided has an entry in the people table and returns a
     boolean.
@@ -129,7 +129,7 @@ def check_name(name: str):
             return(False)
 
 
-def get_quote(name: str):
+def get_quote(name: str) -> str:
     """
     Retrieves a random quote from the database by name in the quotes table.
     If no quotes are are found return a message letting the user know there
@@ -151,7 +151,7 @@ def get_quote(name: str):
             return(f"{name} does not have any quotes")
 
 
-def add_quote(name: str, quote: str):
+def add_quote(name: str, quote: str) -> None:
     """
     Add an attributed quote to the database.
 
@@ -165,7 +165,7 @@ def add_quote(name: str, quote: str):
             (name, quote,))
 
 
-def random_name():
+def random_name() -> str:
     """
     Retrieve a random name from the people table.
 
@@ -182,7 +182,7 @@ def random_name():
         return(str(name))
 
 
-def list_quotes(name: str):
+def list_quotes(name: str) -> list:
     """
     Unused function to retrieve a list of all the quotes attributed to the
     given name.
