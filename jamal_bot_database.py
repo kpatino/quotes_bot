@@ -66,7 +66,7 @@ def get_names() -> str:
         ]
         names.sort()
         names = ', '.join(map(str, names,))
-        return(names)
+        return names
 
 
 def get_names_list() -> list:
@@ -84,7 +84,7 @@ def get_names_list() -> list:
             v[0] for v in cursor.fetchall()
         ]
         names_list.sort()
-        return(names_list[:20])
+        return names_list[:20]
 
 
 def add_name(name: str) -> None:
@@ -124,9 +124,9 @@ def check_name(name: str) -> bool:
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute("SELECT count(name) FROM people WHERE name=?", (name,))
         if cursor.fetchone()[0] == 1:
-            return(True)
+            return True
         else:
-            return(False)
+            return False
 
 
 def get_quote(name: str) -> str:
@@ -146,9 +146,9 @@ def get_quote(name: str) -> str:
                 "SELECT quote FROM quotes "
                 "WHERE name=? ORDER BY RANDOM() LIMIT 1",
                 (name,))
-            return(str(cursor.fetchone()[0]))
+            return str(cursor.fetchone()[0])
         except TypeError:
-            return(f"{name} does not have any quotes")
+            return f"{name} does not have any quotes"
 
 
 def add_quote(name: str, quote: str) -> None:
@@ -178,8 +178,7 @@ def random_name() -> str:
         names_list = [
             v[0] for v in cursor.fetchall()
         ]
-        name = random.choice(names_list)
-        return(str(name))
+        return str(random.choice(names_list))
 
 
 def list_quotes(name: str) -> list:
@@ -194,5 +193,4 @@ def list_quotes(name: str) -> list:
     """
     with OpenDatabase('./jamal_bot_quotes.db') as cursor:
         cursor.execute("SELECT * FROM quotes WHERE name == (?);", (name,))
-        items = cursor.fetchall()
-        return(items)
+        return cursor.fetchall()
