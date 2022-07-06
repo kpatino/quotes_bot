@@ -493,5 +493,8 @@ async def time(ctx):
 async def slash_time(inter):
     await inter.response.send_message(embed=timezone_embed())
 
+if __name__ == '__main__':
+    # Only creates the database if it doesn't exist
+    jamal_bot_database.create_db('jamal_bot_quotes.db')
 
-jamal_bot.run(discord_api_key)
+    jamal_bot.run(discord_api_key)
