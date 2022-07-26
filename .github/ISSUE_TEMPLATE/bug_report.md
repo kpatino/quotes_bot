@@ -27,7 +27,7 @@ If applicable, add screenshots to help explain your problem.
 **Environment Information (please complete the following information):**
 Operating System
 Python Version
-Discord.py version
+Disnake version
 
 **Additional context**
 Add any other context about the problem here.
