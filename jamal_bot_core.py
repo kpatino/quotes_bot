@@ -34,7 +34,7 @@ timezone_list = env.list("TIMEZONE_LIST", 'Europe/London,US/Pacific')
 log_format = '[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
 date_format = '%Y-%m-%d %H:%M:%S'
 logfilename = (
-    'jamal_bot_' + str(datetime.now().strftime('%Y_%m_%d_%H_%M_%S')) + '.log')
+    f'logs/jamal_bot_{str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))}.log')
 logging.basicConfig(level=log_level, format=log_format, datefmt=date_format)
 logger = logging.getLogger('disnake')
 logger.setLevel(log_level)
