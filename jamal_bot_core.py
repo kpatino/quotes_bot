@@ -34,7 +34,7 @@ timezone_list = env.list("TIMEZONE_LIST", 'Europe/London,US/Pacific')
 log_format = '[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
 date_format = '%Y-%m-%d %H:%M:%S'
 logfilename = (
-    'jamal_bot_' + str(datetime.now().strftime('%Y_%m_%d_%H_%M_%S')) + '.log')
+    f'logs/jamal_bot_{str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))}.log')
 logging.basicConfig(level=log_level, format=log_format, datefmt=date_format)
 logger = logging.getLogger('disnake')
 logger.setLevel(log_level)
@@ -86,6 +86,8 @@ async def on_command_error(ctx, error):
         await ctx.send('Missing required argument, try `jamal help` for help')
     if isinstance(error, commands.MissingAnyRole):
         await ctx.send('Missing required role')
+    if isinstance(error, commands.CommandInvokeError):
+        await ctx.send('Invoked command raised an exception')
 
 
 @jamal_bot.command(
@@ -161,11 +163,8 @@ def add_name_command(author, name: str):
     if jamal_bot_database.check_name(name) is True:
         return f'The name "{name}" is already in the database'
     else:
-        try:
-            jamal_bot_database.add_name(name)
-            return f'{author} added "{name}" to the database'
-        except Exception:
-            return 'Could not add the name to the database'
+        jamal_bot_database.add_name(name)
+        return f'{author} added "{name}" to the database'
 
 
 def add_quote_command(name: str, quote: str):
@@ -181,17 +180,14 @@ def add_quote_command(name: str, quote: str):
         str: Message with status information
     """
     name = name.lower()
-    try:
-        if jamal_bot_database.check_name(name) is False:
-            return f'The name "{name}" is not in the database'
+    if jamal_bot_database.check_name(name) is False:
+        return f'The name "{name}" is not in the database'
+    else:
+        if quote == "":
+            return 'A quote was not provided, try `jamal help` for help'
         else:
-            if quote == "":
-                return 'A quote was not provided, try `jamal help` for help'
-            else:
-                jamal_bot_database.add_quote(name, quote)
-                return f'Added “{quote}” to {name}'
-    except Exception:
-        return 'Could not add the quote to the database'
+            jamal_bot_database.add_quote(name, quote)
+            return f'Added “{quote}” to {name}'
 
 
 @jamal_bot.group(name='add', description='Add a name or quote to the database')
@@ -276,14 +272,11 @@ def remove_name_command(author, name: str):
         str: Message with status
     """
     name = name.lower()
-    try:
-        if jamal_bot_database.check_name(name) is False:
-            return f'"{name}" is not in the database'
-        else:
-            jamal_bot_database.remove_name(name)
-            return f'{author} removed "{name}" from the database'
-    except Exception:
-        return 'Could not remove name from the database'
+    if jamal_bot_database.check_name(name) is False:
+        return f'"{name}" is not in the database'
+    else:
+        jamal_bot_database.remove_name(name)
+        return f'{author} removed "{name}" from the database'
 
 
 @jamal_bot.group(
