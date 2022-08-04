@@ -7,6 +7,7 @@
 
 import asyncio
 import logging
+import os
 from datetime import datetime
 
 import disnake
@@ -29,6 +30,9 @@ discord_bot_prefixes = env.list("DISCORD_BOT_PREFIXES", 'jamal ,Jamal ,JAMAL ')
 default_server_address = env("DEFAULT_SERVER_ADDRESS")
 log_level = env.log_level("LOG_LEVEL", 'INFO')
 timezone_list = env.list("TIMEZONE_LIST", 'Europe/London,US/Pacific')
+
+# Create logs folder if it doesn't exist
+os.makedirs("logs", exist_ok=True)
 
 # Logging configuration
 log_format = '[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
