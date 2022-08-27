@@ -424,7 +424,6 @@ async def status_embed(server_address: str):
 # {server_address} is optional
 @jamal_bot.command(description='Get the status of a Minecraft server.')
 async def status(ctx, server_address=default_server_address):
-    logging.info(f"{ctx.message.author} used status command")
     await ctx.send(embed=await status_embed(server_address))
 
 
@@ -439,7 +438,6 @@ async def status(ctx, server_address=default_server_address):
 async def slash_status(
     inter: disnake.ApplicationCommandInteraction,
         server_address=default_server_address):
-    logging.info(f"{inter.user} used status slash command")
     await inter.response.defer(with_message=True)
     await inter.followup.send(embed=await status_embed(server_address))
 
