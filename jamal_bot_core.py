@@ -443,18 +443,6 @@ async def slash_status(
     await inter.followup.send(embed=await status_embed(server_address))
 
 
-def current_time(zone: str):
-    """
-    Return the current time at the provided zone
-
-    Args:
-        zone (str): Timezone
-    Returns
-        str: Current formatted time in a string
-    """
-    return datetime.now(pytz.timezone(zone)).strftime('%b %d %I:%M %p (%H:%M)')
-
-
 def timezone_embed():
     """
     Create an embed with the current time in different timezones and return it.
@@ -469,7 +457,8 @@ def timezone_embed():
     for tz in timezone_list:
         embed.add_field(
             name=tz,
-            value=current_time(tz),
+            value=datetime.now(
+                pytz.timezone(tz)).strftime('%b %d %I:%M %p (%H:%M)'),
             inline=False)
 
     return embed
