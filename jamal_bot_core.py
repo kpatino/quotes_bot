@@ -12,7 +12,7 @@ from datetime import datetime
 
 import disnake
 import pytz
-from disnake.ext import commands
+from disnake.ext import commands, tasks
 from environs import Env
 from mcstatus import JavaServer
 
@@ -82,6 +82,12 @@ async def globally_block_dms(ctx):
     return ctx.guild is not None
 
 
+@tasks.loop(seconds=15.0)
+async def retrieve_names_loop():
+    global names_list
+    names_list = jamal_bot_database.get_names_list()
+
+
 # Error handling
 # Does not work for subcommands
 @jamal_bot.event
@@ -146,10 +152,9 @@ async def slash_access(inter: disnake.CommandInteraction, name: str):
 
 @slash_access.autocomplete('name')
 async def slash_access_autocomp(
-        inter: disnake.CommandInteraction, string: str):
-    string = string.lower()
-    return [name for name in jamal_bot_database.get_names_list()
-            if string in name.lower()]
+        inter: disnake.CommandInteraction, user_input: str):
+    user_input = user_input.lower()
+    return [name for name in names_list if user_input in name.lower()]
 
 
 def add_name_command(author, name: str):
@@ -261,8 +266,7 @@ async def slash_add_quote(
 async def slash_add_quote_autocomp(
         inter: disnake.CommandInteraction, string: str):
     string = string.lower()
-    return [name for name in jamal_bot_database.get_names_list()
-            if string in name.lower()]
+    return [name for name in names_list if string in name.lower()]
 
 
 def remove_name_command(author, name: str):
@@ -321,8 +325,7 @@ async def slash_remove_name(inter, name: str):
 async def slash_remove_name_autocomp(
         inter: disnake.CommandInteraction, string: str):
     string = string.lower()
-    return [name for name in jamal_bot_database.get_names_list()
-            if string in name.lower()]
+    return [name for name in names_list if string in name.lower()]
 
 
 @jamal_bot.command(description='Get a random quote and guess who said it')
@@ -442,18 +445,6 @@ async def slash_status(
     await inter.followup.send(embed=await status_embed(server_address))
 
 
-def current_time(zone: str):
-    """
-    Return the current time at the provided zone
-
-    Args:
-        zone (str): Timezone
-    Returns
-        str: Current formatted time in a string
-    """
-    return datetime.now(pytz.timezone(zone)).strftime('%b %d %I:%M %p (%H:%M)')
-
-
 def timezone_embed():
     """
     Create an embed with the current time in different timezones and return it.
@@ -468,7 +459,8 @@ def timezone_embed():
     for tz in timezone_list:
         embed.add_field(
             name=tz,
-            value=current_time(tz),
+            value=datetime.now(
+                pytz.timezone(tz)).strftime('%b %d %I:%M %p (%H:%M)'),
             inline=False)
 
     return embed
@@ -488,5 +480,8 @@ async def slash_time(inter):
 if __name__ == '__main__':
     # Only creates the database if it doesn't exist
     jamal_bot_database.create_db('jamal_bot_quotes.db')
+
+    # start task for slash command autocomplete
+    retrieve_names_loop.start()
 
     jamal_bot.run(discord_api_key)
