@@ -142,10 +142,10 @@ async def slash_access(inter: disnake.CommandInteraction, name: str):
 
 @slash_access.autocomplete('name')
 async def slash_access_autocomp(
-        inter: disnake.CommandInteraction, string: str):
-    string = string.lower()
+        inter: disnake.CommandInteraction, user_input: str):
+    user_input = user_input.lower()
     return [name for name in jamal_bot_database.get_names_list()
-            if string in name.lower()]
+            if user_input in name.lower()]
 
 
 def add_name_command(author, name: str):
