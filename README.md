@@ -7,7 +7,7 @@ Jamal Bot is custom Discord bot with the main goal to hold quotes in a database 
 ### Requirements
 
 - Python 3.10 (Tested only on 3.10)
-- Latest jamal_bot release
+- Latest jamal_bot release or master
 
 ### Setup
 
