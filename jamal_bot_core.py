@@ -54,7 +54,6 @@ def get_prefix(client, message):
 
 
 intents = disnake.Intents.default()
-intents.guild_messages = True
 intents.message_content = True
 
 # Requires jamal with a space in order to register
