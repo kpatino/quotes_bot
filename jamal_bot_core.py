@@ -125,8 +125,8 @@ def access_command(name: str):
         str: Message with status information
     """
     name = name.lower()
-    if jamal_bot_database.check_name(name) is True:
-        return jamal_bot_database.get_quote(name)
+    if jamal_bot_database.verify_name(name) is True:
+        return jamal_bot_database.get_random_quote(name)
     else:
         return f'The name "{name}" is not in the database'
 
@@ -168,7 +168,7 @@ def add_name_command(author, name: str):
         str: Message with status information
     """
     name = name.lower()
-    if jamal_bot_database.check_name(name) is True:
+    if jamal_bot_database.verify_name(name) is True:
         return f'The name "{name}" is already in the database'
     else:
         jamal_bot_database.add_name(name)
@@ -188,7 +188,7 @@ def add_quote_command(name: str, quote: str):
         str: Message with status information
     """
     name = name.lower()
-    if jamal_bot_database.check_name(name) is False:
+    if jamal_bot_database.verify_name(name) is False:
         return f'The name "{name}" is not in the database'
     else:
         if quote == "":
@@ -279,7 +279,7 @@ def remove_name_command(author, name: str):
         str: Message with status
     """
     name = name.lower()
-    if jamal_bot_database.check_name(name) is False:
+    if jamal_bot_database.verify_name(name) is False:
         return f'"{name}" is not in the database'
     else:
         jamal_bot_database.remove_name(name)
@@ -329,8 +329,8 @@ async def slash_remove_name_autocomp(
 
 @jamal_bot.command(description='Get a random quote and guess who said it')
 async def quotes(ctx):
-    name = jamal_bot_database.random_name()
-    await ctx.send(f'Who said “{jamal_bot_database.get_quote(name)}”')
+    name = jamal_bot_database.get_random_name()
+    await ctx.send(f'Who said “{jamal_bot_database.get_random_quote(name)}”')
 
     try:
         guess = await jamal_bot.wait_for('message', timeout=6.0)
@@ -348,9 +348,9 @@ async def quotes(ctx):
     name='quotes',
     description='Get a random quote and guess who said it')
 async def slash_quotes(inter):
-    name = jamal_bot_database.random_name()
+    name = jamal_bot_database.get_random_name()
     await inter.response.send_message(
-        f'Who said “{jamal_bot_database.get_quote(name)}”')
+        f'Who said “{jamal_bot_database.get_random_quote(name)}”')
 
     try:
         guess = await jamal_bot.wait_for('message', timeout=6.0)

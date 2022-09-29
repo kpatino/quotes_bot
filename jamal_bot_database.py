@@ -111,9 +111,9 @@ def remove_name(name: str) -> None:
         cursor.execute("DELETE FROM people WHERE name == (?);", (name,))
 
 
-def check_name(name: str) -> bool:
+def verify_name(name: str) -> bool:
     """
-    Checks if the name provided has an entry in the people table and returns a
+    Verify if the name provided has an entry in the people table and returns a
     boolean.
 
     Args:
@@ -129,7 +129,7 @@ def check_name(name: str) -> bool:
             return False
 
 
-def get_quote(name: str) -> str:
+def get_random_quote(name: str) -> str:
     """
     Retrieves a random quote from the database by name in the quotes table.
     If no quotes are found return a message letting the user know there
@@ -165,7 +165,7 @@ def add_quote(name: str, quote: str) -> None:
             (name, quote,))
 
 
-def random_name() -> str:
+def get_random_name() -> str:
     """
     Retrieve a random name from the people table.
 
