@@ -143,9 +143,9 @@ cython_debug/
 # pycharm
 .idea/
 
-# Jamal specific files
+# Bot specific files
 logs/
-jamal_bot_quotes.db
+quotes.db
 
 # Pterodactyl Docker container folders and files
 .cache/

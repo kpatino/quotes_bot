@@ -1,17 +1,17 @@
-# jamal_bot
+# quotes_bot
 
-Jamal Bot is custom Discord bot with the main goal to hold quotes in a database and be able to access them through Discord. This project's main goals was to familiarize myself with SQL commands and python scripting to build an actual working product. This is honestly quite a mess but it works.
+Quotes Bot is custom Discord bot with the main goal to hold quotes in a database and be able to access them through Discord. This project's main goals was to familiarize myself with SQL commands and python scripting to build an actual working product. This is honestly quite a mess but it works.
 
 ## Instructions
 
 ### Requirements
 
 - Python 3.10 (Tested only on 3.10)
-- Latest jamal_bot release or master
+- Latest quotes_bot release or master
 
 ### Setup
 
-Inside of the unpacked jamal_bot directory
+Inside of the unpacked quotes_bot directory
 
 ```sh
 # create virtual env
@@ -36,12 +36,8 @@ cp .env.example .env
 # Activate virtual environment if not already activated
 source .venv/bin/activate
 # Run the bot
-python3 jamal_bot_core.py
+python3 bot.py
 ```
-
-## Help
-
-To access the bot's help message send `jamal help` in a channel the bot can read and write.
 
 ## Removing quotes
 

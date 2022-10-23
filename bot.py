@@ -1,10 +1,3 @@
-#        __                          __       ____          __
-#       / /____ _ ____ ___   ____ _ / /      / __ ) ____   / /_
-#  __  / // __ `// __ `__ \ / __ `// /      / __  |/ __ \ / __/
-# / /_/ // /_/ // / / / / // /_/ // /      / /_/ // /_/ // /_
-# \____/ \__,_//_/ /_/ /_/ \__,_//_/______/_____/ \____/ \__/
-#                                 /_____/
-
 import asyncio
 import logging
 import os
@@ -16,7 +9,7 @@ from disnake.ext import commands, tasks
 from environs import Env
 from mcstatus import JavaServer
 
-import jamal_bot_database
+import database
 
 # Load environment variables
 env = Env()
@@ -26,7 +19,7 @@ discord_admin_role_id = env.int("DISCORD_ADMIN_ROLE_ID")
 discord_api_key = env("DISCORD_API_KEY")
 discord_mod_role_id = env.int("DISCORD_MOD_ROLE_ID")
 discord_bot_activity = env.str("DISCORD_BOT_ACTIVITY", "Warframe")
-discord_bot_prefixes = env.list("DISCORD_BOT_PREFIXES", 'jamal ,Jamal ,JAMAL ')
+discord_bot_prefixes = env.list("DISCORD_BOT_PREFIXES", '.')
 default_server_address = env("DEFAULT_SERVER_ADDRESS")
 log_level = env.log_level("LOG_LEVEL", 'INFO')
 timezone_list = env.list("TIMEZONE_LIST", 'Europe/London,US/Pacific')
@@ -38,7 +31,7 @@ os.makedirs("logs", exist_ok=True)
 log_format = '[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
 date_format = '%Y-%m-%d %H:%M:%S'
 logfilename = (
-    f'logs/jamal_bot_{str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))}.log')
+    f'logs/bot_{str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))}.log')
 logging.basicConfig(level=log_level, format=log_format, datefmt=date_format)
 logger = logging.getLogger('disnake')
 logger.setLevel(log_level)
@@ -56,19 +49,18 @@ def get_prefix(client, message):
 intents = disnake.Intents.default()
 intents.message_content = True
 
-# Requires jamal with a space in order to register
-jamal_bot = commands.Bot(
+bot = commands.Bot(
     command_prefix=get_prefix,
     intents=intents,
     case_insensitive=True)
 
 
-@jamal_bot.event
+@bot.event
 async def on_ready():
-    logging.info(f'Logged in as: {jamal_bot.user} - {jamal_bot.user.id}')
+    logging.info(f'Logged in as: {bot.user} - {bot.user.id}')
     logging.info(f'disnake version: {disnake.__version__}')
     activity = disnake.Game(name=discord_bot_activity)
-    await jamal_bot.change_presence(
+    await bot.change_presence(
         status=disnake.Status.online,
         activity=activity)
     # Logging done lets Pterodactyl know that it's ready
@@ -76,7 +68,7 @@ async def on_ready():
 
 
 # Ignore in DMs
-@jamal_bot.check
+@bot.check
 async def globally_block_dms(ctx):
     return ctx.guild is not None
 
@@ -84,33 +76,33 @@ async def globally_block_dms(ctx):
 @tasks.loop(seconds=15.0)
 async def retrieve_names_loop():
     global names_list
-    names_list = jamal_bot_database.get_names_list()
+    names_list = database.get_names_list()
 
 
 # Error handling
 # Does not work for subcommands
-@jamal_bot.event
+@bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send('Missing required argument, try `jamal help` for help')
+        await ctx.send('Missing required argument')
     if isinstance(error, commands.MissingAnyRole):
         await ctx.send('Missing required role')
     if isinstance(error, commands.CommandInvokeError):
         await ctx.send('Invoked command raised an exception')
 
 
-@jamal_bot.command(
+@bot.command(
     name='list',
     description='List available names from the database')
 async def list_names(ctx):
-    await ctx.send(jamal_bot_database.get_names())
+    await ctx.send(database.get_names())
 
 
-@jamal_bot.slash_command(
+@bot.slash_command(
     name='list',
     description='List available names from the database')
 async def slash_list_names(inter):
-    await inter.response.send_message(jamal_bot_database.get_names())
+    await inter.response.send_message(database.get_names())
 
 
 def access_command(name: str):
@@ -125,18 +117,18 @@ def access_command(name: str):
         str: Message with status information
     """
     name = name.lower()
-    if jamal_bot_database.verify_name(name) is True:
-        return jamal_bot_database.get_random_quote(name)
+    if database.verify_name(name) is True:
+        return database.get_random_quote(name)
     else:
         return f'The name "{name}" is not in the database'
 
 
-@jamal_bot.command(description='Access a random quote by name')
+@bot.command(description='Access a random quote by name')
 async def access(ctx, input_name: str):
     await ctx.send(access_command(input_name))
 
 
-@jamal_bot.slash_command(
+@bot.slash_command(
     name='access',
     description='Access a random quote by name',
     options=[
@@ -168,10 +160,10 @@ def add_name_command(author, name: str):
         str: Message with status information
     """
     name = name.lower()
-    if jamal_bot_database.verify_name(name) is True:
+    if database.verify_name(name) is True:
         return f'The name "{name}" is already in the database'
     else:
-        jamal_bot_database.add_name(name)
+        database.add_name(name)
         return f'{author} added "{name}" to the database'
 
 
@@ -188,21 +180,20 @@ def add_quote_command(name: str, quote: str):
         str: Message with status information
     """
     name = name.lower()
-    if jamal_bot_database.verify_name(name) is False:
+    if database.verify_name(name) is False:
         return f'The name "{name}" is not in the database'
     else:
         if quote == "":
-            return 'A quote was not provided, try `jamal help` for help'
+            return 'A quote was not provided'
         else:
-            jamal_bot_database.add_quote(name, quote)
+            database.add_quote(name, quote)
             return f'Added “{quote}” to {name}'
 
 
-@jamal_bot.group(name='add', description='Add a name or quote to the database')
+@bot.group(name='add', description='Add a name or quote to the database')
 async def add(ctx):
     if ctx.invoked_subcommand is None:
-        await ctx.send('Missing required argument, '
-                       'try `jamal help add` for help')
+        await ctx.send('Missing required argument')
 
 
 @add.command(
@@ -222,7 +213,7 @@ async def add_quote(ctx, input_name: str, *, arg):
     await ctx.send(add_quote_command(input_name, arg))
 
 
-@jamal_bot.slash_command(
+@bot.slash_command(
     name='add',
     description='Add a name or quote to the database',
     dm_permission=False)
@@ -279,19 +270,18 @@ def remove_name_command(author, name: str):
         str: Message with status
     """
     name = name.lower()
-    if jamal_bot_database.verify_name(name) is False:
+    if database.verify_name(name) is False:
         return f'"{name}" is not in the database'
     else:
-        jamal_bot_database.remove_name(name)
+        database.remove_name(name)
         return f'{author} removed "{name}" from the database'
 
 
-@jamal_bot.group(
+@bot.group(
     description='Remove a name and their quotes from the database')
 async def remove(ctx):
     if ctx.invoked_subcommand is None:
-        await ctx.send('Missing required argument, '
-                       'try `jamal help remove` for help')
+        await ctx.send('Missing required argument')
 
 
 @remove.command(
@@ -304,7 +294,7 @@ async def rm_name(ctx, input_name: str):
     ctx.send(remove_name_command(ctx.message.author.mention, input_name))
 
 
-@jamal_bot.slash_command(
+@bot.slash_command(
     name='remove',
     description='Remove a name or quote to the database',
     dm_permission=False)
@@ -327,13 +317,13 @@ async def slash_remove_name_autocomp(
     return [name for name in names_list if string in name.lower()]
 
 
-@jamal_bot.command(description='Get a random quote and guess who said it')
+@bot.command(description='Get a random quote and guess who said it')
 async def quotes(ctx):
-    name = jamal_bot_database.get_random_name()
-    await ctx.send(f'Who said “{jamal_bot_database.get_random_quote(name)}”')
+    name = database.get_random_name()
+    await ctx.send(f'Who said “{database.get_random_quote(name)}”')
 
     try:
-        guess = await jamal_bot.wait_for('message', timeout=6.0)
+        guess = await bot.wait_for('message', timeout=6.0)
 
         if guess.content.lower() == name:
             await ctx.channel.send(f'You got em <@{guess.author.id}>')
@@ -344,16 +334,16 @@ async def quotes(ctx):
         return await ctx.channel.send(f'TOOK TO LONG it was {name}')
 
 
-@jamal_bot.slash_command(
+@bot.slash_command(
     name='quotes',
     description='Get a random quote and guess who said it')
 async def slash_quotes(inter):
-    name = jamal_bot_database.get_random_name()
+    name = database.get_random_name()
     await inter.response.send_message(
-        f'Who said “{jamal_bot_database.get_random_quote(name)}”')
+        f'Who said “{database.get_random_quote(name)}”')
 
     try:
-        guess = await jamal_bot.wait_for('message', timeout=6.0)
+        guess = await bot.wait_for('message', timeout=6.0)
 
         if guess.content.lower() == name:
             await inter.channel.send(f'You got em <@{guess.author.id}>')
@@ -423,12 +413,12 @@ async def status_embed(server_address: str):
 
 
 # {server_address} is optional
-@jamal_bot.command(description='Get the status of a Minecraft server.')
+@bot.command(description='Get the status of a Minecraft server.')
 async def status(ctx, server_address=default_server_address):
     await ctx.send(embed=await status_embed(server_address))
 
 
-@jamal_bot.slash_command(
+@bot.slash_command(
     name='status',
     description='Get the status of a Minecraft server. '
                 f'By default query {default_server_address}',
@@ -452,7 +442,7 @@ def timezone_embed():
     """
 
     embed = disnake.Embed(colour=disnake.Colour.purple())
-    embed.set_author(name='jamal bot time')
+    embed.set_author(name='Time')
 
     for tz in timezone_list:
         embed.add_field(
@@ -464,12 +454,12 @@ def timezone_embed():
     return embed
 
 
-@jamal_bot.command(description='Get the current time in different timezones')
+@bot.command(description='Get the current time in different timezones')
 async def time(ctx):
     await ctx.send(embed=timezone_embed())
 
 
-@jamal_bot.slash_command(
+@bot.slash_command(
     name='time',
     description='Get the current time in different timezones')
 async def slash_time(inter):
@@ -477,9 +467,9 @@ async def slash_time(inter):
 
 if __name__ == '__main__':
     # Only creates the database if it doesn't exist
-    jamal_bot_database.create_db('jamal_bot_quotes.db')
+    database.create_db('quotes.db')
 
     # start task for slash command autocomplete
     retrieve_names_loop.start()
 
-    jamal_bot.run(discord_api_key)
+    bot.run(discord_api_key)
