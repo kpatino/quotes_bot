@@ -15,5 +15,5 @@ multidict==6.0.3
 packaging==22.0
 pyparsing==3.0.9
 python-dotenv==0.21.0
-pytz==2022.6
+pytz==2022.7
 yarl==1.8.2
