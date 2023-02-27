@@ -14,6 +14,6 @@ mcstatus==10.0.2
 multidict==6.0.4
 packaging==23.0
 pyparsing==3.0.9
-python-dotenv==0.21.1
+python-dotenv==1.0.0
 pytz==2022.7.1
 yarl==1.8.2
