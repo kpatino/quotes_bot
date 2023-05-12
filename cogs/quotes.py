@@ -3,15 +3,11 @@
 
 import asyncio
 
-import asyncio
 import disnake
-import logging
-
-
 from disnake.ext import commands, tasks
 
+import database
 from config import Config
-from database import DatabaseFunctions as database
 
 
 class Commands():
@@ -196,7 +192,6 @@ class QuotesCommands(commands.Cog):
         string = string.lower()
         return [name for name in self.names_list if string in name.lower()]
 
-
     @commands.group(
         description='Remove a name and their quotes from the database')
     async def remove(ctx):
@@ -244,7 +239,7 @@ class QuotesCommands(commands.Cog):
                 await self.channel.send(f'You got em <@{guess.author.id}>')
             else:
                 await self.channel.send(f'<@{guess.author.id}> YOU\'RE WRONG‼'
-                                    f'IT WAS {name.upper()}‼')
+                                        f'IT WAS {name.upper()}‼')
         except asyncio.TimeoutError:
             return await self.channel.send(f'TOOK TO LONG it was {name}')
 
@@ -263,7 +258,7 @@ class QuotesCommands(commands.Cog):
                 await inter.channel.send(f'You got em <@{guess.author.id}>')
             else:
                 await inter.channel.send(f'<@{guess.author.id}> YOU\'RE WRONG‼ '
-                                        f'IT WAS {name.upper()}‼')
+                                         f'IT WAS {name.upper()}‼')
         except asyncio.TimeoutError:
             await inter.channel.send(f'YOU TOOK TO LONG it was {name}')
 
