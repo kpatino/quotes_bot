@@ -146,7 +146,8 @@ def get_random_quote(name: str) -> str:
                 "SELECT quote FROM quotes "
                 "WHERE name=? ORDER BY RANDOM() LIMIT 1",
                 (name,))
-            return str(cursor.fetchone()[0])
+            result = cursor.fetchone()
+            return str(result[0])
         except TypeError:
             return f"{name} does not have any quotes"
 
