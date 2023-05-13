@@ -98,15 +98,12 @@ class QuotesCommands(commands.Cog):
     async def retrieve_names_loop(self):
         self.names_list = database.get_names_list()
 
-    @commands.command(
-        name='list',
-        description='List available names from the database')
+    @commands.command(name='list', description='List available names from the database')
     async def list_names(self, inter):
         await inter.send(database.get_names())
 
-    @commands.slash_command(
-        name='list',
-        description='List available names from the database')
+    @commands.slash_command(name='list',
+                            description='List available names from the database')
     async def slash_list_names(self, inter: disnake.CommandInteraction):
         await inter.response.send_message(database.get_names())
 
@@ -114,21 +111,16 @@ class QuotesCommands(commands.Cog):
     async def access(self, inter, input_name: str):
         await inter.send(access_command(input_name))
 
-    @commands.slash_command(
-        name='access',
-        description='Access a random quote by name',
-        options=[
-            disnake.Option(
-                "name",
-                description="Get a random quote attributed to this name",
-                required=True)]
-        )
+    @commands.slash_command(name='access', description='Access a random quote by name',
+                            options=[disnake.Option(
+                                        "name",
+                                        description="Get a random quote attributed to this name",
+                                        required=True)])
     async def slash_access(self, inter: disnake.CommandInteraction, name: str):
         await inter.response.send_message(access_command(name))
 
     @slash_access.autocomplete('name')
-    async def slash_access_autocomp(
-            self, inter: disnake.CommandInteraction, user_input: str):
+    async def slash_access_autocomp(self, inter: disnake.CommandInteraction, user_input: str):
         user_input = user_input.lower()
         return [name for name in self.names_list if user_input in name.lower()]
 
@@ -137,96 +129,69 @@ class QuotesCommands(commands.Cog):
         if inter.invoked_subcommand is None:
             await inter.send('Missing required argument')
 
-    @add.command(
-        name='name',
-        description='Add a "name" to the database')
-    @commands.has_any_role(
-        Config.discord_admin_role_id,
-        Config.discord_mod_role_id)
+    @add.command(name='name', description='Add a "name" to the database')
+    @commands.has_any_role(Config.discord_admin_role_id, Config.discord_mod_role_id)
     async def add_name(self, inter, input_name: str):
         await inter.send(add_name_command(inter.message.author.mention, input_name))
 
-    @add.command(
-        name='quote',
-        description='Add a quote to the database.')
+    @add.command(name='quote', description='Add a quote to the database.')
     async def add_quote(self, inter, input_name: str, *, arg):
         await inter.send(add_quote_command(input_name, arg))
 
-    @commands.slash_command(
-        name='add',
-        description='Add a name or quote to the database',
-        dm_permission=False)
+    @commands.slash_command(name='add', description='Add a name or quote to the database',
+                            dm_permission=False)
     async def slash_add(inter):
         pass
 
-    @slash_add.sub_command(
-        name='name',
-        description='Add a "name" to the database',
-        options=[
-            disnake.Option(
-                "name",
-                description="Name to add to the database",
-                required=True)])
+    @slash_add.sub_command(name='name', description='Add a "name" to the database',
+                           options=[disnake.Option(
+                                        "name",
+                                        description="Name to add to the database",
+                                        required=True)])
     async def slash_add_name(self, inter: disnake.CommandInteraction, name: str):
         await inter.response.send_message(
             add_name_command(inter.author.mention, name))
 
-    @slash_add.sub_command(
-        name='quote',
-        description='Add a quote to the database.',
-        options=[
-            disnake.Option(
-                "name",
-                description="Name to attribute the quote",
-                required=True),
-            disnake.Option(
-                "quote",
-                description="The quote to record to the database",
-                required=True)])
-    async def slash_add_quote(
-        self,
-        inter: disnake.CommandInteraction,
-            name: str, quote: str):
+    @slash_add.sub_command(name='quote', description='Add a quote to the database.',
+                           options=[disnake.Option(
+                                        "name",
+                                        description="Name to attribute the quote",
+                                        required=True),
+                                    disnake.Option(
+                                        "quote",
+                                        description="The quote to record to the database",
+                                        required=True)])
+    async def slash_add_quote(self, inter: disnake.CommandInteraction, name: str, quote: str):
         await inter.response.send_message(add_quote_command(name, quote))
 
     @slash_add_quote.autocomplete('name')
-    async def slash_add_quote_autocomp(
-            self, inter: disnake.CommandInteraction, string: str):
+    async def slash_add_quote_autocomp(self, inter: disnake.CommandInteraction, string: str):
         string = string.lower()
         return [name for name in self.names_list if string in name.lower()]
 
-    @commands.group(
-        description='Remove a name and their quotes from the database')
+    @commands.group(description='Remove a name and their quotes from the database')
     async def remove(self, inter):
         if inter.invoked_subcommand is None:
             await inter.send('Missing required argument')
 
-    @remove.command(
-        name='name',
-        description='Remove a name and their quotes from the database')
-    @commands.has_any_role(
-        Config.discord_admin_role_id,
-        Config.discord_mod_role_id)
+    @remove.command(name='name', description='Remove a name and their quotes from the database')
+    @commands.has_any_role(Config.discord_admin_role_id, Config.discord_mod_role_id)
     async def rm_name(self, inter, input_name: str):
         inter.send(remove_name_command(inter.message.author.mention, input_name))
 
-    @commands.slash_command(
-        name='remove',
-        description='Remove a name or quote to the database',
-        dm_permission=False)
+    @commands.slash_command(name='remove', description='Remove a name or quote to the database',
+                            dm_permission=False)
     async def slash_remove(inter):
         pass
 
-    @slash_remove.sub_command(
-        name='name',
-        description='Remove a name and their quotes from the database')
+    @slash_remove.sub_command(name='name',
+                              description='Remove a name and their quotes from the database')
     async def slash_remove_name(self, inter, name: str):
         await inter.response.send_message(
             remove_name_command(inter.author.mention, name))
 
     @slash_remove_name.autocomplete('name')
-    async def slash_remove_name_autocomp(
-            self, inter: disnake.CommandInteraction, string: str):
+    async def slash_remove_name_autocomp(self, inter: disnake.CommandInteraction, string: str):
         string = string.lower()
         return [name for name in self.names_list if string in name.lower()]
 
@@ -242,13 +207,11 @@ class QuotesCommands(commands.Cog):
                 await inter.channel.send(f'You got em <@{guess.author.id}>')
             else:
                 await inter.channel.send(f'<@{guess.author.id}> YOU\'RE WRONG‼'
-                                        f'IT WAS {name.upper()}‼')
+                                         f'IT WAS {name.upper()}‼')
         except asyncio.TimeoutError:
             return await inter.channel.send(f'TOOK TO LONG it was {name}')
 
-    @commands.slash_command(
-        name='quotes',
-        description='Get a random quote and guess who said it')
+    @commands.slash_command(name='quotes', description='Get a random quote and guess who said it')
     async def slash_quotes(self, inter):
         name = database.get_random_name()
         await inter.response.send_message(
