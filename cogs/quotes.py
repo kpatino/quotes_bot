@@ -102,12 +102,12 @@ class QuotesCommands(commands.Cog):
         name='list',
         description='List available names from the database')
     async def list_names(self, inter):
-        await self.send(database.get_names())
+        await inter.send(database.get_names())
 
     @commands.slash_command(
         name='list',
         description='List available names from the database')
-    async def slash_list_names(inter):
+    async def slash_list_names(self, inter: disnake.CommandInteraction):
         await inter.response.send_message(database.get_names())
 
     @commands.command(description='Access a random quote by name')
@@ -123,7 +123,7 @@ class QuotesCommands(commands.Cog):
                 description="Get a random quote attributed to this name",
                 required=True)]
         )
-    async def slash_access(inter: disnake.CommandInteraction, name: str):
+    async def slash_access(self, inter: disnake.CommandInteraction, name: str):
         await inter.response.send_message(access_command(name))
 
     @slash_access.autocomplete('name')
@@ -134,8 +134,8 @@ class QuotesCommands(commands.Cog):
 
     @commands.group(name='add', description='Add a name or quote to the database')
     async def add(self, inter):
-        if self.invoked_subcommand is None:
-            await self.send('Missing required argument')
+        if inter.invoked_subcommand is None:
+            await inter.send('Missing required argument')
 
     @add.command(
         name='name',
@@ -143,14 +143,14 @@ class QuotesCommands(commands.Cog):
     @commands.has_any_role(
         Config.discord_admin_role_id,
         Config.discord_mod_role_id)
-    async def add_name(ctx, input_name: str):
-        await ctx.send(commands.add_name_command(ctx.message.author.mention, input_name))
+    async def add_name(self, inter, input_name: str):
+        await inter.send(add_name_command(inter.message.author.mention, input_name))
 
     @add.command(
         name='quote',
         description='Add a quote to the database.')
-    async def add_quote(ctx, input_name: str, *, arg):
-        await ctx.send(add_quote_command(input_name, arg))
+    async def add_quote(self, inter, input_name: str, *, arg):
+        await inter.send(add_quote_command(input_name, arg))
 
     @commands.slash_command(
         name='add',
@@ -167,7 +167,7 @@ class QuotesCommands(commands.Cog):
                 "name",
                 description="Name to add to the database",
                 required=True)])
-    async def slash_add_name(inter, name: str):
+    async def slash_add_name(self, inter: disnake.CommandInteraction, name: str):
         await inter.response.send_message(
             add_name_command(inter.author.mention, name))
 
@@ -184,6 +184,7 @@ class QuotesCommands(commands.Cog):
                 description="The quote to record to the database",
                 required=True)])
     async def slash_add_quote(
+        self,
         inter: disnake.CommandInteraction,
             name: str, quote: str):
         await inter.response.send_message(add_quote_command(name, quote))
@@ -196,9 +197,9 @@ class QuotesCommands(commands.Cog):
 
     @commands.group(
         description='Remove a name and their quotes from the database')
-    async def remove(ctx):
-        if ctx.invoked_subcommand is None:
-            await ctx.send('Missing required argument')
+    async def remove(self, inter):
+        if inter.invoked_subcommand is None:
+            await inter.send('Missing required argument')
 
     @remove.command(
         name='name',
@@ -206,8 +207,8 @@ class QuotesCommands(commands.Cog):
     @commands.has_any_role(
         Config.discord_admin_role_id,
         Config.discord_mod_role_id)
-    async def rm_name(ctx, input_name: str):
-        ctx.send(remove_name_command(ctx.message.author.mention, input_name))
+    async def rm_name(self, inter, input_name: str):
+        inter.send(remove_name_command(inter.message.author.mention, input_name))
 
     @commands.slash_command(
         name='remove',
@@ -219,7 +220,7 @@ class QuotesCommands(commands.Cog):
     @slash_remove.sub_command(
         name='name',
         description='Remove a name and their quotes from the database')
-    async def slash_remove_name(inter, name: str):
+    async def slash_remove_name(self, inter, name: str):
         await inter.response.send_message(
             remove_name_command(inter.author.mention, name))
 
