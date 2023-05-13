@@ -100,7 +100,7 @@ class QuotesCommands(commands.Cog):
 
     @commands.command(name='list', description='List available names from the database')
     async def list_names(self, ctx):
-        await ctx.send(database.get_names())
+        await ctx.reply(database.get_names(), mention_author=False)
 
     @commands.slash_command(name='list',
                             description='List available names from the database')
@@ -109,7 +109,7 @@ class QuotesCommands(commands.Cog):
 
     @commands.command(description='Access a random quote by name')
     async def access(self, ctx, input_name: str):
-        await ctx.send(access_command(input_name))
+        await ctx.reply(access_command(input_name), mention_author=False)
 
     @commands.slash_command(name='access', description='Access a random quote by name',
                             options=[disnake.Option(
@@ -127,16 +127,16 @@ class QuotesCommands(commands.Cog):
     @commands.group(name='add', description='Add a name or quote to the database')
     async def add(self, ctx):
         if ctx.invoked_subcommand is None:
-            await ctx.send('Missing required argument')
+            await ctx.reply('Missing required argument', mention_author=False)
 
     @add.command(name='name', description='Add a "name" to the database')
     @commands.has_any_role(Config.discord_admin_role_id, Config.discord_mod_role_id)
     async def add_name(self, ctx, input_name: str):
-        await ctx.send(add_name_command(ctx.message.author.mention, input_name))
+        await ctx.reply(add_name_command(ctx.message.author.mention, input_name), mention_author=False)
 
     @add.command(name='quote', description='Add a quote to the database.')
     async def add_quote(self, ctx, input_name: str, *, arg):
-        await ctx.send(add_quote_command(input_name, arg))
+        await ctx.reply(add_quote_command(input_name, arg), mention_author=False)
 
     @commands.slash_command(name='add', description='Add a name or quote to the database',
                             dm_permission=False)
@@ -172,12 +172,12 @@ class QuotesCommands(commands.Cog):
     @commands.group(description='Remove a name and their quotes from the database')
     async def remove(self, ctx):
         if ctx.invoked_subcommand is None:
-            await ctx.send('Missing required argument')
+            await ctx.reply('Missing required argument', mention_author=False)
 
     @remove.command(name='name', description='Remove a name and their quotes from the database')
     @commands.has_any_role(Config.discord_admin_role_id, Config.discord_mod_role_id)
     async def rm_name(self, ctx, input_name: str):
-        await ctx.send(remove_name_command(ctx.message.author.mention, input_name))
+        await ctx.reply(remove_name_command(ctx.message.author.mention, input_name), mention_author=False)
 
     @commands.slash_command(name='remove', description='Remove a name or quote to the database',
                             dm_permission=False)
@@ -198,7 +198,7 @@ class QuotesCommands(commands.Cog):
     @commands.command(description='Get a random quote and guess who said it')
     async def quotes(self, ctx):
         name = database.get_random_name()
-        await ctx.send(f'Who said “{database.get_random_quote(name)}”')
+        await ctx.reply(f'Who said “{database.get_random_quote(name)}”', mention_author=False)
 
         try:
             guess = await ctx.bot.wait_for('message', timeout=6.0)
@@ -207,7 +207,7 @@ class QuotesCommands(commands.Cog):
                 await ctx.channel.send(f'You got em <@{guess.author.id}>')
             else:
                 await ctx.channel.send(f'<@{guess.author.id}> YOU\'RE WRONG‼'
-                                         f'IT WAS {name.upper()}‼')
+                                       f'IT WAS {name.upper()}‼')
         except asyncio.TimeoutError:
             return await ctx.channel.send(f'TOOK TO LONG it was {name}')
 
