@@ -34,6 +34,7 @@ def get_prefix(client, message):
 bot_intents = disnake.Intents.default()
 bot_intents.message_content = True
 
+
 class JamalBot(commands.Bot):
     def __init__(self) -> None:
         super().__init__(
@@ -54,9 +55,6 @@ class JamalBot(commands.Bot):
     def add_cog(self, cog: commands.Cog, *, override: bool = False) -> None:
         logger.info("Loading cog %s", cog.qualified_name)
         return super().add_cog(cog, override=override)
-
-    async def globally_block_dms(self):
-        return self.guild is not None
 
 
 if __name__ == '__main__':
