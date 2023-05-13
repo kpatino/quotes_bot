@@ -1,10 +1,9 @@
-import asyncio
 import logging
 import os
 from datetime import datetime
 
 import disnake
-from disnake.ext import commands, tasks
+from disnake.ext import commands
 
 import database
 from config import Config
