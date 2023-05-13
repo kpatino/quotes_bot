@@ -62,5 +62,5 @@ if __name__ == '__main__':
     database.create_db('quotes.db')
 
     bot = JamalBot()
-    bot.load_extensions(os.path.join(__package__, Config.cogs_folder))
+    bot.load_extensions(os.path.join(Config.cogs_folder))
     bot.run(Config.discord_api_key)
