@@ -40,13 +40,13 @@ class MiscCommands(commands.Cog):
 
     @commands.command(description='Get the current time in different timezones')
     async def time(self, inter):
-        await self.send(embed=MiscFunctions.timezone_embed())
+        await self.send(embed=await MiscFunctions.timezone_embed())
 
     @commands.slash_command(
         name='time',
         description='Get the current time in different timezones')
     async def slash_time(self, inter):
-        await inter.response.send_message(embed=MiscFunctions.timezone_embed())
+        await inter.response.send_message(embed=await MiscFunctions.timezone_embed())
 
 
 def setup(bot):
