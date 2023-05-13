@@ -73,9 +73,9 @@ class StatusCommands(commands.Cog):
         self.bot: commands.Bot = bot
 
     @commands.command(description='Get the status of a Minecraft server.')
-    async def status(self, inter, server_address=Config.default_server_address):
-        await inter.trigger_typing()
-        await inter.reply(embed=await status_embed(server_address), mention_author=False)
+    async def status(self, ctx, server_address=Config.default_server_address):
+        await ctx.trigger_typing()
+        await ctx.reply(embed=await status_embed(server_address), mention_author=False)
 
     @commands.slash_command(name='status',
                             description='Get the status of a Minecraft server. '

@@ -35,9 +35,9 @@ class MiscCommands(commands.Cog):
     def __init__(self, bot):
         self.bot: commands.Bot = bot
 
-    @commands.command(description='Get the current time in different timezones')
-    async def time(self, inter):
-        await inter.reply(embed=await timezone_embed(), mention_author=False)
+    @commands.command(name='time', description='Get the current time in different timezones')
+    async def time(self, ctx):
+        await ctx.reply(embed=await timezone_embed(), mention_author=False)
 
     @commands.slash_command(name='time', description='Get the current time in different timezones')
     async def slash_time(self, inter: disnake.CommandInteraction):
