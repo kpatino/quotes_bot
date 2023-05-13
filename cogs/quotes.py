@@ -10,80 +10,82 @@ import database
 from config import Config
 
 
-class Commands():
-    def access_command(name: str):
-        """
-        Returns a random quote from the database by name.
-        If there are no quotes return a string saying so.
+def access_command(name: str):
+    """
+    Returns a random quote from the database by name.
+    If there are no quotes return a string saying so.
 
-        Args:
-            name (str): Name in the database with quotes
+    Args:
+        name (str): Name in the database with quotes
 
-        Returns:
-            str: Message with status information
-        """
-        name = name.lower()
-        if database.verify_name(name) is True:
-            return database.get_random_quote(name)
+    Returns:
+        str: Message with status information
+    """
+    name = name.lower()
+    if database.verify_name(name) is True:
+        return database.get_random_quote(name)
+    else:
+        return f'The name "{name}" is not in the database'
+
+
+def add_name_command(author, name: str):
+    """
+    Name to add to the database.
+
+    Args:
+        author : Pass either ctx.message.author.mention or inter.author.mention
+        name (str): User provided name to add to the database
+
+    Returns:
+        str: Message with status information
+    """
+    name = name.lower()
+    if database.verify_name(name) is True:
+        return f'The name "{name}" is already in the database'
+    else:
+        database.add_name(name)
+        return f'{author} added "{name}" to the database'
+
+
+def add_quote_command(name: str, quote: str):
+    """
+    Add a quote to the database attributed to a name
+    Return message with information on whether it was successful.
+
+    Args:
+        name (str): Name for quote attribution
+        quote (str): The quote in a string value
+
+    Returns:
+        str: Message with status information
+    """
+    name = name.lower()
+    if database.verify_name(name) is False:
+        return f'The name "{name}" is not in the database'
+    else:
+        if quote == "":
+            return 'A quote was not provided'
         else:
-            return f'The name "{name}" is not in the database'
+            database.add_quote(name, quote)
+            return f'Added “{quote}” to {name}'
 
-    def add_name_command(author, name: str):
-        """
-        Name to add to the database.
 
-        Args:
-            author : Pass either ctx.message.author.mention or inter.author.mention
-            name (str): User provided name to add to the database
+def remove_name_command(author, name: str):
+    """
+    Removes name and the associated quotes from the database. Cannot be undone.
 
-        Returns:
-            str: Message with status information
-        """
-        name = name.lower()
-        if database.verify_name(name) is True:
-            return f'The name "{name}" is already in the database'
-        else:
-            database.add_name(name)
-            return f'{author} added "{name}" to the database'
-
-    def add_quote_command(name: str, quote: str):
-        """
-        Add a quote to the database attributed to a name
-        Return message with information on whether it was successful.
-
-        Args:
-            name (str): Name for quote attribution
-            quote (str): The quote in a string value
-
-        Returns:
-            str: Message with status information
-        """
-        name = name.lower()
-        if database.verify_name(name) is False:
-            return f'The name "{name}" is not in the database'
-        else:
-            if quote == "":
-                return 'A quote was not provided'
-            else:
-                database.add_quote(name, quote)
-                return f'Added “{quote}” to {name}'
-
-    def remove_name_command(author, name: str):
-        """
-        Removes name and the associated quotes from the database. Cannot be undone.
-
-        Args:
-            author : Pass either ctx.message.author.mention or inter.author.mention
-            name (str): Name to remove from the database
-        Returns:
-            str: Message with status
-        """
-        name = name.lower()
-        if database.verify_name(name) is False:
-            return f'"{name}" is not in the database'
-        else:
-            database.remove_name(name)
-            return f'{author} removed "{name}" from the database'
+    Args:
+        author : Pass either ctx.message.author.mention or inter.author.mention
+        name (str): Name to remove from the database
+    Returns:
+        str: Message with status
+    """
+    name = name.lower()
+    if database.verify_name(name) is False:
+        return f'"{name}" is not in the database'
+    else:
+        database.remove_name(name)
+        return f'{author} removed "{name}" from the database'
 
 
 class QuotesCommands(commands.Cog):
@@ -110,7 +112,7 @@ class QuotesCommands(commands.Cog):
 
     @commands.command(description='Access a random quote by name')
     async def access(self, inter, input_name: str):
-        await self.send(Commands.access_command(input_name))
+        await inter.send(access_command(input_name))
 
     @commands.slash_command(
         name='access',
@@ -122,7 +124,7 @@ class QuotesCommands(commands.Cog):
                 required=True)]
         )
     async def slash_access(inter: disnake.CommandInteraction, name: str):
-        await inter.response.send_message(Commands.access_command(name))
+        await inter.response.send_message(access_command(name))
 
     @slash_access.autocomplete('name')
     async def slash_access_autocomp(
@@ -148,7 +150,7 @@ class QuotesCommands(commands.Cog):
         name='quote',
         description='Add a quote to the database.')
     async def add_quote(ctx, input_name: str, *, arg):
-        await ctx.send(Commands.add_quote_command(input_name, arg))
+        await ctx.send(add_quote_command(input_name, arg))
 
     @commands.slash_command(
         name='add',
@@ -167,7 +169,7 @@ class QuotesCommands(commands.Cog):
                 required=True)])
     async def slash_add_name(inter, name: str):
         await inter.response.send_message(
-            Commands.add_name_command(inter.author.mention, name))
+            add_name_command(inter.author.mention, name))
 
     @slash_add.sub_command(
         name='quote',
@@ -184,7 +186,7 @@ class QuotesCommands(commands.Cog):
     async def slash_add_quote(
         inter: disnake.CommandInteraction,
             name: str, quote: str):
-        await inter.response.send_message(Commands.add_quote_command(name, quote))
+        await inter.response.send_message(add_quote_command(name, quote))
 
     @slash_add_quote.autocomplete('name')
     async def slash_add_quote_autocomp(
@@ -205,7 +207,7 @@ class QuotesCommands(commands.Cog):
         Config.discord_admin_role_id,
         Config.discord_mod_role_id)
     async def rm_name(ctx, input_name: str):
-        ctx.send(Commands.remove_name_command(ctx.message.author.mention, input_name))
+        ctx.send(remove_name_command(ctx.message.author.mention, input_name))
 
     @commands.slash_command(
         name='remove',
@@ -219,7 +221,7 @@ class QuotesCommands(commands.Cog):
         description='Remove a name and their quotes from the database')
     async def slash_remove_name(inter, name: str):
         await inter.response.send_message(
-            Commands.remove_name_command(inter.author.mention, name))
+            remove_name_command(inter.author.mention, name))
 
     @slash_remove_name.autocomplete('name')
     async def slash_remove_name_autocomp(
