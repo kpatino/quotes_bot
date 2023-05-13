@@ -232,18 +232,18 @@ class QuotesCommands(commands.Cog):
     @commands.command(description='Get a random quote and guess who said it')
     async def quotes(self, inter):
         name = database.get_random_name()
-        await self.send(f'Who said “{database.get_random_quote(name)}”')
+        await inter.send(f'Who said “{database.get_random_quote(name)}”')
 
         try:
-            guess = await self.bot.wait_for('message', timeout=6.0)
+            guess = await inter.bot.wait_for('message', timeout=6.0)
 
             if guess.content.lower() == name:
-                await self.channel.send(f'You got em <@{guess.author.id}>')
+                await inter.channel.send(f'You got em <@{guess.author.id}>')
             else:
-                await self.channel.send(f'<@{guess.author.id}> YOU\'RE WRONG‼'
+                await inter.channel.send(f'<@{guess.author.id}> YOU\'RE WRONG‼'
                                         f'IT WAS {name.upper()}‼')
         except asyncio.TimeoutError:
-            return await self.channel.send(f'TOOK TO LONG it was {name}')
+            return await inter.channel.send(f'TOOK TO LONG it was {name}')
 
     @commands.slash_command(
         name='quotes',
@@ -254,7 +254,7 @@ class QuotesCommands(commands.Cog):
             f'Who said “{database.get_random_quote(name)}”')
 
         try:
-            guess = await self.bot.wait_for('message', timeout=6.0)
+            guess = await inter.bot.wait_for('message', timeout=6.0)
 
             if guess.content.lower() == name:
                 await inter.channel.send(f'You got em <@{guess.author.id}>')
