@@ -8,8 +8,6 @@ from disnake.ext import commands
 import database
 from config import Config
 
-# Create logs folder if it doesn't exist
-os.makedirs("logs", exist_ok=True)
 
 # Logging configuration
 log_format = '[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
@@ -60,6 +58,9 @@ class JamalBot(commands.Bot):
 
 
 if __name__ == '__main__':
+    # Create folders if they doesn't exist
+    os.makedirs("logs", exist_ok=True)
+
     # Only creates the database if it doesn't exist
     database.create_db('quotes.db')
 
