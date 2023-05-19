@@ -15,7 +15,6 @@ Inside of the unpacked quotes_bot directory
 
 ```sh
 # create virtual env
-mkdir .venv
 python3 -m venv .venv
 # activate virtual env
 source .venv/bin/activate
