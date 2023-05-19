@@ -44,5 +44,5 @@ class MiscCommands(commands.Cog):
         await inter.response.send_message(embed=await timezone_embed())
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(MiscCommands(bot))

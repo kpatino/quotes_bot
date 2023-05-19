@@ -10,7 +10,7 @@ import database
 from config import Config
 
 
-def access_command(name: str):
+def access_command(name: str) -> str:
     """
     Returns a random quote from the database by name.
     If there are no quotes return a string saying so.
@@ -28,7 +28,7 @@ def access_command(name: str):
         return f'The name "{name}" is not in the database'
 
 
-def add_name_command(author, name: str):
+def add_name_command(author, name: str) -> str:
     """
     Name to add to the database.
 
@@ -47,7 +47,7 @@ def add_name_command(author, name: str):
         return f'{author} added "{name}" to the database'
 
 
-def add_quote_command(name: str, quote: str):
+def add_quote_command(name: str, quote: str) -> str:
     """
     Add a quote to the database attributed to a name
     Return message with information on whether it was successful.
@@ -70,7 +70,7 @@ def add_quote_command(name: str, quote: str):
             return f'Added “{quote}” to {name}'
 
 
-def remove_name_command(author, name: str):
+def remove_name_command(author, name: str) -> str:
     """
     Removes name and the associated quotes from the database. Cannot be undone.
 
@@ -229,5 +229,5 @@ class QuotesCommands(commands.Cog):
             await inter.channel.send(f'YOU TOOK TO LONG it was {name}')
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(QuotesCommands(bot))
