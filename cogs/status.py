@@ -2,11 +2,12 @@
 # SPDX-License-Identifier: MIT
 
 import asyncio
-import disnake
 import logging
 
+import disnake
 from disnake.ext import commands
 from mcstatus import JavaServer
+
 from config import Config
 
 
