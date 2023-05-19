@@ -31,14 +31,16 @@ def get_prefix(client, message):
     return commands.when_mentioned_or(*Config.discord_bot_prefixes)(client, message)
 
 
-bot_intents = disnake.Intents.default()
-bot_intents.message_content = True
+def get_intents():
+    bot_intents = disnake.Intents.default()
+    bot_intents.message_content = True
+    return bot_intents
 
 
 class JamalBot(commands.Bot):
     def __init__(self) -> None:
         super().__init__(
-            intents=bot_intents,
+            intents=get_intents(),
             command_prefix=get_prefix
         )
 
