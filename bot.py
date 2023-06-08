@@ -9,6 +9,12 @@ import database
 from config import Config
 
 
+try:
+    os.makedirs("logs", exist_ok=True)
+    print("Directory logs created successfully")
+except OSError:
+    print("Directory logs can not be created")
+
 # Logging configuration
 log_format = '[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
 date_format = '%Y-%m-%d %H:%M:%S'
@@ -58,9 +64,6 @@ class JamalBot(commands.Bot):
 
 
 if __name__ == '__main__':
-    # Create folders if they doesn't exist
-    os.makedirs("logs", exist_ok=True)
-
     # Only creates the database if it doesn't exist
     database.create_db('quotes.db')
 
