@@ -140,7 +140,7 @@ class QuotesCommands(commands.Cog):
 
     @commands.slash_command(name='add', description='Add a name or quote to the database',
                             dm_permission=False)
-    async def slash_add(inter):
+    async def slash_add(self, inter: disnake.CommandInteraction) -> None:
         pass
 
     @slash_add.sub_command(name='name', description='Add a "name" to the database',
@@ -148,7 +148,7 @@ class QuotesCommands(commands.Cog):
                                         "name",
                                         description="Name to add to the database",
                                         required=True)])
-    async def slash_add_name(self, inter: disnake.CommandInteraction, name: str):
+    async def slash_add_name(self, inter: disnake.CommandInteraction, name: str) -> None:
         await inter.response.send_message(
             add_name_command(inter.author.mention, name))
 
@@ -161,7 +161,7 @@ class QuotesCommands(commands.Cog):
                                         "quote",
                                         description="The quote to record to the database",
                                         required=True)])
-    async def slash_add_quote(self, inter: disnake.CommandInteraction, name: str, quote: str):
+    async def slash_add_quote(self, inter: disnake.CommandInteraction, name: str, quote: str) -> None:
         await inter.response.send_message(add_quote_command(name, quote))
 
     @slash_add_quote.autocomplete('name')
@@ -181,7 +181,7 @@ class QuotesCommands(commands.Cog):
 
     @commands.slash_command(name='remove', description='Remove a name or quote to the database',
                             dm_permission=False)
-    async def slash_remove(inter):
+    async def slash_remove(self, inter: disnake.CommandInteraction) -> None:
         pass
 
     @slash_remove.sub_command(name='name',
