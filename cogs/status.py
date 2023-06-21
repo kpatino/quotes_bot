@@ -74,7 +74,7 @@ class StatusCommands(commands.Cog):
         self.bot: commands.Bot = bot
 
     @commands.command(description='Get the status of a Minecraft server.')
-    async def status(self, ctx, server_address=Config.default_server_address):
+    async def status(self, ctx, server_address=Config.default_server_address) -> None:
         await ctx.trigger_typing()
         await ctx.reply(embed=await status_embed(server_address), mention_author=False)
 
@@ -85,7 +85,7 @@ class StatusCommands(commands.Cog):
                                         "server_address",
                                         description='Server address or IP to query')])
     async def slash_status(self, inter: disnake.ApplicationCommandInteraction,
-                           server_address=Config.default_server_address):
+                           server_address=Config.default_server_address) -> None:
         await inter.response.defer(with_message=True)
         await inter.followup.send(embed=await status_embed(server_address))
 

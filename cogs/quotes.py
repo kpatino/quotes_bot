@@ -95,20 +95,20 @@ class QuotesCommands(commands.Cog):
         self.retrieve_names_loop.start()
 
     @tasks.loop(seconds=15.0)
-    async def retrieve_names_loop(self):
+    async def retrieve_names_loop(self) -> None:
         self.names_list = database.get_names_list()
 
     @commands.command(name='list', description='List available names from the database')
-    async def list_names(self, ctx):
+    async def list_names(self, ctx) -> None:
         await ctx.reply(database.get_names(), mention_author=False)
 
     @commands.slash_command(name='list',
                             description='List available names from the database')
-    async def slash_list_names(self, inter: disnake.CommandInteraction):
+    async def slash_list_names(self, inter: disnake.CommandInteraction) -> None:
         await inter.response.send_message(database.get_names())
 
     @commands.command(description='Access a random quote by name')
-    async def access(self, ctx, input_name: str):
+    async def access(self, ctx, input_name: str) -> None:
         await ctx.reply(access_command(input_name), mention_author=False)
 
     @commands.slash_command(name='access', description='Access a random quote by name',
@@ -116,7 +116,7 @@ class QuotesCommands(commands.Cog):
                                         "name",
                                         description="Get a random quote attributed to this name",
                                         required=True)])
-    async def slash_access(self, inter: disnake.CommandInteraction, name: str):
+    async def slash_access(self, inter: disnake.CommandInteraction, name: str) -> None:
         await inter.response.send_message(access_command(name))
 
     @slash_access.autocomplete('name')
@@ -125,13 +125,13 @@ class QuotesCommands(commands.Cog):
         return [name for name in self.names_list if user_input in name.lower()]
 
     @commands.group(name='add', description='Add a name or quote to the database')
-    async def add(self, ctx):
+    async def add(self, ctx) -> None:
         if ctx.invoked_subcommand is None:
             await ctx.reply('Missing required argument', mention_author=False)
 
     @add.command(name='name', description='Add a "name" to the database')
     @commands.has_any_role(Config.discord_admin_role_id, Config.discord_mod_role_id)
-    async def add_name(self, ctx, input_name: str):
+    async def add_name(self, ctx, input_name: str) -> None:
         await ctx.reply(add_name_command(ctx.message.author.mention, input_name), mention_author=False)
 
     @add.command(name='quote', description='Add a quote to the database.')
@@ -170,13 +170,13 @@ class QuotesCommands(commands.Cog):
         return [name for name in self.names_list if string in name.lower()]
 
     @commands.group(description='Remove a name and their quotes from the database')
-    async def remove(self, ctx):
+    async def remove(self, ctx) -> None:
         if ctx.invoked_subcommand is None:
             await ctx.reply('Missing required argument', mention_author=False)
 
     @remove.command(name='name', description='Remove a name and their quotes from the database')
     @commands.has_any_role(Config.discord_admin_role_id, Config.discord_mod_role_id)
-    async def rm_name(self, ctx, input_name: str):
+    async def rm_name(self, ctx, input_name: str) -> None:
         await ctx.reply(remove_name_command(ctx.message.author.mention, input_name), mention_author=False)
 
     @commands.slash_command(name='remove', description='Remove a name or quote to the database',
@@ -186,7 +186,7 @@ class QuotesCommands(commands.Cog):
 
     @slash_remove.sub_command(name='name',
                               description='Remove a name and their quotes from the database')
-    async def slash_remove_name(self, inter, name: str):
+    async def slash_remove_name(self, inter, name: str) -> None:
         await inter.response.send_message(
             remove_name_command(inter.author.mention, name))
 
@@ -196,7 +196,7 @@ class QuotesCommands(commands.Cog):
         return [name for name in self.names_list if string in name.lower()]
 
     @commands.command(description='Get a random quote and guess who said it')
-    async def quotes(self, ctx):
+    async def quotes(self, ctx) -> None:
         name = database.get_random_name()
         await ctx.reply(f'Who said “{database.get_random_quote(name)}”', mention_author=False)
 
@@ -212,7 +212,7 @@ class QuotesCommands(commands.Cog):
             return await ctx.channel.send(f'TOOK TO LONG it was {name}')
 
     @commands.slash_command(name='quotes', description='Get a random quote and guess who said it')
-    async def slash_quotes(self, inter: disnake.CommandInteraction):
+    async def slash_quotes(self, inter: disnake.CommandInteraction) -> None:
         name = database.get_random_name()
         await inter.response.send_message(
             f'Who said “{database.get_random_quote(name)}”')
