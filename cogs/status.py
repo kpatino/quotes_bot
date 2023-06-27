@@ -10,6 +10,8 @@ from mcstatus import JavaServer
 
 from config import Config
 
+module_logger = logging.getLogger(f'__main__.{__name__}')
+
 
 async def status_embed(server_address: str):
     """
@@ -23,7 +25,7 @@ async def status_embed(server_address: str):
     """
 
     try:
-        logging.info(f"Looking up {server_address}")
+        module_logger.info(f'Looking up {server_address}')
         server = JavaServer.lookup(server_address)
         server_status = await server.async_status()
         server_latency = round(server_status.latency, 2)
@@ -42,12 +44,12 @@ async def status_embed(server_address: str):
             inline=True)
 
         try:
-            logging.info(f"Querying server at {server_address}")
+            module_logger.info(f'Querying server at {server_address}')
             query = await server.async_query()
-            logging.info(f"Successfully queried server at {server_address}")
-            server_players = (", ".join(query.players.names))
+            module_logger.info(f'Successfully queried server at {server_address}')
+            server_players = (', '.join(query.players.names))
             server_status_embed.add_field(
-                name="Players",
+                name='Players',
                 # Unicode blank prevents an empty "value"
                 value=f'\u200b{server_players}',
                 inline=True)
@@ -56,13 +58,13 @@ async def status_embed(server_address: str):
             return server_status_embed
 
         except asyncio.exceptions.TimeoutError:
-            logging.info(f"Failed to query server at {server_address}")
-            logging.info(f"Using lookup instead for {server_address}")
+            module_logger.info(f'Failed to query server at {server_address}')
+            module_logger.info(f'Using lookup instead for {server_address}')
             server_status_embed.set_footer(text=f'Ping: {server_latency} ms')
             return server_status_embed
 
     except asyncio.exceptions.TimeoutError:
-        logging.info(f"Could not lookup server at {server_address}")
+        module_logger.info(f'Could not lookup server at {server_address}')
         error_embed = disnake.Embed(
             title='Could not contact server',
             colour=disnake.Colour.red())
@@ -82,7 +84,7 @@ class StatusCommands(commands.Cog):
                             description='Get the status of a Minecraft server. '
                             f'By default query {Config.default_server_address}',
                             options=[disnake.Option(
-                                        "server_address",
+                                        'server_address',
                                         description='Server address or IP to query')])
     async def slash_status(self, inter: disnake.ApplicationCommandInteraction,
                            server_address=Config.default_server_address) -> None:

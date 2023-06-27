@@ -9,21 +9,20 @@ import database
 from config import Config
 
 
-try:
-    os.makedirs("logs", exist_ok=True)
-    print("Directory logs created successfully")
-except OSError:
-    print("Directory logs can not be created")
-
 # Logging configuration
 log_format = '[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
 date_format = '%Y-%m-%d %H:%M:%S'
-logfilename = (
-    f'logs/bot_{str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))}.log')
+logfilename = (f'logs/bot_{str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))}.log')
 logging.basicConfig(level=Config.log_level, format=log_format, datefmt=date_format)
-logger = logging.getLogger('disnake')
 logger = logging.getLogger(__name__)
 logger.setLevel(Config.log_level)
+
+try:
+    os.makedirs('logs', exist_ok=True)
+    logger.info('logs directory created successfully')
+except OSError:
+    logger.info('logs directory could not be created')
+
 handler = logging.FileHandler(filename=logfilename, encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter(log_format, datefmt=date_format))
 logger.addHandler(handler)
@@ -49,17 +48,17 @@ class JamalBot(commands.Bot):
         )
 
     async def on_ready(self) -> None:
-        logging.info(f'Logged in as: {bot.user} - {bot.user.id}')
-        logging.info(f'disnake version: {disnake.__version__}')
+        logger.info(f'disnake version: {disnake.__version__}')
+        logger.info(f'Logged in as: {bot.user} - {bot.user.id}')
         activity = disnake.Game(name=Config.discord_bot_activity)
         await bot.change_presence(
             status=disnake.Status.online,
             activity=activity)
         # Logging done lets Pterodactyl know that it's ready
-        logging.info('Done')
+        logger.info('Done')
 
     def add_cog(self, cog: commands.Cog, *, override: bool = False) -> None:
-        logger.info("Loading cog %s", cog.qualified_name)
+        logger.info(f'Loading cog {cog.qualified_name}')
         return super().add_cog(cog, override=override)
 
 
