@@ -66,7 +66,7 @@ def add_quote_command(name: str, quote: str) -> str:
     if database.verify_name(name) is False:
         return f'The name "{name}" is not in the database'
     else:
-        if quote == "":
+        if quote == '':
             return 'A quote was not provided'
         else:
             database.add_quote(name, quote)
@@ -116,8 +116,8 @@ class QuotesCommands(commands.Cog):
 
     @commands.slash_command(name='access', description='Access a random quote by name',
                             options=[disnake.Option(
-                                        "name",
-                                        description="Get a random quote attributed to this name",
+                                        'name',
+                                        description='Get a random quote attributed to this name',
                                         required=True)])
     async def slash_access(self, inter: disnake.CommandInteraction, name: str) -> None:
         await inter.response.send_message(access_command(name))
@@ -148,8 +148,8 @@ class QuotesCommands(commands.Cog):
 
     @slash_add.sub_command(name='name', description='Add a "name" to the database',
                            options=[disnake.Option(
-                                        "name",
-                                        description="Name to add to the database",
+                                        'name',
+                                        description='Name to add to the database',
                                         required=True)])
     async def slash_add_name(self, inter: disnake.CommandInteraction, name: str) -> None:
         await inter.response.send_message(
@@ -157,12 +157,12 @@ class QuotesCommands(commands.Cog):
 
     @slash_add.sub_command(name='quote', description='Add a quote to the database.',
                            options=[disnake.Option(
-                                        "name",
-                                        description="Name to attribute the quote",
+                                        'name',
+                                        description='Name to attribute the quote',
                                         required=True),
                                     disnake.Option(
-                                        "quote",
-                                        description="The quote to record to the database",
+                                        'quote',
+                                        description='The quote to record to the database',
                                         required=True)])
     async def slash_add_quote(self, inter: disnake.CommandInteraction, name: str, quote: str) -> None:
         await inter.response.send_message(add_quote_command(name, quote))
