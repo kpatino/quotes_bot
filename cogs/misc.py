@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2023 Kevin Patino
 # SPDX-License-Identifier: MIT
 
+import logging
 from datetime import datetime
 
 import disnake
@@ -8,6 +9,8 @@ import pytz
 from disnake.ext import commands
 
 from config import Config
+
+module_logger = logging.getLogger(f'__main__.{__name__}')
 
 
 async def timezone_embed():

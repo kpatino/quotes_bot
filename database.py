@@ -1,5 +1,8 @@
-import sqlite3
+import logging
 import random
+import sqlite3
+
+module_logger = logging.getLogger(f'__main__.{__name__}')
 
 
 class OpenDatabase(object):
