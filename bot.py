@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2023 Kevin Patino
+# SPDX-License-Identifier: MIT
+
 import logging
 import os
 from datetime import datetime
