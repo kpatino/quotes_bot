@@ -4,7 +4,7 @@
 from environs import Env
 
 
-class Config():
+class Config:
     env = Env()
     env.read_env()
 

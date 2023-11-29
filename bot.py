@@ -15,7 +15,7 @@ from config import Config
 # Logging configuration
 log_format = '[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
 date_format = '%Y-%m-%d %H:%M:%S'
-logfilename = (f'logs/bot_{str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))}.log')
+logfilename = f'logs/bot_{str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))}.log'
 logging.basicConfig(level=Config.log_level, format=log_format, datefmt=date_format)
 logger = logging.getLogger(__name__)
 logger.setLevel(Config.log_level)
