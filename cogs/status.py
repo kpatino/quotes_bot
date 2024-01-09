@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Kevin Patino
+# SPDX-FileCopyrightText: 2024 Kevin Patino
 # SPDX-FileCopyrightText: 2023 py-mine
 # SPDX-License-Identifier: Apache-2.0 AND MIT
 
