@@ -88,13 +88,13 @@ async def handle_java_status(host: str) -> JavaStatusResponse | None:
         async with asyncio.timeout(3):
             return await (await JavaServer.async_lookup(host)).async_status()
     except TimeoutError:
-        module_logger.debug("Timed out, something went wrong. Is the server down?")
+        module_logger.warn("Timed out, something went wrong. Is the server down?")
         raise
     except ValueError:
-        module_logger.debug("Did not succeed, is the server down?")
+        module_logger.warn("Did not succeed, is the server down?")
         raise
     except Exception as e:
-        module_logger.debug(e)
+        module_logger.warn(e)
         raise
 
 
@@ -104,13 +104,13 @@ async def handle_java_query(host: str) -> QueryResponse | None:
         async with asyncio.timeout(3):
             return await (await JavaServer.async_lookup(host)).async_query()
     except TimeoutError:
-        module_logger.debug("Query timed out, does the server have enable-query=false?")
+        module_logger.warn("Query timed out, does the server have enable-query=false?")
         raise
     except ValueError:
-        module_logger.debug("Query did not succeed, does the server provided exist?")
+        module_logger.warn("Query did not succeed, does the server provided exist?")
         raise
     except Exception as e:
-        module_logger.debug(e)
+        module_logger.warn(e)
         raise
 
 
@@ -160,7 +160,7 @@ async def status_embed(server_address: str) -> disnake.Embed:
             return server_status_embed
 
         elif isinstance(server_status, JavaStatusResponse):
-            module_logger.debug("Sending JavaStatusResponse, did QueryResponse fail?")
+            module_logger.warn("Sending JavaStatusResponse, did QueryResponse fail?")
             server_status_embed = disnake.Embed(
                 title=server_address,
                 description=server_status.version.name,
@@ -180,7 +180,7 @@ async def status_embed(server_address: str) -> disnake.Embed:
             raise TypeError
 
     except (asyncio.exceptions.TimeoutError, TypeError, ValueError) as e:
-        module_logger.debug(e)
+        module_logger.warn(e)
         module_logger.warning(f'Could not lookup server at {server_address}')
         return error_embed
 
