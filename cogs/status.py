@@ -151,6 +151,11 @@ async def status_embed(server_address: str) -> disnake.Embed:
                 name='Count',
                 value=f'{server_status.players.online}/{server_status.players.max}',
                 inline=True)
+            server_players = (', '.join(server_status.players.names))
+            server_status_embed.add_field(
+                name='Players',
+                value=f'\u200b{server_players}',  # Unicode blank prevents an empty "value"
+                inline=True)
             server_status_embed.set_footer(text=f'Ping: {int(server_latency)} ms')
             return server_status_embed
 
