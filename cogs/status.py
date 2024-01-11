@@ -18,9 +18,9 @@ module_logger = logging.getLogger(f'__main__.{__name__}')
 
 async def status(host: str) -> JavaStatusResponse | QueryResponse:
     """
-    Get status from server, which can be a normal status or query
+    Get status from server, which can be a normal status or GameSpy4 query
 
-    The function will ping server as Java and as Bedrock in one time, and return the first response.
+    The function will ping server for status and query in one time, and will try to prefer the query.
     """
     success_task = await handle_exceptions(*(
             await asyncio.wait({
@@ -41,9 +41,7 @@ async def status(host: str) -> JavaStatusResponse | QueryResponse:
 
 async def latency(host: str) -> float:
     """
-    Get status from server, which can be Java or Bedrock.
-
-    The function will ping server as Java and as Bedrock in one time, and return the first response.
+    Get latency from server
     """
     success_task = await handle_exceptions(*(
             await asyncio.wait({
