@@ -143,7 +143,7 @@ async def status_embed(server_address: str) -> disnake.Embed:
                 colour=disnake.Colour.green())
             server_status_embed.add_field(
                 name='Description',
-                value=f'```\u200b{server_status.motd.to_minecraft().encode("iso-8859-1").decode("utf-8")}```',  # Unicode blank prevents an empty "value"
+                value=f'```\u200b{server_status.motd.to_minecraft().encode("iso-8859-1").decode("utf-8")}```',
                 inline=False)
             server_status_embed.add_field(
                 name='Count',
