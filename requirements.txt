@@ -13,6 +13,6 @@ marshmallow==3.20.2
 mcstatus==11.1.1
 multidict==6.0.4
 packaging==23.2
-python-dotenv==1.0.0
+python-dotenv==1.0.1
 pytz==2023.4
 yarl==1.9.4
