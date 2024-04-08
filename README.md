@@ -6,7 +6,7 @@ Quotes Bot is custom Discord bot with the main goal to hold quotes in a database
 
 ### Requirements
 
-- Python 3.11 (Tested only on 3.11)
+- Python 3.11 or 3.12
 - Latest quotes_bot release or master
 
 ### Setup
