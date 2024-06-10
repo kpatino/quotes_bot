@@ -12,7 +12,7 @@ idna==3.7
 marshmallow==3.21.2
 mcstatus==11.1.1
 multidict==6.0.5
-packaging==24.0
+packaging==24.1
 python-dotenv==1.0.1
 pytz==2024.1
 yarl==1.9.4
