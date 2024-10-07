@@ -5,7 +5,7 @@ asyncio-dgram==2.2.0
 attrs==24.2.0
 charset-normalizer==3.3.2
 disnake==2.9.2
-dnspython==2.6.1
+dnspython==2.7.0
 environs==11.0.0
 frozenlist==1.4.1
 idna==3.10
