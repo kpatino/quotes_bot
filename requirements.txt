@@ -15,4 +15,4 @@ multidict==6.1.0
 packaging==24.2
 python-dotenv==1.0.1
 pytz==2024.2
-yarl==1.18.0
+yarl==1.18.3
