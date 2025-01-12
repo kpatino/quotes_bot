@@ -147,8 +147,8 @@ class QuotesCommands(commands.Cog):
         module_logger.info(f'Message command "add quote" with inputs: [{input_name}] [{arg}] executed by {ctx.author.id}')
         await ctx.reply(add_quote_command(input_name, arg), mention_author=False)
 
-    @commands.slash_command(name='add', description='Add a name or quote to the database',
-                            dm_permission=False)
+    @commands.slash_command(name='add', description='Add a name or quote to the database')
+    @commands.contexts(bot_dm=True)
     async def slash_add(self, inter: disnake.CommandInteraction) -> None:
         pass
 
@@ -191,8 +191,8 @@ class QuotesCommands(commands.Cog):
         module_logger.info(f'Message command "remove name" with inputs: [{input_name}] executed by {ctx.author.id}')
         await ctx.reply(remove_name_command(ctx.message.author.mention, input_name), mention_author=False)
 
-    @commands.slash_command(name='remove', description='Remove a name or quote to the database',
-                            dm_permission=False)
+    @commands.slash_command(name='remove', description='Remove a name or quote to the database')
+    @commands.contexts(bot_dm=True)
     async def slash_remove(self, inter: disnake.CommandInteraction) -> None:
         pass
 
