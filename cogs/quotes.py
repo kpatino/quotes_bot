@@ -97,6 +97,8 @@ class QuotesCommands(commands.Cog):
         self.names_list = ''
         self.retrieve_names_loop.start()
 
+    @commands.contexts(bot_dm=False)
+
     @tasks.loop(seconds=15.0)
     async def retrieve_names_loop(self) -> None:
         self.names_list = database.get_names_list()
@@ -148,7 +150,6 @@ class QuotesCommands(commands.Cog):
         await ctx.reply(add_quote_command(input_name, arg), mention_author=False)
 
     @commands.slash_command(name='add', description='Add a name or quote to the database')
-    @commands.contexts(bot_dm=False)
     async def slash_add(self, inter: disnake.CommandInteraction) -> None:
         pass
 
@@ -192,7 +193,6 @@ class QuotesCommands(commands.Cog):
         await ctx.reply(remove_name_command(ctx.message.author.mention, input_name), mention_author=False)
 
     @commands.slash_command(name='remove', description='Remove a name or quote to the database')
-    @commands.contexts(bot_dm=False)
     async def slash_remove(self, inter: disnake.CommandInteraction) -> None:
         pass
 
