@@ -6,7 +6,7 @@ attrs==24.3.0
 charset-normalizer==3.4.1
 disnake==2.10.1
 dnspython==2.7.0
-environs==11.2.1
+environs==14.1.0
 frozenlist==1.5.0
 idna==3.10
 marshmallow==3.23.3
