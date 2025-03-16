@@ -27,8 +27,8 @@ async def status(host: str) -> JavaStatusResponse | QueryResponse:
                     asyncio.create_task(handle_java_query(host), name="Get query as Java"),
                     asyncio.create_task(handle_java_status(host), name="Get status as Java"),
                 },
-                return_when=asyncio.FIRST_EXCEPTION,
-                timeout=5
+                return_when=asyncio.FIRST_COMPLETED,
+                timeout=10
             )
         )
     )
@@ -83,7 +83,8 @@ async def handle_exceptions(done: set[asyncio.Task], pending: set[asyncio.Task])
 async def handle_java_status(host: str) -> JavaStatusResponse | None:
     """A wrapper around mcstatus, to compress it in one function."""
     try:
-        async with asyncio.timeout(3):
+        async with asyncio.timeout(5):
+            await asyncio.sleep(3)
             return await (await JavaServer.async_lookup(host)).async_status()
     except TimeoutError:
         module_logger.warn("Timed out, something went wrong. Is the server down?")
@@ -99,7 +100,7 @@ async def handle_java_status(host: str) -> JavaStatusResponse | None:
 async def handle_java_query(host: str) -> QueryResponse | None:
     """A wrapper around mcstatus, to compress it in one function."""
     try:
-        async with asyncio.timeout(3):
+        async with asyncio.timeout(4):
             return await (await JavaServer.async_lookup(host)).async_query()
     except TimeoutError:
         module_logger.warn("Query timed out, does the server have enable-query=false?")
