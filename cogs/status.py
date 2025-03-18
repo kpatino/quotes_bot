@@ -86,7 +86,7 @@ async def handle_java_status(host: str) -> JavaStatusResponse | None:
         async with asyncio.timeout(6):
             status = await (await JavaServer.async_lookup(host)).async_status()
             await asyncio.sleep(1)
-            return await status
+            return status
     except TimeoutError:
         module_logger.warn("Timed out, something went wrong. Is the server down?")
         raise
