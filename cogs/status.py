@@ -84,7 +84,7 @@ async def handle_java_status(host: str) -> JavaStatusResponse | None:
     """A wrapper around mcstatus, to compress it in one function."""
     try:
         async with asyncio.timeout(6):
-            status = (await JavaServer.async_lookup(host)).async_status()
+            status = await (await JavaServer.async_lookup(host)).async_status()
             await asyncio.sleep(1)
             return await status
     except TimeoutError:
