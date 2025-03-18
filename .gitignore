@@ -143,6 +143,9 @@ cython_debug/
 # pycharm
 .idea/
 
+# Mac
+.DS_Store
+
 # Bot specific files
 logs/
 quotes.db
