@@ -110,7 +110,7 @@ async def handle_java_query(host: str) -> QueryResponse | None:
         module_logger.warning("Query did not succeed, does the server provided exist?")
         raise
     except Exception as e:
-        module_logger.warning(e)
+        module_logger.error(e)
         raise
 
 
