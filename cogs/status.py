@@ -88,13 +88,13 @@ async def handle_java_status(host: str) -> JavaStatusResponse | None:
             await asyncio.sleep(1)
             return status
     except TimeoutError:
-        module_logger.warn("Timed out, something went wrong. Is the server down?")
+        module_logger.warning("Timed out, something went wrong. Is the server down?")
         raise
     except ValueError:
-        module_logger.warn("Did not succeed, is the server down?")
+        module_logger.warning("Did not succeed, is the server down?")
         raise
     except Exception as e:
-        module_logger.warn(e)
+        module_logger.warning(e)
         raise
 
 
@@ -104,13 +104,13 @@ async def handle_java_query(host: str) -> QueryResponse | None:
         async with asyncio.timeout(4):
             return await (await JavaServer.async_lookup(host)).async_query()
     except TimeoutError:
-        module_logger.warn("Query timed out, does the server have enable-query=false?")
+        module_logger.warning("Query timed out, does the server have enable-query=false?")
         raise
     except ValueError:
-        module_logger.warn("Query did not succeed, does the server provided exist?")
+        module_logger.warning("Query did not succeed, does the server provided exist?")
         raise
     except Exception as e:
-        module_logger.warn(e)
+        module_logger.warning(e)
         raise
 
 
@@ -160,7 +160,7 @@ async def status_embed(server_address: str) -> disnake.Embed:
             return server_status_embed
 
         elif isinstance(server_status, JavaStatusResponse):
-            module_logger.warn("Sending JavaStatusResponse, did QueryResponse fail?")
+            module_logger.warning("Sending JavaStatusResponse, did QueryResponse fail?")
             server_status_embed = disnake.Embed(
                 title=server_address,
                 description=server_status.version.name,
@@ -180,7 +180,7 @@ async def status_embed(server_address: str) -> disnake.Embed:
             raise TypeError
 
     except (asyncio.exceptions.TimeoutError, TypeError, ValueError) as e:
-        module_logger.warn(e)
+        module_logger.error(e)
         module_logger.warning(f'Could not lookup server at {server_address}')
         return error_embed
 

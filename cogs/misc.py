@@ -33,7 +33,7 @@ async def timezone_embed() -> disnake.Embed:
                     pytz.timezone(tz)).strftime('%b %d %I:%M %p (%H:%M)'),
                 inline=False)
     else:
-        module_logger.warn('No timezones listed in .env or in an environment variable')
+        module_logger.warning('No timezones listed in .env or in an environment variable')
         embed.set_default_colour(disnake.Colour.red())
         embed.add_field(
                 name='N/A',
