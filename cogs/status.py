@@ -34,7 +34,7 @@ async def status(host: str) -> JavaStatusResponse | QueryResponse:
     )
 
     if success_task is None:
-        raise ValueError("No tasks were successful. Is server offline?")
+        raise ValueError("No tasks were successful. Is the server offline?")
 
     return success_task.result()
 
@@ -43,6 +43,7 @@ async def latency(host: str) -> float:
     """
     Get latency from server
     """
+    module_logger.info(f"Pinging server at {host}")
     success_task = await handle_exceptions(*(
             await asyncio.wait({
                     asyncio.create_task(handle_latency(host), name="Get server latency"),
@@ -53,7 +54,7 @@ async def latency(host: str) -> float:
     )
 
     if success_task is None:
-        raise ValueError("No tasks were successful. Is server offline?")
+        raise ValueError(f"Failed to ping server at {host}")
 
     return success_task.result()
 
@@ -84,14 +85,16 @@ async def handle_java_status(host: str) -> JavaStatusResponse | None:
     """A wrapper around mcstatus, to compress it in one function."""
     try:
         async with asyncio.timeout(6):
+            module_logger.info(f"Fetching Java server status at {host}")
             status = await (await JavaServer.async_lookup(host)).async_status()
+            module_logger.debug("Yielding to Java query")
             await asyncio.sleep(1)
             return status
     except TimeoutError:
         module_logger.warning("Timed out, something went wrong. Is the server down?")
         raise
     except ValueError:
-        module_logger.warning("Did not succeed, is the server down?")
+        module_logger.warning("Did not succeed. Is the server down?")
         raise
     except Exception as e:
         module_logger.warning(e)
@@ -101,13 +104,14 @@ async def handle_java_status(host: str) -> JavaStatusResponse | None:
 async def handle_java_query(host: str) -> QueryResponse | None:
     """A wrapper around mcstatus, to compress it in one function."""
     try:
+        module_logger.info(f"Fetching Java server query at {host}")
         async with asyncio.timeout(4):
             return await (await JavaServer.async_lookup(host)).async_query()
     except TimeoutError:
         module_logger.warning("Query timed out, does the server have enable-query=false?")
         raise
     except ValueError:
-        module_logger.warning("Query did not succeed, does the server provided exist?")
+        module_logger.warning(f"Query did not succeed, does the server at {host} exist?")
         raise
     except Exception as e:
         module_logger.error(e)
@@ -137,7 +141,7 @@ async def status_embed(server_address: str) -> disnake.Embed:
         server_status = await status(server_address)
 
         if isinstance(server_status, QueryResponse):
-            module_logger.debug("Sending QueryResponse")
+            module_logger.debug("Creating Discord embed with QueryResponse")
             server_latency = await latency(server_address)  # Query doesn't provide latency
             server_status_embed = disnake.Embed(
                 title=server_address,
@@ -160,7 +164,7 @@ async def status_embed(server_address: str) -> disnake.Embed:
             return server_status_embed
 
         elif isinstance(server_status, JavaStatusResponse):
-            module_logger.warning("Sending JavaStatusResponse, did QueryResponse fail?")
+            module_logger.warning("Creating Discord embed with JavaStatusResponse, did QueryResponse fail?")
             server_status_embed = disnake.Embed(
                 title=server_address,
                 description=server_status.version.name,
