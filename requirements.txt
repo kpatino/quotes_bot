@@ -11,7 +11,7 @@ frozenlist==1.6.0
 idna==3.10
 marshmallow==4.0.0
 mcstatus==11.1.1
-multidict==6.4.3
+multidict==6.4.4
 packaging==25.0
 python-dotenv==1.1.0
 pytz==2025.2
