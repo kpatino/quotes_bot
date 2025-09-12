@@ -4,7 +4,7 @@ async-timeout==5.0.1
 asyncio-dgram==2.2.0
 attrs==25.3.0
 charset-normalizer==3.4.3
-disnake==2.10.1
+disnake==2.11.0
 dnspython==2.7.0
 environs==14.3.0
 frozenlist==1.7.0
