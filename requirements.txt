@@ -10,7 +10,7 @@ frozenlist==1.8.0
 idna==3.11
 marshmallow==4.2.0
 mcstatus==12.1.0
-multidict==6.7.0
+multidict==6.7.1
 propcache==0.4.1
 python-dotenv==1.2.1
 pytz==2025.2
