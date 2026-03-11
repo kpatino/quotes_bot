@@ -8,8 +8,7 @@ import logging
 import disnake
 from disnake.ext import commands
 from mcstatus import JavaServer
-from mcstatus.status_response import JavaStatusResponse
-from mcstatus.querier import QueryResponse
+from mcstatus.responses import JavaStatusResponse, QueryResponse
 
 from config import Config
 
