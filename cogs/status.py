@@ -154,7 +154,7 @@ async def status_embed(server_address: str) -> disnake.Embed:
                 name='Count',
                 value=f'{server_status.players.online}/{server_status.players.max}',
                 inline=True)
-            server_players = (', '.join(server_status.players.names))
+            server_players = (', '.join(server_status.players.list))
             server_status_embed.add_field(
                 name='Players',
                 value=f'\u200b{server_players}',  # Unicode blank prevents an empty "value"
