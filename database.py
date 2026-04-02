@@ -16,6 +16,7 @@ class OpenDatabase(object):
     Args:
         object (str): SQLite database filepath
     """
+
     def __init__(self, path):
         self.path = path
 
@@ -64,14 +65,16 @@ def get_names() -> str:
     Returns:
         str: String value containing the names separated by commas
     """
-    with OpenDatabase('./quotes.db') as cursor:
-        cursor.execute(
-            "SELECT name FROM people")
-        names = [
-            v[0] for v in cursor.fetchall()
-        ]
+    with OpenDatabase("./quotes.db") as cursor:
+        cursor.execute("SELECT name FROM people")
+        names = [v[0] for v in cursor.fetchall()]
         names.sort()
-        names = ', '.join(map(str, names,))
+        names = ", ".join(
+            map(
+                str,
+                names,
+            )
+        )
         return names
 
 
@@ -83,12 +86,9 @@ def get_names_list() -> list:
     Returns:
         list: List of names
     """
-    with OpenDatabase('./quotes.db') as cursor:
-        cursor.execute(
-            "SELECT name FROM people")
-        names_list = [
-            v[0] for v in cursor.fetchall()
-        ]
+    with OpenDatabase("./quotes.db") as cursor:
+        cursor.execute("SELECT name FROM people")
+        names_list = [v[0] for v in cursor.fetchall()]
         names_list.sort()
         return names_list[:20]
 
@@ -100,7 +100,7 @@ def add_name(name: str) -> None:
     Args:
         name (str): String to add to the people table
     """
-    with OpenDatabase('./quotes.db') as cursor:
+    with OpenDatabase("./quotes.db") as cursor:
         cursor.execute("INSERT INTO people ('name') VALUES (?)", (name,))
 
 
@@ -112,7 +112,7 @@ def remove_name(name: str) -> None:
     Args:
         name (str): Name entry to remove from the database if it exists
     """
-    with OpenDatabase('./quotes.db') as cursor:
+    with OpenDatabase("./quotes.db") as cursor:
         cursor.execute("DELETE FROM quotes WHERE name == (?);", (name,))
         cursor.execute("DELETE FROM people WHERE name == (?);", (name,))
 
@@ -127,7 +127,7 @@ def verify_name(name: str) -> bool:
     Returns:
         bool: True or false the name provided exists
     """
-    with OpenDatabase('./quotes.db') as cursor:
+    with OpenDatabase("./quotes.db") as cursor:
         cursor.execute("SELECT count(name) FROM people WHERE name=?", (name,))
         if cursor.fetchone()[0] == 1:
             return True
@@ -146,12 +146,12 @@ def get_random_quote(name: str) -> str:
     Returns:
         str: String containing a random quote or an error message
     """
-    with OpenDatabase('./quotes.db') as cursor:
+    with OpenDatabase("./quotes.db") as cursor:
         try:
             cursor.execute(
-                "SELECT quote FROM quotes "
-                "WHERE name=? ORDER BY RANDOM() LIMIT 1",
-                (name,))
+                "SELECT quote FROM quotes WHERE name=? ORDER BY RANDOM() LIMIT 1",
+                (name,),
+            )
             result = cursor.fetchone()
             return str(result[0])
         except TypeError:
@@ -166,10 +166,14 @@ def add_quote(name: str, quote: str) -> None:
         name (str): Name used for database entry
         quote (str): Quote used for database entry
     """
-    with OpenDatabase('./quotes.db') as cursor:
+    with OpenDatabase("./quotes.db") as cursor:
         cursor.execute(
             "INSERT INTO quotes ('name', 'quote') VALUES (?, ?)",
-            (name, quote,))
+            (
+                name,
+                quote,
+            ),
+        )
 
 
 def get_random_name() -> str:
@@ -179,12 +183,9 @@ def get_random_name() -> str:
     Returns:
         str: Value containing a random name entry
     """
-    with OpenDatabase('./quotes.db') as cursor:
-        cursor.execute(
-            "SELECT name FROM people")
-        names_list = [
-            v[0] for v in cursor.fetchall()
-        ]
+    with OpenDatabase("./quotes.db") as cursor:
+        cursor.execute("SELECT name FROM people")
+        names_list = [v[0] for v in cursor.fetchall()]
         return str(random.choice(names_list))
 
 
@@ -198,6 +199,6 @@ def list_quotes(name: str) -> list:
     Returns:
         list: List of string values
     """
-    with OpenDatabase('./quotes.db') as cursor:
+    with OpenDatabase("./quotes.db") as cursor:
         cursor.execute("SELECT * FROM quotes WHERE name == (?);", (name,))
         return cursor.fetchall()

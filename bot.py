@@ -45,18 +45,13 @@ def get_intents():
 
 class JamalBot(commands.Bot):
     def __init__(self) -> None:
-        super().__init__(
-            intents=get_intents(),
-            command_prefix=get_prefix
-        )
+        super().__init__(intents=get_intents(), command_prefix=get_prefix)
 
     async def on_ready(self) -> None:
         logger.info(f"disnake version: {disnake.__version__}")
         logger.info(f"Logged in as: {bot.user} - {bot.user.id}")
         activity = disnake.Game(name=Config.discord_bot_activity)
-        await bot.change_presence(
-            status=disnake.Status.online,
-            activity=activity)
+        await bot.change_presence(status=disnake.Status.online, activity=activity)
         # Logging done lets Pterodactyl know that it's ready
         logger.info("Done")
 
