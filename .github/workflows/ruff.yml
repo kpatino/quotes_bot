@@ -5,10 +5,10 @@ on:
   push:
     branches:
       - master
-      - development
+      - develop
     pull_request:
       - master
-      - development
+      - develop
 jobs:
   ruff:
     runs-on: ubuntu-latest
