@@ -10,7 +10,7 @@ from disnake.ext import commands
 
 from config import Config
 
-module_logger = logging.getLogger(f'__main__.{__name__}')
+module_logger = logging.getLogger(f"__main__.{__name__}")
 
 
 async def timezone_embed() -> disnake.Embed:
@@ -21,10 +21,10 @@ async def timezone_embed() -> disnake.Embed:
         embed: Time in different timezones
     """
 
-    embed = disnake.Embed(title='Time')
+    embed = disnake.Embed(title="Time")
 
     if Config.timezone_list:
-        module_logger.debug(f'Using the following timezones: {Config.timezone_list}')
+        module_logger.debug(f"Using the following timezones: {Config.timezone_list}")
         embed.set_default_colour(disnake.Colour.purple())
         for tz in Config.timezone_list:
             embed.add_field(

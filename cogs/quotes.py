@@ -10,7 +10,7 @@ from disnake.ext import commands, tasks
 import database
 from config import Config
 
-module_logger = logging.getLogger(f'__main__.{__name__}')
+module_logger = logging.getLogger(f"__main__.{__name__}")
 
 
 def access_command(name: str) -> str:
