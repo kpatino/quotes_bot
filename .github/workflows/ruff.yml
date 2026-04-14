@@ -4,10 +4,8 @@ permissions:
 on:
   push:
     branches:
-      - master
       - develop
     pull_request:
-      - master
       - develop
 jobs:
   ruff:
@@ -15,3 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - uses: astral-sh/ruff-action@4919ec5cf1f49eff0871dbcea0da843445b837e6
+        with:
+          args: --check
+          src: >-
+            cogs/misc.py
+            cogs/quotes.py
+            cogs/status.py
+            bot.py
+            config.py
+            database.py
