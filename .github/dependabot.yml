@@ -11,3 +11,4 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+      target-branch: "develop"
