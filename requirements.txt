@@ -9,7 +9,7 @@ environs==15.0.1
 frozenlist==1.8.0
 idna==3.11
 marshmallow==4.3.0
-mcstatus==13.0.1
+mcstatus==13.1.0
 multidict==6.7.1
 propcache==0.4.1
 python-dotenv==1.2.2
