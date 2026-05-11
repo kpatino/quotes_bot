@@ -11,7 +11,7 @@ idna==3.13
 marshmallow==4.3.0
 mcstatus==13.1.0
 multidict==6.7.1
-propcache==0.4.1
+propcache==0.5.2
 python-dotenv==1.2.2
 pytz==2026.2
 typing_extensions==4.15.0
