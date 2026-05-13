@@ -7,7 +7,7 @@ disnake==2.12.0
 dnspython==2.8.0
 environs==15.0.1
 frozenlist==1.8.0
-idna==3.13
+idna==3.15
 marshmallow==4.3.0
 mcstatus==13.1.0
 multidict==6.7.1
