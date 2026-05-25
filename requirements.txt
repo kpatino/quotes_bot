@@ -15,4 +15,4 @@ propcache==0.5.2
 python-dotenv==1.2.2
 pytz==2026.2
 typing_extensions==4.15.0
-yarl==1.23.0
+yarl==1.24.2
