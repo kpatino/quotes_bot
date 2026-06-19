@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Kevin Patino
+# SPDX-FileCopyrightText: 2026 Kevin Patino
 # SPDX-License-Identifier: MIT
 
 import asyncio
@@ -26,10 +27,14 @@ def access_command(guild_id: int, name: str) -> str:
     name = name.lower()
     if database.verify_name(guild_id, name) is True:
         return database.get_random_quote(guild_id, name)
+    if database.verify_name(guild_id, name) is True:
+        return database.get_random_quote(guild_id, name)
     else:
         return f'The name "{name}" is not in the database'
 
 
+def add_name_command(guild_id: int, author, name: str) -> str:
+    """Add a name to the database.
 def add_name_command(guild_id: int, added_by: int, author, name: str) -> str:
     """Add a name to the database.
 

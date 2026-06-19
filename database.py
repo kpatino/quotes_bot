@@ -9,10 +9,8 @@ from datetime import datetime, timezone
 module_logger = logging.getLogger(f"__main__.{__name__}")
 
 
-class OpenDatabase:
-    """
-    SQLite3 context manager used for automatically opening and closing
-    connections.
+class OpenDatabase(object):
+    """SQLite3 context manager for automatically opening and closing connections.
 
     Args:
         path (str): SQLite database filepath.
