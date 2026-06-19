@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Kevin Patino
+# SPDX-FileCopyrightText: 2026 Kevin Patino
 # SPDX-License-Identifier: MIT
 
 import logging
@@ -9,12 +9,10 @@ module_logger = logging.getLogger(f"__main__.{__name__}")
 
 
 class OpenDatabase(object):
-    """
-    SQLite3 context manager used for automatically opening and closing
-    connections.
+    """SQLite3 context manager for automatically opening and closing connections.
 
     Args:
-        object (str): SQLite database filepath
+        path (str): SQLite database filepath.
     """
 
     def __init__(self, path):
@@ -30,127 +28,165 @@ class OpenDatabase(object):
         self.conn.close()
 
 
-def create_db(db_name: str) -> None:
-    """
-    Create a database with people and quotes tables. The people table contains
-    one column "name". Each record under "name" must be unique. The quotes
-    table contains the columns' id, name, and quote. The ID column must be
-    unique. The name column is a foreign key to the name column in the people
-    table.
+def _resolve_guild(cursor, guild_id: int) -> int:
+    """Return the integer primary key for a guild, creating it if needed.
 
     Args:
-        db_name (str): name of the database file to create
-    """
-    create_people_table = """CREATE TABLE IF NOT EXISTS people(
-                                'name' TEXT NOT NULL UNIQUE
-                            );"""
-
-    create_quotes_table = """CREATE TABLE IF NOT EXISTS quotes(
-                                'id' INTEGER NOT NULL UNIQUE,
-                                'name' TEXT NOT NULL,
-                                'quote' TEXT NOT NULL,
-                                FOREIGN KEY('name')
-                                REFERENCES 'people'('name'),
-                                PRIMARY KEY('id' AUTOINCREMENT)
-                            );"""
-    with OpenDatabase(db_name) as cursor:
-        cursor.execute(create_people_table)
-        cursor.execute(create_quotes_table)
-
-
-def get_names() -> str:
-    """
-    Return a string with all the names recorded in the people table.
+        cursor: Active database cursor.
+        guild_id (int): Discord server ID.
 
     Returns:
-        str: String value containing the names separated by commas
+        int: Primary key of the guild row.
+    """
+    cursor.execute("INSERT OR IGNORE INTO guilds (guild_id) VALUES (?)", (guild_id,))
+    cursor.execute("SELECT id FROM guilds WHERE guild_id = ?", (guild_id,))
+    return cursor.fetchone()[0]
+
+
+def create_db(db_name: str) -> None:
+    """Create the database tables if they do not already exist.
+
+    Args:
+        db_name (str): Name of the database file to create.
+    """
+    with OpenDatabase(db_name) as cursor:
+        cursor.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='guilds'"
+        )
+        if cursor.fetchone() is not None:
+            return
+
+        cursor.execute("""CREATE TABLE IF NOT EXISTS guilds(
+            'id' INTEGER NOT NULL UNIQUE,
+            'guild_id' INTEGER NOT NULL UNIQUE,
+            PRIMARY KEY('id')
+        );""")
+
+        cursor.execute("""CREATE TABLE IF NOT EXISTS people(
+            'guild_id' INTEGER NOT NULL,
+            'name' TEXT NOT NULL,
+            UNIQUE('guild_id', 'name'),
+            FOREIGN KEY('guild_id') REFERENCES 'guilds'('id')
+        );""")
+
+        cursor.execute("""CREATE TABLE IF NOT EXISTS quotes(
+            'id' INTEGER NOT NULL UNIQUE,
+            'guild_id' INTEGER NOT NULL,
+            'name' TEXT NOT NULL,
+            'quote' TEXT NOT NULL,
+            FOREIGN KEY('guild_id', 'name')
+            REFERENCES 'people'('guild_id', 'name'),
+            PRIMARY KEY('id' AUTOINCREMENT)
+        );""")
+
+
+def get_names(guild_id: int) -> str:
+    """Return a comma-separated string of all names for a guild.
+
+    Args:
+        guild_id (int): Discord server ID to scope the query to.
+
+    Returns:
+        str: Names separated by commas.
     """
     with OpenDatabase("./quotes.db") as cursor:
-        cursor.execute("SELECT name FROM people")
+        guild_int = _resolve_guild(cursor, guild_id)
+        cursor.execute("SELECT name FROM people WHERE guild_id = ?", (guild_int,))
         names = [v[0] for v in cursor.fetchall()]
         names.sort()
-        names = ", ".join(
-            map(
-                str,
-                names,
-            )
-        )
+        names = ", ".join(map(str, names))
         return names
 
 
-def get_names_list() -> list:
-    """
-    Return a list of the first 20 names in the people table in alphabetical
-    order.
+def get_names_list(guild_id: int) -> list:
+    """Return the first 20 names for a guild in alphabetical order.
+
+    Args:
+        guild_id (int): Discord server ID to scope the query to.
 
     Returns:
-        list: List of names
+        list: Sorted list of up to 20 names.
     """
     with OpenDatabase("./quotes.db") as cursor:
-        cursor.execute("SELECT name FROM people")
+        guild_int = _resolve_guild(cursor, guild_id)
+        cursor.execute("SELECT name FROM people WHERE guild_id = ?", (guild_int,))
         names_list = [v[0] for v in cursor.fetchall()]
         names_list.sort()
         return names_list[:20]
 
 
-def add_name(name: str) -> None:
-    """
-    Adds a name to the people table.
+def add_name(guild_id: int, name: str) -> None:
+    """Add a name to the people table for a guild.
 
     Args:
-        name (str): String to add to the people table
+        guild_id (int): Discord server ID to scope the entry to.
+        name (str): Name to add.
     """
     with OpenDatabase("./quotes.db") as cursor:
-        cursor.execute("INSERT INTO people ('name') VALUES (?)", (name,))
+        guild_int = _resolve_guild(cursor, guild_id)
+        cursor.execute(
+            "INSERT INTO people ('guild_id', 'name') VALUES (?, ?)",
+            (guild_int, name),
+        )
 
 
-def remove_name(name: str) -> None:
-    """
-    Remove associated quotes first then remove the name entry from the
-    people table. This action is not reversible.
+def remove_name(guild_id: int, name: str) -> None:
+    """Remove a name and all its quotes from a guild. Not reversible.
 
     Args:
-        name (str): Name entry to remove from the database if it exists
+        guild_id (int): Discord server ID to scope the query to.
+        name (str): Name to remove.
     """
     with OpenDatabase("./quotes.db") as cursor:
-        cursor.execute("DELETE FROM quotes WHERE name == (?);", (name,))
-        cursor.execute("DELETE FROM people WHERE name == (?);", (name,))
+        guild_int = _resolve_guild(cursor, guild_id)
+        cursor.execute(
+            "DELETE FROM quotes WHERE guild_id == ? AND name == ?;",
+            (guild_int, name),
+        )
+        cursor.execute(
+            "DELETE FROM people WHERE guild_id == ? AND name == ?;",
+            (guild_int, name),
+        )
 
 
-def verify_name(name: str) -> bool:
-    """
-    Verify if the name provided has an entry in the people table and returns a
-    boolean.
+def verify_name(guild_id: int, name: str) -> bool:
+    """Check whether a name exists in the people table for a guild.
 
     Args:
-        name (str): Value to check
+        guild_id (int): Discord server ID to scope the query to.
+        name (str): Name to check.
+
     Returns:
-        bool: True or false the name provided exists
+        bool: True if the name exists, False otherwise.
     """
     with OpenDatabase("./quotes.db") as cursor:
-        cursor.execute("SELECT count(name) FROM people WHERE name=?", (name,))
+        guild_int = _resolve_guild(cursor, guild_id)
+        cursor.execute(
+            "SELECT count(name) FROM people WHERE guild_id = ? AND name = ?",
+            (guild_int, name),
+        )
         if cursor.fetchone()[0] == 1:
             return True
         else:
             return False
 
 
-def get_random_quote(name: str) -> str:
-    """
-    Retrieves a random quote from the database by name in the quotes table.
-    If no quotes are found return a message letting the user know there
-    are no quotes attributed to the provided name.
+def get_random_quote(guild_id: int, name: str) -> str:
+    """Return a random quote for a name in a guild.
 
     Args:
-        name (str): Retrieve a random quote attributed to this name
+        guild_id (int): Discord server ID to scope the query to.
+        name (str): Name to look up.
+
     Returns:
-        str: String containing a random quote or an error message
+        str: A random quote, or a message if none exist.
     """
     with OpenDatabase("./quotes.db") as cursor:
+        guild_int = _resolve_guild(cursor, guild_id)
         try:
             cursor.execute(
-                "SELECT quote FROM quotes WHERE name=? ORDER BY RANDOM() LIMIT 1",
-                (name,),
+                "SELECT quote FROM quotes WHERE guild_id = ? AND name = ? ORDER BY RANDOM() LIMIT 1",
+                (guild_int, name),
             )
             result = cursor.fetchone()
             return str(result[0])
@@ -158,47 +194,52 @@ def get_random_quote(name: str) -> str:
             return f"{name} does not have any quotes"
 
 
-def add_quote(name: str, quote: str) -> None:
-    """
-    Add an attributed quote to the database.
+def add_quote(guild_id: int, name: str, quote: str) -> None:
+    """Add a quote attributed to a name for a guild.
 
     Args:
-        name (str): Name used for database entry
-        quote (str): Quote used for database entry
+        guild_id (int): Discord server ID to scope the entry to.
+        name (str): Name to attribute the quote to.
+        quote (str): Quote text.
     """
     with OpenDatabase("./quotes.db") as cursor:
+        guild_int = _resolve_guild(cursor, guild_id)
         cursor.execute(
-            "INSERT INTO quotes ('name', 'quote') VALUES (?, ?)",
-            (
-                name,
-                quote,
-            ),
+            "INSERT INTO quotes ('guild_id', 'name', 'quote') VALUES (?, ?, ?)",
+            (guild_int, name, quote),
         )
 
 
-def get_random_name() -> str:
-    """
-    Retrieve a random name from the people table.
+def get_random_name(guild_id: int) -> str:
+    """Return a random name from a guild.
+
+    Args:
+        guild_id (int): Discord server ID to scope the query to.
 
     Returns:
-        str: Value containing a random name entry
+        str: A randomly chosen name.
     """
     with OpenDatabase("./quotes.db") as cursor:
-        cursor.execute("SELECT name FROM people")
+        guild_int = _resolve_guild(cursor, guild_id)
+        cursor.execute("SELECT name FROM people WHERE guild_id = ?", (guild_int,))
         names_list = [v[0] for v in cursor.fetchall()]
         return str(random.choice(names_list))
 
 
-def list_quotes(name: str) -> list:
-    """
-    Unused function to retrieve a list of all the quotes attributed to the
-    given name.
+def list_quotes(guild_id: int, name: str) -> list:
+    """Return all quotes attributed to a name within a guild. (Unused)
 
     Args:
-        name (str): Name used to retrieve all quotes
+        guild_id (int): Discord server ID to scope the query to.
+        name (str): Name to look up.
+
     Returns:
-        list: List of string values
+        list: Rows from the quotes table.
     """
     with OpenDatabase("./quotes.db") as cursor:
-        cursor.execute("SELECT * FROM quotes WHERE name == (?);", (name,))
+        guild_int = _resolve_guild(cursor, guild_id)
+        cursor.execute(
+            "SELECT * FROM quotes WHERE guild_id == ? AND name == ?;",
+            (guild_int, name),
+        )
         return cursor.fetchall()
