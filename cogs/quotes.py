@@ -30,11 +30,12 @@ def access_command(guild_id: int, name: str) -> str:
         return f'The name "{name}" is not in the database'
 
 
-def add_name_command(guild_id: int, author, name: str) -> str:
+def add_name_command(guild_id: int, added_by: int, author, name: str) -> str:
     """Add a name to the database.
 
     Args:
         guild_id (int): Discord server ID to scope the entry to.
+        added_by (int): Discord user ID who added the name.
         author: Pass either ctx.message.author.mention or inter.author.mention.
         name (str): Name to add to the database.
 
@@ -45,15 +46,16 @@ def add_name_command(guild_id: int, author, name: str) -> str:
     if database.verify_name(guild_id, name) is True:
         return f'The name "{name}" is already in the database'
     else:
-        database.add_name(guild_id, name)
+        database.add_name(guild_id, name, added_by)
         return f'{author} added "{name}" to the database'
 
 
-def add_quote_command(guild_id: int, name: str, quote: str) -> str:
+def add_quote_command(guild_id: int, added_by: int, name: str, quote: str) -> str:
     """Add a quote attributed to a name in the database.
 
     Args:
         guild_id (int): Discord server ID to scope the entry to.
+        added_by (int): Discord user ID who added the quote.
         name (str): Name for quote attribution.
         quote (str): The quote text.
 
@@ -67,7 +69,7 @@ def add_quote_command(guild_id: int, name: str, quote: str) -> str:
         if quote == "":
             return "A quote was not provided"
         else:
-            database.add_quote(guild_id, name, quote)
+            database.add_quote(guild_id, name, quote, added_by)
             return f"Added \u201c{quote}\u201d to {name}"
 
 
@@ -159,7 +161,7 @@ class QuotesCommands(commands.Cog):
             f'Message command "add name" with input: [{input_name}] executed by {ctx.author.id}'
         )
         await ctx.reply(
-            add_name_command(ctx.guild.id, ctx.message.author.mention, input_name),
+            add_name_command(ctx.guild.id, ctx.author.id, ctx.message.author.mention, input_name),
             mention_author=False,
         )
 
@@ -168,7 +170,7 @@ class QuotesCommands(commands.Cog):
         module_logger.info(
             f'Message command "add quote" with inputs: [{input_name}] [{arg}] executed by {ctx.author.id}'
         )
-        await ctx.reply(add_quote_command(ctx.guild.id, input_name, arg), mention_author=False)
+        await ctx.reply(add_quote_command(ctx.guild.id, ctx.author.id, input_name, arg), mention_author=False)
 
     @commands.slash_command(
         name="add", description="Add a name or quote to the database"
@@ -192,7 +194,7 @@ class QuotesCommands(commands.Cog):
         module_logger.info(
             f'Message command "add name" with input: [{name}] executed by {inter.author.id}'
         )
-        await inter.response.send_message(add_name_command(inter.guild_id, inter.author.mention, name))
+        await inter.response.send_message(add_name_command(inter.guild_id, inter.author.id, inter.author.mention, name))
 
     @slash_add.sub_command(
         name="quote",
@@ -214,7 +216,7 @@ class QuotesCommands(commands.Cog):
         module_logger.info(
             f'Slash command "add quote" with inputs: [{name}] [{quote}] executed by {inter.author.id}'
         )
-        await inter.response.send_message(add_quote_command(inter.guild_id, name, quote))
+        await inter.response.send_message(add_quote_command(inter.guild_id, inter.author.id, name, quote))
 
     @slash_add_quote.autocomplete("name")
     async def slash_add_quote_autocomp(

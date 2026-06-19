@@ -4,6 +4,7 @@
 import logging
 import random
 import sqlite3
+from datetime import datetime, timezone
 
 module_logger = logging.getLogger(f"__main__.{__name__}")
 
@@ -67,6 +68,8 @@ def create_db(db_name: str) -> None:
             'id' INTEGER NOT NULL UNIQUE,
             'guild_id' INTEGER NOT NULL,
             'name' TEXT NOT NULL,
+            'created_at' TEXT NOT NULL,
+            'added_by' INTEGER NOT NULL,
             UNIQUE('guild_id', 'name'),
             FOREIGN KEY('guild_id') REFERENCES 'guilds'('id'),
             PRIMARY KEY('id' AUTOINCREMENT)
@@ -76,6 +79,8 @@ def create_db(db_name: str) -> None:
             'id' INTEGER NOT NULL UNIQUE,
             'person_id' INTEGER NOT NULL,
             'quote' TEXT NOT NULL,
+            'created_at' TEXT NOT NULL,
+            'added_by' INTEGER NOT NULL,
             FOREIGN KEY('person_id') REFERENCES 'people'('id'),
             PRIMARY KEY('id' AUTOINCREMENT)
         );""")
@@ -120,18 +125,21 @@ def get_names_list(guild_id: int) -> list:
         return names_list[:20]
 
 
-def add_name(guild_id: int, name: str) -> None:
+def add_name(guild_id: int, name: str, added_by: int) -> None:
     """Add a name to the people table for a guild.
 
     Args:
         guild_id (int): Discord server ID to scope the entry to.
         name (str): Name to add.
+        added_by (int): Discord user ID who added the name.
     """
     with OpenDatabase("./quotes.db") as cursor:
         guild_int = _resolve_guild(cursor, guild_id)
+        now = datetime.now(timezone.utc).isoformat()
         cursor.execute(
-            "INSERT INTO people ('guild_id', 'name') VALUES (?, ?)",
-            (guild_int, name),
+            "INSERT INTO people ('guild_id', 'name', 'created_at', 'added_by')"
+            " VALUES (?, ?, ?, ?)",
+            (guild_int, name, now, added_by),
         )
 
 
@@ -204,21 +212,23 @@ def get_random_quote(guild_id: int, name: str) -> str:
             return f"{name} does not have any quotes"
 
 
-def add_quote(guild_id: int, name: str, quote: str) -> None:
+def add_quote(guild_id: int, name: str, quote: str, added_by: int) -> None:
     """Add a quote attributed to a name for a guild.
 
     Args:
         guild_id (int): Discord server ID to scope the entry to.
         name (str): Name to attribute the quote to.
         quote (str): Quote text.
+        added_by (int): Discord user ID who added the quote.
     """
     with OpenDatabase("./quotes.db") as cursor:
         guild_int = _resolve_guild(cursor, guild_id)
+        now = datetime.now(timezone.utc).isoformat()
         cursor.execute(
-            "INSERT INTO quotes ('person_id', 'quote')"
-            " SELECT id, ? FROM people"
+            "INSERT INTO quotes ('person_id', 'quote', 'created_at', 'added_by')"
+            " SELECT id, ?, ?, ? FROM people"
             " WHERE guild_id = ? AND name = ?",
-            (quote, guild_int, name),
+            (quote, now, added_by, guild_int, name),
         )
 
 
