@@ -103,6 +103,7 @@ class QuotesCommands(commands.Cog):
         self.names_list = database.get_names_list()
 
     @commands.command(name="list", description="List available names from the database")
+    @commands.guild_only()
     async def list_names(self, ctx) -> None:
         module_logger.info(f'Message command "list" executed by {ctx.author.id}')
         await ctx.reply(database.get_names(), mention_author=False)
@@ -110,11 +111,13 @@ class QuotesCommands(commands.Cog):
     @commands.slash_command(
         name="list", description="List available names from the database"
     )
+    @commands.guild_only()
     async def slash_list_names(self, inter: disnake.CommandInteraction) -> None:
         module_logger.info(f'Slash command "list" executed by {inter.author.id}')
         await inter.response.send_message(database.get_names())
 
     @commands.command(description="Access a random quote by name")
+    @commands.guild_only()
     async def access(self, ctx, input_name: str) -> None:
         module_logger.info(f'Message command "access" executed by {ctx.author.id}')
         await ctx.reply(access_command(input_name), mention_author=False)
@@ -130,6 +133,7 @@ class QuotesCommands(commands.Cog):
             )
         ],
     )
+    @commands.guild_only()
     async def slash_access(self, inter: disnake.CommandInteraction, name: str) -> None:
         module_logger.info(f'Slash command "access" executed by {inter.author.id}')
         await inter.response.send_message(access_command(name))
@@ -142,6 +146,7 @@ class QuotesCommands(commands.Cog):
         return [name for name in self.names_list if user_input in name.lower()]
 
     @commands.group(name="add", description="Add a name or quote to the database")
+    @commands.guild_only()
     async def add(self, ctx) -> None:
         if ctx.invoked_subcommand is None:
             await ctx.reply("Missing required argument", mention_author=False)
@@ -167,6 +172,7 @@ class QuotesCommands(commands.Cog):
     @commands.slash_command(
         name="add", description="Add a name or quote to the database"
     )
+    @commands.guild_only()
     async def slash_add(self, inter: disnake.CommandInteraction) -> None:
         pass
 
@@ -217,6 +223,7 @@ class QuotesCommands(commands.Cog):
         return [name for name in self.names_list if string in name.lower()]
 
     @commands.group(description="Remove a name and their quotes from the database")
+    @commands.guild_only()
     async def remove(self, ctx) -> None:
         if ctx.invoked_subcommand is None:
             await ctx.reply("Missing required argument", mention_author=False)
@@ -237,6 +244,7 @@ class QuotesCommands(commands.Cog):
     @commands.slash_command(
         name="remove", description="Remove a name or quote to the database"
     )
+    @commands.guild_only()
     async def slash_remove(self, inter: disnake.CommandInteraction) -> None:
         pass
 
@@ -259,6 +267,7 @@ class QuotesCommands(commands.Cog):
         return [name for name in self.names_list if string in name.lower()]
 
     @commands.command(description="Get a random quote and guess who said it")
+    @commands.guild_only()
     async def quotes(self, ctx) -> None:
         module_logger.info(f'Message command "quotes" executed by {ctx.author.id}')
         name = database.get_random_name()
@@ -281,6 +290,7 @@ class QuotesCommands(commands.Cog):
     @commands.slash_command(
         name="quotes", description="Get a random quote and guess who said it"
     )
+    @commands.guild_only()
     async def slash_quotes(self, inter: disnake.CommandInteraction) -> None:
         module_logger.info(f'Slash command "quotes" executed by {inter.author.id}')
         name = database.get_random_name()
