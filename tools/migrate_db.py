@@ -11,6 +11,7 @@ Usage:
 import argparse
 import sqlite3
 import sys
+from datetime import datetime, timezone
 
 
 def migrate(db_path: str) -> None:
@@ -23,7 +24,7 @@ def migrate(db_path: str) -> None:
     if cursor.fetchone() is not None:
         cursor.execute("PRAGMA table_info(people)")
         columns = [row[1] for row in cursor.fetchall()]
-        if 'id' in columns:
+        if 'created_at' in columns:
             print("Database already has the current schema. Nothing to do.")
             conn.close()
             return
@@ -71,6 +72,8 @@ def migrate(db_path: str) -> None:
         'id' INTEGER NOT NULL UNIQUE,
         'guild_id' INTEGER NOT NULL,
         'name' TEXT NOT NULL,
+        'created_at' TEXT NOT NULL,
+        'added_by' INTEGER NOT NULL,
         UNIQUE('guild_id', 'name'),
         FOREIGN KEY('guild_id') REFERENCES 'guilds'('id'),
         PRIMARY KEY('id' AUTOINCREMENT)
@@ -80,6 +83,8 @@ def migrate(db_path: str) -> None:
         'id' INTEGER NOT NULL UNIQUE,
         'person_id' INTEGER NOT NULL,
         'quote' TEXT NOT NULL,
+        'created_at' TEXT NOT NULL,
+        'added_by' INTEGER NOT NULL,
         FOREIGN KEY('person_id') REFERENCES 'people'('id'),
         PRIMARY KEY('id' AUTOINCREMENT)
     );""")
@@ -88,14 +93,18 @@ def migrate(db_path: str) -> None:
         "CREATE INDEX IF NOT EXISTS idx_quotes_person_id ON quotes(person_id)"
     )
 
+    now = datetime.now(timezone.utc).isoformat()
     cursor.execute("INSERT INTO guilds (guild_id) VALUES (?)", (guild_id,))
     cursor.execute(
-        "INSERT INTO people (guild_id, name) SELECT 1, name FROM people_old"
+        "INSERT INTO people (guild_id, name, created_at, added_by)"
+        " SELECT 1, name, ?, 0 FROM people_old",
+        (now,),
     )
     cursor.execute(
-        "INSERT INTO quotes (person_id, quote)"
-        " SELECT p.id, q.quote FROM quotes_old q"
-        " JOIN people p ON p.name = q.name"
+        "INSERT INTO quotes (person_id, quote, created_at, added_by)"
+        " SELECT p.id, q.quote, ?, 0 FROM quotes_old q"
+        " JOIN people p ON p.name = q.name",
+        (now,),
     )
 
     cursor.execute("DROP TABLE people_old")
