@@ -20,6 +20,7 @@ class OpenDatabase(object):
 
     def __enter__(self):
         self.conn = sqlite3.connect(self.path)
+        self.conn.execute("PRAGMA foreign_keys = ON")
         self.cursor = self.conn.cursor()
         return self.cursor
 
@@ -63,21 +64,25 @@ def create_db(db_name: str) -> None:
         );""")
 
         cursor.execute("""CREATE TABLE IF NOT EXISTS people(
+            'id' INTEGER NOT NULL UNIQUE,
             'guild_id' INTEGER NOT NULL,
             'name' TEXT NOT NULL,
             UNIQUE('guild_id', 'name'),
-            FOREIGN KEY('guild_id') REFERENCES 'guilds'('id')
+            FOREIGN KEY('guild_id') REFERENCES 'guilds'('id'),
+            PRIMARY KEY('id' AUTOINCREMENT)
         );""")
 
         cursor.execute("""CREATE TABLE IF NOT EXISTS quotes(
             'id' INTEGER NOT NULL UNIQUE,
-            'guild_id' INTEGER NOT NULL,
-            'name' TEXT NOT NULL,
+            'person_id' INTEGER NOT NULL,
             'quote' TEXT NOT NULL,
-            FOREIGN KEY('guild_id', 'name')
-            REFERENCES 'people'('guild_id', 'name'),
+            FOREIGN KEY('person_id') REFERENCES 'people'('id'),
             PRIMARY KEY('id' AUTOINCREMENT)
         );""")
+
+        cursor.execute(
+            "CREATE INDEX IF NOT EXISTS idx_quotes_person_id ON quotes(person_id)"
+        )
 
 
 def get_names(guild_id: int) -> str:
@@ -140,11 +145,13 @@ def remove_name(guild_id: int, name: str) -> None:
     with OpenDatabase("./quotes.db") as cursor:
         guild_int = _resolve_guild(cursor, guild_id)
         cursor.execute(
-            "DELETE FROM quotes WHERE guild_id == ? AND name == ?;",
+            "DELETE FROM quotes WHERE person_id IN ("
+            "SELECT id FROM people WHERE guild_id = ? AND name = ?"
+            ")",
             (guild_int, name),
         )
         cursor.execute(
-            "DELETE FROM people WHERE guild_id == ? AND name == ?;",
+            "DELETE FROM people WHERE guild_id = ? AND name = ?",
             (guild_int, name),
         )
 
@@ -185,7 +192,10 @@ def get_random_quote(guild_id: int, name: str) -> str:
         guild_int = _resolve_guild(cursor, guild_id)
         try:
             cursor.execute(
-                "SELECT quote FROM quotes WHERE guild_id = ? AND name = ? ORDER BY RANDOM() LIMIT 1",
+                "SELECT q.quote FROM quotes q"
+                " JOIN people p ON p.id = q.person_id"
+                " WHERE p.guild_id = ? AND p.name = ?"
+                " ORDER BY RANDOM() LIMIT 1",
                 (guild_int, name),
             )
             result = cursor.fetchone()
@@ -205,8 +215,10 @@ def add_quote(guild_id: int, name: str, quote: str) -> None:
     with OpenDatabase("./quotes.db") as cursor:
         guild_int = _resolve_guild(cursor, guild_id)
         cursor.execute(
-            "INSERT INTO quotes ('guild_id', 'name', 'quote') VALUES (?, ?, ?)",
-            (guild_int, name, quote),
+            "INSERT INTO quotes ('person_id', 'quote')"
+            " SELECT id, ? FROM people"
+            " WHERE guild_id = ? AND name = ?",
+            (quote, guild_int, name),
         )
 
 
@@ -239,7 +251,9 @@ def list_quotes(guild_id: int, name: str) -> list:
     with OpenDatabase("./quotes.db") as cursor:
         guild_int = _resolve_guild(cursor, guild_id)
         cursor.execute(
-            "SELECT * FROM quotes WHERE guild_id == ? AND name == ?;",
+            "SELECT q.* FROM quotes q"
+            " JOIN people p ON p.id = q.person_id"
+            " WHERE p.guild_id = ? AND p.name = ?",
             (guild_int, name),
         )
         return cursor.fetchall()
