@@ -8,7 +8,7 @@ dependencies = [
     "disnake>=2.12.1",
     "environs>=15.0.1",
     "mcstatus>=14.0.0",
-    "pytz>=2026.2",
+    "pytz>=2026.3.post1",
 ]
 
 [dependency-groups]
