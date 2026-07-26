@@ -8,7 +8,7 @@ import sqlite3
 module_logger = logging.getLogger(f"__main__.{__name__}")
 
 
-class OpenDatabase(object):
+class OpenDatabase:
     """
     SQLite3 context manager used for automatically opening and closing
     connections.
