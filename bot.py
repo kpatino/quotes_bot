@@ -2,16 +2,15 @@
 # SPDX-FileCopyrightText: 2023 Kevin Patino
 # SPDX-License-Identifier: MIT
 
+import datetime
 import logging
 import os
-from datetime import datetime
 
 import disnake
 from disnake.ext import commands
 
 import database
 from config import Config
-
 
 # Logging configuration
 log_format = "[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s"
