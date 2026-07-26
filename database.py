@@ -180,10 +180,7 @@ def verify_name(guild_id: int, name: str) -> bool:
             "SELECT count(name) FROM people WHERE guild_id = ? AND name = ?",
             (guild_int, name),
         )
-        if cursor.fetchone()[0] == 1:
-            return True
-        else:
-            return False
+        return cursor.fetchone()[0] == 1
 
 
 def get_random_quote(guild_id: int, name: str) -> str:
