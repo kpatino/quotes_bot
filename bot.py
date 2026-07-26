@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # SPDX-FileCopyrightText: 2023 Kevin Patino
 # SPDX-License-Identifier: MIT
 
