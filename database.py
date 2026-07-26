@@ -129,10 +129,7 @@ def verify_name(name: str) -> bool:
     """
     with OpenDatabase("./quotes.db") as cursor:
         cursor.execute("SELECT count(name) FROM people WHERE name=?", (name,))
-        if cursor.fetchone()[0] == 1:
-            return True
-        else:
-            return False
+        return cursor.fetchone()[0] == 1
 
 
 def get_random_quote(name: str) -> str:
