@@ -275,7 +275,7 @@ class QuotesCommands(commands.Cog):
                 await ctx.channel.send(
                     f"<@{guess.author.id}> YOU'RE WRONG‼IT WAS {name.upper()}‼"
                 )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             return await ctx.channel.send(f"TOOK TO LONG it was {name}")
 
     @commands.slash_command(
@@ -297,7 +297,7 @@ class QuotesCommands(commands.Cog):
                 await inter.channel.send(
                     f"<@{guess.author.id}> YOU'RE WRONG‼ IT WAS {name.upper()}‼"
                 )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             await inter.channel.send(f"YOU TOOK TO LONG it was {name}")
 
 
