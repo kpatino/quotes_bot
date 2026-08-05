@@ -149,6 +149,7 @@ cython_debug/
 # Bot specific files
 logs/
 quotes.db
+requirements.txt
 
 # Pterodactyl Docker container folders and files
 .cache/
