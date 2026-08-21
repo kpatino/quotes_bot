@@ -196,15 +196,15 @@ wheels = [
 
 [[package]]
 name = "mcstatus"
-version = "14.0.0"
+version = "14.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asyncio-dgram" },
     { name = "dnspython" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/96/b6/5838457fc7db54cb69e551c8ee21142890ebaea0df7d2c4fa49f64e8fd31/mcstatus-14.0.0.tar.gz", hash = "sha256:92141abd6037c2e18e910061f895a23918e6e6bfd462cfba0a3b9bd0ed893942", size = 161480, upload-time = "2026-06-26T16:31:12.592Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/79/0f/b4a17255d8b56562c6c2a328e459c291898699a01cc0cc9fca5388906512/mcstatus-14.1.0.tar.gz", hash = "sha256:4f9bd17ecf29b3bad9af8811b33126e996e197526d1d72554dc4f1f7e86a2fb0", size = 163658, upload-time = "2026-08-16T18:00:57.145Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9a/fc/bc4d10fae4909f508e9200cad0e03688a88a627c7cfac495da986b90a709/mcstatus-14.0.0-py3-none-any.whl", hash = "sha256:8f607fe1247a5475e7602342a16f8167000cf9a95b00d3e239f706370c0fb149", size = 61383, upload-time = "2026-06-26T16:31:11.27Z" },
+    { url = "https://files.pythonhosted.org/packages/bc/85/458839dc394bb4bc1219e0bcdfa0b3872e487fbcca9a0702766ec97c753d/mcstatus-14.1.0-py3-none-any.whl", hash = "sha256:4a7872c0e21fc470b9125ab9a9b076ad08365ae310de6d61623af5171657e30a", size = 61991, upload-time = "2026-08-16T18:00:55.908Z" },
 ]
 
 [[package]]
