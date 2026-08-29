@@ -1,6 +1,6 @@
 [project]
 name = "quotes-bot"
-version = "v3.3.15"
+version = "v3.4.2"
 description = " Python Discord bot for archiving quotes in a database and some extra utility"
 readme = "README.md"
 requires-python = ">=3.14"
