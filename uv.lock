@@ -101,16 +101,16 @@ wheels = [
 
 [[package]]
 name = "disnake"
-version = "2.12.1"
+version = "2.12.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "typing-extensions" },
     { name = "yarl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b1/4f/052738b078cea59fe768bfd7b719e0530a8d21abaf118d993ec9734bca45/disnake-2.12.1.tar.gz", hash = "sha256:b7d8732484277af084d2082fdbf9595a7a193f8f381639005f281a98ec5386d2", size = 1085362, upload-time = "2026-07-22T11:32:16.329Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c2/4d/36dbecc53a0d3436df08fb8049396ab7d63340980d22a8680ee29a82eb0e/disnake-2.12.2.tar.gz", hash = "sha256:5e1e71dbbb18595ed8767262bc908aa66eab5e2cb86bfca7f3b20754e6a5433f", size = 1085589, upload-time = "2026-10-08T13:26:21.823Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2f/fa/a9e2f0fc0a022048d1d9a0877bfa8859400de77564c0d4bbc650a6638921/disnake-2.12.1-py3-none-any.whl", hash = "sha256:52e5e17e107c015dd951fbcab3020943ea1e8b5dcc7bd384fb476818dc014d61", size = 1184840, upload-time = "2026-07-22T11:32:14.469Z" },
+    { url = "https://files.pythonhosted.org/packages/e7/7f/e87b988c8b1372a211ecea08314ddb9be6cff28189425b01217a0561898e/disnake-2.12.2-py3-none-any.whl", hash = "sha256:bf2a4ec192331796b2b16c1344d556ce104fa9b3144aaecff09f96680a9fa348", size = 1185067, upload-time = "2026-10-08T13:26:19.379Z" },
 ]
 
 [[package]]
